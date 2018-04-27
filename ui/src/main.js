@@ -4,13 +4,17 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 
+import Api from './api';
 
-Vue.config.productionTip = false;
+
+const endpoint = process.env.API_ENDPOINT || '';
+Vue.use(Api, { endpoint });
+
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>',
+    el: '#app',
+    router,
+    components: { App },
+    template: '<App/>',
 });
