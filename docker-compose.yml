@@ -6,7 +6,10 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - "./api:/usr/src/app"
+      - "./api:/usr/src/app:ro"
+      - "./screening-data:/data:ro"
+    environment:
+      SCREENING_DATA_FILE: "/data/pscr.csv"
   ui:
     build: ui
     command: run dev

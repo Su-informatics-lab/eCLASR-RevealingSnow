@@ -1,2 +1,5 @@
 .idea/
 *.iml
+
+# Folder with the screening data
+screening-data
