@@ -14,9 +14,9 @@ class PatientScreeningData(object):
         if 'SCREENING_DATA_FILE' not in app.config:
             logger.warning('SCREENING_DATA_FILE is not set; no data will be loaded')
 
-        self.load_screening_table(app.config['SCREENING_DATA_FILE'])
+        self._load_screening_table(app.config['SCREENING_DATA_FILE'])
 
-    def load_screening_table(self, filename: str):
+    def _load_screening_table(self, filename: str):
         logger.debug("Loading patient screening data from %s", filename)
 
         if not path.exists(filename):
@@ -24,6 +24,17 @@ class PatientScreeningData(object):
         else:
             self.pscr = pd.read_csv(filename, low_memory=False)
             logger.debug('Loaded %d records', self.pscr.shape[0])
+
+    def filter_patients(self, filters: dict) -> pd.DataFrame:
+        pscr = self.pscr
+        if filters:
+            condition = [
+                "{} == {}".format(key, value)
+                for key, value in filters.items()
+            ]
+            pscr = pscr.query(' and '.join(condition))
+
+        return pscr
 
 
 pscr = PatientScreeningData()
