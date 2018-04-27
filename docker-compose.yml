@@ -7,3 +7,14 @@ services:
       - "5000:5000"
     volumes:
       - "./api:/usr/src/app"
+  ui:
+    build: ui
+    command: run dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./ui:/usr/src/app"
+    environment:
+      HOST: 0.0.0.0
+    links:
+      - api:api
