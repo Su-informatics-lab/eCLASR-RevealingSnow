@@ -56,6 +56,13 @@ module.exports = {
                 'indent': 'off',
                 'vue/script-indent': ['error', 4, { 'baseIndent': 1 }],
                 'vue/html-indent': ['error', 4],
+                'vue/max-attributes-per-line': [2, {
+                    'singleline': 1,
+                    'multiline': {
+                        max: 1,
+                        allowFirstLine: true
+                    }
+                }]
             }
         }
     ]
