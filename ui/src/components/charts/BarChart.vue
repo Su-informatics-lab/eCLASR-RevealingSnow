@@ -9,6 +9,8 @@
     import BarChart from 'britecharts/dist/umd/bar.min';
     import tooltip from 'britecharts/dist/umd/miniTooltip.min';
 
+    import 'britecharts/dist/css/britecharts.min.css';
+
     import * as d3Selection from 'd3-selection';
 
 
@@ -28,12 +30,16 @@
                 type: Object,
                 default() {
                     return {
-                        left: 50,
+                        left: 100,
                         right: 20,
                         top: 20,
                         bottom: 30,
                     };
                 },
+            },
+            numberFormat: {
+                type: String,
+                default: ',d',
             },
         },
         watch: {
@@ -53,11 +59,17 @@
                 .isAnimated(true)
                 .width(this.width)
                 .height(this.height)
-                .margin(this.margin);
+                .margin(this.margin)
+                .numberFormat(this.numberFormat)
+                .yAxisPaddingBetweenChart(10)
+            ;
         },
         methods: {
             createTooltip() {
                 this.tooltip = tooltip();
+                this.tooltip
+                    .numberFormat(this.numberFormat);
+
                 const tooltipContainer = this.container.select('.bar-chart .metadata-group');
                 tooltipContainer.datum([]).call(this.tooltip);
 
