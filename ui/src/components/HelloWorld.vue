@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <filters class="col-sm"/>
+        <filters class="col-2"/>
         <div class="col">
 
             <bar-chart :data="race"

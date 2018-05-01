@@ -2,16 +2,24 @@
     <div class="filters">
         <h5>Filters</h5>
 
-        <div class="row">
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input type="checkbox"
-                           class="form-check-input"
-                           v-model="cardiac">
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox"
+                       class="form-check-input"
+                       v-model="cardiac">
 
-                    Cardiac
-                </label>
-            </div>
+                Cardiac
+            </label>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox"
+                       class="form-check-input"
+                       v-model="neuro">
+
+                Neuro
+            </label>
         </div>
 
         <button type="submit"
@@ -24,7 +32,7 @@
 </template>
 
 <style scoped>
-    .filters h5 {
+    .filters {
         text-align: left;
     }
 
@@ -42,12 +50,14 @@
         data() {
             return {
                 cardiac: false,
+                neuro: false,
             };
         },
         methods: {
             updateFilters() {
                 const filters = {
                     cardiac: this.cardiac ? 1 : 0,
+                    neuro: this.neuro ? 1 : 0,
                 };
 
                 this.$store.dispatch('getPatientStats', _.pickBy(filters, x => x === 1));
