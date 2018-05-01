@@ -1,0 +1,2 @@
+export const LOAD_PATIENT_STATS = 'LOAD_PATIENT_STATS';
+export const SET_FILTERS = 'SET_FILTERS';

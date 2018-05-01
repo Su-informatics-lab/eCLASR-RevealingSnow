@@ -1,12 +1,16 @@
 <template>
-    <div class="hello-dc">
-        <bar-chart :data="race"
-                   width="600"
-                   height="300"/>
+    <div class="row">
+        <filters class="col-sm"/>
+        <div class="col">
 
-        <bar-chart :data="sex"
-                   width="600"
-                   height="300"/>
+            <bar-chart :data="race"
+                       width="600"
+                       height="300"/>
+
+            <bar-chart :data="sex"
+                       width="600"
+                       height="300"/>
+        </div>
     </div>
 </template>
 
@@ -15,6 +19,9 @@
 
 <script>
     import _ from 'lodash';
+    import { mapGetters } from 'vuex';
+
+    import Filters from './Filters';
     import BarChart from './charts/BarChart';
 
 
@@ -32,14 +39,19 @@
                 sex: [],
             };
         },
-        mounted() {
-            this.$api.getPatientStats(null).then((result) => {
+        computed: mapGetters(['patientStats']),
+        watch: {
+            patientStats(result) {
                 this.race = objectToArray(result.race);
                 this.sex = objectToArray(result.sex);
-            });
+            },
+        },
+        mounted() {
+            this.$store.dispatch('getPatientStats');
         },
         components: {
             BarChart,
+            Filters,
         },
     };
 </script>

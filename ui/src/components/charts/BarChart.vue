@@ -41,7 +41,9 @@
         mounted() {
             this.container = d3Selection.select(this.$el);
             this.chart = new BarChart();
-            this.chart.width(this.width)
+            this.chart
+                .isAnimated(true)
+                .width(this.width)
                 .height(this.height)
                 .margin(this.margin);
         },
