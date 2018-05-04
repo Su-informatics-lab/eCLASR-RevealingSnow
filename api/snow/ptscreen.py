@@ -3,6 +3,8 @@ from os import path
 
 import pandas as pd
 
+from snow.filters import filter_patients
+
 logger = logging.getLogger(__name__)
 
 
@@ -26,15 +28,7 @@ class PatientScreeningData(object):
             logger.debug('Loaded %d records', self.pscr.shape[0])
 
     def filter_patients(self, filters: dict) -> pd.DataFrame:
-        pscr = self.pscr
-        if filters:
-            condition = [
-                "{} == {}".format(key, value)
-                for key, value in filters.items()
-            ]
-            pscr = pscr.query(' and '.join(condition))
-
-        return pscr
+        return filter_patients(self.pscr, filters)
 
 
 pscr = PatientScreeningData()
