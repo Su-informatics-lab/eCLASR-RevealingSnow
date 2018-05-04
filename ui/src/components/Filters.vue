@@ -56,11 +56,11 @@
         methods: {
             updateFilters() {
                 const filters = {
-                    cardiac: this.cardiac ? 1 : 0,
-                    neuro: this.neuro ? 1 : 0,
+                    cardiac: this.cardiac ? 0 : 1,
+                    neuro: this.neuro ? 0 : 1,
                 };
 
-                this.$store.dispatch('getPatientStats', _.pickBy(filters, x => x === 1));
+                this.$store.dispatch('getPatientStats', _.pickBy(filters, x => x === 0));
             },
         },
     };
