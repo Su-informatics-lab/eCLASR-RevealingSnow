@@ -4,6 +4,7 @@ import pandas as pd
 from parameterized import parameterized
 
 from snow import filters
+from snow.exc import RSError
 
 
 class FilterTests(TestCase):
@@ -46,3 +47,17 @@ class FilterTests(TestCase):
     def test_inclusion_with_date_includes_patients_with_condition_after_cutoff(self):
         patient_nums = self._get_filtered_patient_nums({'neuro': {'value': '1', 'date': '2018-05-01'}})
         self.assertEqual(patient_nums, {3})
+
+
+class FilterValidationTests(TestCase):
+    def test_invalid_filter_key_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            filters.validate_filters({'foo': '1'})
+
+        self.assertIn('invalid filter key', str(e.exception))
+
+    def test_invalid_filter_value_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            filters.validate_filters({'cardiac': 'bar'})
+
+        self.assertIn('invalid filter value', str(e.exception))
