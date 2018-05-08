@@ -1,7 +1,7 @@
 <template>
     <div id="app"
          class="container">
-        <router-view/>
+        <dashboard/>
     </div>
 </template>
 
@@ -17,7 +17,13 @@
 </style>
 
 <script>
+    import Dashboard from './components/Dashboard';
+
+
     export default {
         name: 'App',
+        components: {
+            Dashboard,
+        },
     };
 </script>

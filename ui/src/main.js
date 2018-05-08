@@ -7,7 +7,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Vue from 'vue';
 
 import store from './store';
-import router from './router';
 
 import App from './App';
 import Api from './api';
@@ -20,7 +19,6 @@ Vue.use(Api, { endpoint });
 /* eslint-disable no-new */
 new Vue({
     store,
-    router,
     el: '#app',
     components: { App },
     template: '<App/>',

@@ -1,8 +1,8 @@
 <template>
-    <div class="row">
-        <filters class="col-2"/>
-        <div class="col">
+    <div class="snow-report">
+        <mode-switch/>
 
+        <report-panel label="Demographics">
             <bar-chart :data="race"
                        width="600"
                        height="300"/>
@@ -10,18 +10,22 @@
             <bar-chart :data="sex"
                        width="600"
                        height="300"/>
-        </div>
+        </report-panel>
+
+        <report-panel label="Conditions"/>
     </div>
 </template>
 
-<style>
+<style scoped>
+
 </style>
 
 <script>
     import _ from 'lodash';
-    import { mapGetters } from 'vuex';
 
-    import Filters from './Filters';
+    import { mapGetters } from 'vuex';
+    import ModeSwitch from './ModeSwitch';
+    import ReportPanel from './ReportPanel';
     import BarChart from './charts/BarChart';
 
 
@@ -33,11 +37,17 @@
     }
 
     export default {
+        name: 'Report',
         data() {
             return {
                 race: [],
                 sex: [],
             };
+        },
+        components: {
+            ModeSwitch,
+            ReportPanel,
+            BarChart,
         },
         computed: mapGetters(['patientStats']),
         watch: {
@@ -48,10 +58,6 @@
         },
         mounted() {
             this.$store.dispatch('getPatientStats');
-        },
-        components: {
-            BarChart,
-            Filters,
         },
     };
 </script>
