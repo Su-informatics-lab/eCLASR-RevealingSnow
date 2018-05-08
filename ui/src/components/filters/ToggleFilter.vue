@@ -17,6 +17,10 @@
     export default {
         name: 'ToggleFilter',
         props: {
+            id: {
+                type: String,
+                required: true,
+            },
             label: {
                 type: String,
                 required: true,

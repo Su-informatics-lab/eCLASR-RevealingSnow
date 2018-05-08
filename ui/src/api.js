@@ -2,6 +2,7 @@ import request from 'superagent';
 
 
 class Api {
+    // noinspection JSUnusedGlobalSymbols
     static install(Vue, { endpoint, store }) {
         const api = new Api(endpoint);
         const apiProperty = {
@@ -23,6 +24,10 @@ class Api {
 
     getPatientStats(filters) {
         return this.get('/stats', filters);
+    }
+
+    getCriteriaDataModel() {
+        return this.get('/model');
     }
 
     get(path, query) {

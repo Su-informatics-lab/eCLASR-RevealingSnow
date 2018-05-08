@@ -2,10 +2,11 @@
     <div class="snow-filter-panel">
         <h5>Filters</h5>
 
-        <toggle-filter ref="cardiac"
-                       label="Cardiac"/>
-        <toggle-filter ref="neuro"
-                       label="Neuro"/>
+        <toggle-filter ref="toggle-filters"
+                       v-for="filter in toggleFilters"
+                       :key="filter.key"
+                       :id="filter.key"
+                       :label="filter.label"/>
 
         <button type="submit"
                 id="update-filters"
@@ -22,6 +23,8 @@
 
 <script>
     import _ from 'lodash';
+
+    import { mapGetters } from 'vuex';
     import ToggleFilter from './filters/ToggleFilter';
 
 
@@ -32,13 +35,22 @@
         },
         methods: {
             updateFilters() {
-                const filters = {
-                    cardiac: this.$refs.cardiac.value ? 0 : 1,
-                    neuro: this.$refs.neuro.value ? 0 : 1,
-                };
-
-                this.$store.dispatch('getPatientStats', _.pickBy(filters, x => x === 0));
+                const filters = this.filterValues;
+                this.$store.dispatch('getPatientStats', filters);
             },
+        },
+        computed: {
+            ...mapGetters(['modelFilters']),
+            toggleFilters() {
+                return _.filter(this.modelFilters, o => o.type === 'toggle');
+            },
+            filterValues() {
+                const activeFilters = _.keyBy(_.filter(this.$refs['toggle-filters'], f => f.value), 'id');
+                return _.mapValues(activeFilters, () => 0);
+            },
+        },
+        mounted() {
+            this.$store.dispatch('getCriteriaDataModel');
         },
     };
 </script>
