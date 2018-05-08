@@ -1,6 +1,8 @@
 <template>
     <div class="snow-report-panel">
-        <div class="panel-label">{{ label }}</div>
+        <div class="panel-label">
+            <h5>{{ label }}</h5>
+        </div>
         <slot/>
     </div>
 </template>
