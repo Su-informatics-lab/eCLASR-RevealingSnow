@@ -1,5 +1,6 @@
 import pandas as pd
 
+from snow import model
 from snow.exc import RSError
 
 _CRITERION_DATE_CONJUNCTION = {
@@ -10,14 +11,6 @@ _CRITERION_DATE_CONJUNCTION = {
 _CRITERION_DATE_COMPARISON = {
     '0': '<',
     '1': '>='
-}
-
-_VALID_FILTER_KEYS = {
-    'cardiac',
-    'neuro',
-    'dep_bpd',
-    'schizo',
-    'sub_abuse'
 }
 
 _VALID_FILTER_VALUES = {'0', '1'}
@@ -76,8 +69,10 @@ def _validate_filter(value):
 
 
 def validate_filters(filters: dict):
+    valid_filter_keys = model.cdm.filter_keys
+
     for key, value in filters.items():
-        if key not in _VALID_FILTER_KEYS:
+        if key not in valid_filter_keys:
             raise RSError("invalid filter key '{}'".format(key))
 
         _validate_filter(value)

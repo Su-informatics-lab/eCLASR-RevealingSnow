@@ -33,7 +33,7 @@ class CriteriaDataModel(object):
     def filter_keys(self):
         return {
             filter['key']
-            for filter in self._model['filters']
+            for filter in self.model['filters']
         }
 
 
