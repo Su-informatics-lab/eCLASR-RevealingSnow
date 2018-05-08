@@ -1,6 +1,6 @@
 ---
 filters:
-  clot:
+  - key: clot
     label: CVD
     long_name: Cardiovascular Diseases
     type: toggle
@@ -8,7 +8,7 @@ filters:
       Myocardial infarction, major heart surgery (i.e., valve replacement or bypass surgery),
       deep vein thrombosis or pulmonary embolus in the past 6 months.
     default_date: 2017-07-01
-  neuro:
+  - key: neuro
     label: Neurology
     long_name: Significant Neurological Diseases
     type: toggle
@@ -18,7 +18,7 @@ filters:
       supranuclear palsy, seizure disorder, ubdural hematoma, multiple sclerosis, or history of significant
       head trauma with persistent neurologic sequelae or known structural brain abnormalities.
     default_date:
-  cardio:
+  - key: cardio
     label: Significant CVD
     long_name: Significant Cardiovascular Disease
     type: toggle
@@ -26,7 +26,7 @@ filters:
       Significant cardiovascular disease (including NYHA Class III or IV congestive heart failure, clinically
       significant aortic stenosis, history of cardiac arrest, use of a cardiac defibrillator or uncontrolled angina).
     default_date:
-  heart:
+  - key: heart
     label: Heart
     long_name: Heart Problems
     type: toggle
@@ -35,7 +35,7 @@ filters:
       ST-segment depressions (>3 mm) on ECG (treated atrial fibrillation for more than 1 year or occasional
       premature ventricular ontractions on ECG are not exclusions).
     default_date: None
-  stroke_large:
+  - key: stroke_large
     label: "Stroke: Large"
     long_name: Large Vessel Stroke
     type: toggle

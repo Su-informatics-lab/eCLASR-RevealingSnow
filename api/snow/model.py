@@ -29,6 +29,13 @@ class CriteriaDataModel(object):
 
         return self._model
 
+    @property
+    def filter_keys(self):
+        return {
+            filter['key']
+            for filter in self._model['filters']
+        }
+
 
 cdm = CriteriaDataModel()
 
