@@ -34,7 +34,7 @@ filters:
       Serious conduction disorder (e.g., 3rd degree heart block), uncontrolled arrhythmia, or new Q waves or
       ST-segment depressions (>3 mm) on ECG (treated atrial fibrillation for more than 1 year or occasional
       premature ventricular ontractions on ECG are not exclusions).
-    default_date: None
+    default_date:
   - key: stroke_large
     label: "Stroke: Large"
     long_name: Large Vessel Stroke
