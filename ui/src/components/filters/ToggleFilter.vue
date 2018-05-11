@@ -14,7 +14,7 @@
             <vue-date-picker v-model="cutoff"
                              format="yyyy-MM"
                              minimum-view="month"
-            />
+                             :bootstrap-styling="true"/>
         </div>
     </div>
 </template>

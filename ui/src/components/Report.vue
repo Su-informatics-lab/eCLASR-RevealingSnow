@@ -4,15 +4,25 @@
 
         <report-panel label="Demographics">
             <bar-chart :data="race"
-                       width="600"
-                       height="300"/>
+                       width="300"
+                       height="200"/>
 
             <bar-chart :data="sex"
-                       width="600"
-                       height="300"/>
+                       width="300"
+                       height="200"/>
+
+            <bar-chart :data="ethnicity"
+                       width="300"
+                       height="200"/>
         </report-panel>
 
-        <report-panel label="Conditions"/>
+        <report-panel label="Conditions">
+            Placeholder
+        </report-panel>
+
+        <report-panel label="YMCA Proximity">
+            Placeholder
+        </report-panel>
     </div>
 </template>
 
@@ -42,6 +52,7 @@
             return {
                 race: [],
                 sex: [],
+                ethnicity: [],
             };
         },
         components: {
@@ -54,6 +65,7 @@
             patientStats(result) {
                 this.race = objectToArray(result.race);
                 this.sex = objectToArray(result.sex);
+                this.ethnicity = objectToArray(result.ethnicity);
             },
         },
         mounted() {

@@ -1,8 +1,11 @@
 <template>
-    <div class="rs-barchart"/>
+    <div class="snow-barchart"/>
 </template>
 
 <style>
+    .snow-barchart {
+        display: inline-block;
+    }
 </style>
 
 <script>

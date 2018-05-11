@@ -20,7 +20,15 @@
 </template>
 
 <style scoped>
+    .snow-filter-panel {
+        padding-right: 1em;
+        margin-right: 1em;
+        border-right: 1px solid lightgrey;
+    }
 
+    #update-filters {
+        margin-top: 1em;
+    }
 </style>
 
 <script>

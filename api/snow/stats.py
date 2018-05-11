@@ -1,7 +1,7 @@
 import pandas as pd
 
 CATEGORIES = [
-    'sex', 'race'
+    'sex', 'race', 'ethnicity'
 ]
 
 
