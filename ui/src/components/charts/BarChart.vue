@@ -9,78 +9,69 @@
 </style>
 
 <script>
-    import BarChart from 'britecharts/dist/umd/bar.min';
-    import tooltip from 'britecharts/dist/umd/miniTooltip.min';
-
-    import 'britecharts/dist/css/britecharts.min.css';
-
-    import * as d3Selection from 'd3-selection';
+    import * as bb from 'billboard.js';
+    import 'billboard.js/dist/billboard.min.css';
+    import _ from 'lodash';
 
 
     export default {
         data() {
             return {
-                container: null,
                 chart: null,
-                tooltip: null,
             };
         },
         props: {
             data: { type: Array, required: true },
-            width: { type: String, required: true },
-            height: { type: String, required: true },
-            margin: {
+            width: { type: Number, required: true },
+            height: { type: Number, required: true },
+            options: {
                 type: Object,
                 default() {
-                    return {
-                        left: 100,
-                        right: 20,
-                        top: 20,
-                        bottom: 30,
-                    };
+                    return {};
                 },
-            },
-            numberFormat: {
-                type: String,
-                default: ',d',
             },
         },
         watch: {
             data(value) {
-                this.container.datum(value).call(this.chart);
+                const sorted = _.sortBy(value, d => d.name);
+                const categories = _.map(sorted, 'name');
+                const values = _.map(sorted, 'value');
+                // const values = _.map(_.map(value, 'value'), () => _.random(0, 500));
 
-                if (!this.tooltip) {
-                    this.createTooltip();
-                }
+                this.chart.load({
+                    columns: [
+                        _.flatten([['x'], categories]),
+                        _.flatten([['y'], values]),
+                    ],
+                });
             },
         },
         mounted() {
-            this.container = d3Selection.select(this.$el);
-            this.chart = new BarChart();
+            const baseConfig = {
+                bindto: this.$el,
+                data: {
+                    x: 'x',
+                    columns: [],
+                    type: 'bar',
+                },
+            };
 
-            this.chart
-                .isAnimated(true)
-                .width(this.width)
-                .height(this.height)
-                .margin(this.margin)
-                .numberFormat(this.numberFormat)
-                .yAxisPaddingBetweenChart(10)
-            ;
-        },
-        methods: {
-            createTooltip() {
-                this.tooltip = tooltip();
-                this.tooltip
-                    .numberFormat(this.numberFormat);
+            const chartConfig = _.defaultsDeep(baseConfig, this.options, {
+                size: {
+                    width: this.width,
+                    height: this.height,
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                    },
+                },
+                legend: {
+                    show: false,
+                },
+            });
 
-                const tooltipContainer = this.container.select('.bar-chart .metadata-group');
-                tooltipContainer.datum([]).call(this.tooltip);
-
-                this.chart
-                    .on('customMouseOver', this.tooltip.show)
-                    .on('customMouseMove', this.tooltip.update)
-                    .on('customMouseOut', this.tooltip.hide);
-            },
+            this.chart = bb.bb.generate(chartConfig);
         },
     };
 </script>

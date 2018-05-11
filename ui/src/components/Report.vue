@@ -4,16 +4,20 @@
 
         <report-panel label="Demographics">
             <bar-chart :data="race"
-                       width="300"
-                       height="200"/>
+                       :width="300"
+                       :height="200"/>
 
             <bar-chart :data="sex"
-                       width="300"
-                       height="200"/>
+                       :width="300"
+                       :height="200"/>
 
             <bar-chart :data="ethnicity"
-                       width="300"
-                       height="200"/>
+                       :width="300"
+                       :height="200"/>
+
+            <histogram :data="age"
+                       :width="900"
+                       :height="200"/>
         </report-panel>
 
         <report-panel label="Conditions">
@@ -37,6 +41,7 @@
     import ModeSwitch from './ModeSwitch';
     import ReportPanel from './ReportPanel';
     import BarChart from './charts/BarChart';
+    import Histogram from './charts/Histogram';
 
 
     function objectToArray(objdata) {
@@ -53,12 +58,14 @@
                 race: [],
                 sex: [],
                 ethnicity: [],
+                age: [],
             };
         },
         components: {
             ModeSwitch,
             ReportPanel,
             BarChart,
+            Histogram,
         },
         computed: mapGetters(['patientStats']),
         watch: {
@@ -66,6 +73,7 @@
                 this.race = objectToArray(result.race);
                 this.sex = objectToArray(result.sex);
                 this.ethnicity = objectToArray(result.ethnicity);
+                this.age = objectToArray(result.age);
             },
         },
         mounted() {

@@ -1,0 +1,45 @@
+<template>
+    <div class="snow-chart-histogram">
+        <bar-chart :data="data"
+                   :width="width"
+                   :height="height"
+                   :options="barChartOptions"
+        />
+    </div>
+</template>
+
+<style scoped>
+
+</style>
+
+<script>
+    import _ from 'lodash';
+
+    import BarChart from './BarChart';
+
+
+    export default {
+        name: 'Histogram',
+        props: {
+            data: { type: Array, required: true },
+            width: { type: Number, required: true },
+            height: { type: Number, required: true },
+        },
+        data() {
+            return {
+                barChartOptions: {
+                    axis: {
+                        x: {
+                            tick: {
+                                format: (idx, name) => _.round(name),
+                            },
+                        },
+                    },
+                },
+            };
+        },
+        components: {
+            BarChart,
+        },
+    };
+</script>
