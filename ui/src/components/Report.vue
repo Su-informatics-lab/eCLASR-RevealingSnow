@@ -3,19 +3,19 @@
         <mode-switch/>
 
         <report-panel label="Demographics">
-            <bar-chart :data="race"
+            <bar-chart stats-key="race"
                        :width="300"
                        :height="200"/>
 
-            <bar-chart :data="sex"
+            <bar-chart stats-key="sex"
                        :width="300"
                        :height="200"/>
 
-            <bar-chart :data="ethnicity"
+            <bar-chart stats-key="ethnicity"
                        :width="300"
                        :height="200"/>
 
-            <histogram :data="age"
+            <histogram stats-key="age"
                        :width="900"
                        :height="200"/>
         </report-panel>
@@ -35,46 +35,19 @@
 </style>
 
 <script>
-    import _ from 'lodash';
-
-    import { mapGetters } from 'vuex';
     import ModeSwitch from './ModeSwitch';
     import ReportPanel from './ReportPanel';
     import BarChart from './charts/BarChart';
     import Histogram from './charts/Histogram';
 
 
-    function objectToArray(objdata) {
-        return _.map(_.keys(objdata), key => ({
-            name: key,
-            value: objdata[key],
-        }));
-    }
-
     export default {
         name: 'Report',
-        data() {
-            return {
-                race: [],
-                sex: [],
-                ethnicity: [],
-                age: [],
-            };
-        },
         components: {
             ModeSwitch,
             ReportPanel,
             BarChart,
             Histogram,
-        },
-        computed: mapGetters(['patientStats']),
-        watch: {
-            patientStats(result) {
-                this.race = objectToArray(result.race);
-                this.sex = objectToArray(result.sex);
-                this.ethnicity = objectToArray(result.ethnicity);
-                this.age = objectToArray(result.age);
-            },
         },
         mounted() {
             this.$store.dispatch('getPatientStats');

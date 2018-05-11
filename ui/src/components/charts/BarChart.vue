@@ -21,7 +21,7 @@
             };
         },
         props: {
-            data: { type: Array, required: true },
+            statsKey: { type: String, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
             options: {
@@ -29,6 +29,11 @@
                 default() {
                     return {};
                 },
+            },
+        },
+        computed: {
+            data() {
+                return this.$store.state.ptstats[this.statsKey];
             },
         },
         watch: {

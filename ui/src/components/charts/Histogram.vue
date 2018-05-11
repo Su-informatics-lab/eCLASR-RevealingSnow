@@ -1,6 +1,6 @@
 <template>
     <div class="snow-chart-histogram">
-        <bar-chart :data="data"
+        <bar-chart :stats-key="statsKey"
                    :width="width"
                    :height="height"
                    :options="barChartOptions"
@@ -21,7 +21,7 @@
     export default {
         name: 'Histogram',
         props: {
-            data: { type: Array, required: true },
+            statsKey: { type: String, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
         },
