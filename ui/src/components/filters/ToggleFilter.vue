@@ -63,7 +63,7 @@
         },
         computed: {
             value() {
-                // Treating filters as exclusion criteria for the moment; will change with RS-18
+                // Treating criteria as exclusion criteria for the moment; will change with RS-18
                 const filterValue = this.checked ? 0 : 1;
 
                 if (this.default_date === null) {

@@ -56,7 +56,7 @@
         methods: {
             updateFilters() {
                 const filters = flattenToDotNotation(this.filterValues);
-                this.$store.dispatch('getPatientStats', filters);
+                this.$store.dispatch('getFilteredStats', filters);
             },
         },
         computed: {

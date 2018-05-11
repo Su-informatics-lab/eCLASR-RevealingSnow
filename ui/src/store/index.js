@@ -11,8 +11,11 @@ import mutations from './mutations';
 Vue.use(Vuex);
 
 const state = {
-    ptstats: [],
-    filters: [],
+    stats: {
+        unfiltered: [],
+        filtered: [],
+    },
+    criteria: [],
 };
 
 export default new Vuex.Store({

@@ -25,5 +25,8 @@
         components: {
             Dashboard,
         },
+        mounted() {
+            this.$store.dispatch('loadUnfilteredStats');
+        },
     };
 </script>

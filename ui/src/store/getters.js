@@ -1,4 +1,3 @@
 export default {
-    patientStats: state => state.ptstats,
-    modelFilters: state => state.filters,
+    modelFilters: state => state.criteria,
 };

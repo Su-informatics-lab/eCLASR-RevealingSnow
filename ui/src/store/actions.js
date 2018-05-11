@@ -11,11 +11,18 @@ function objectToArray(objdata) {
 
 
 export default {
-    getPatientStats({ commit }, filters) {
+    loadUnfilteredStats({ commit }) {
+        // eslint-disable-next-line no-underscore-dangle
+        this._vm.$api.getPatientStats().then((result) => {
+            const stats = _.mapValues(result, objectToArray);
+            commit(types.LOAD_UNFILTERED_STATS, stats);
+        });
+    },
+    getFilteredStats({ commit }, filters) {
         // eslint-disable-next-line no-underscore-dangle
         this._vm.$api.getPatientStats(filters).then((result) => {
             const stats = _.mapValues(result, objectToArray);
-            commit(types.LOAD_PATIENT_STATS, stats);
+            commit(types.LOAD_FILTERED_STATS, stats);
         });
     },
     getCriteriaDataModel({ commit }) {

@@ -50,7 +50,7 @@
             Histogram,
         },
         mounted() {
-            this.$store.dispatch('getPatientStats');
+            this.$store.dispatch('getFilteredStats');
         },
     };
 </script>

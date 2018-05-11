@@ -32,23 +32,31 @@
             },
         },
         computed: {
-            data() {
-                return this.$store.state.ptstats[this.statsKey];
+            unfiltered() {
+                return this.$store.state.stats.unfiltered[this.statsKey];
+            },
+            filtered() {
+                return this.$store.state.stats.filtered[this.statsKey];
             },
         },
         watch: {
-            data(value) {
-                const sorted = _.sortBy(value, d => d.name);
-                const categories = _.map(sorted, 'name');
-                const values = _.map(sorted, 'value');
-                // const values = _.map(_.map(value, 'value'), () => _.random(0, 500));
-
-                this.chart.load({
-                    columns: [
-                        _.flatten([['x'], categories]),
-                        _.flatten([['y'], values]),
-                    ],
+            unfiltered(value) {
+                this.setData('Unfiltered', value);
+            },
+            filtered(value) {
+                // Align the filtered values to the unfiltered categories; this is only
+                // relevant when the filtered is missing some category from the unfiltered,
+                // but the results will be misleading if it's not done in that case.
+                const valueLookup = _.keyBy(value, 'name');
+                const aligned = _.map(this.unfiltered, (d) => {
+                    const v = _.get(valueLookup, d.name, null);
+                    return {
+                        name: d.name,
+                        value: v !== null ? v.value : null,
+                    };
                 });
+
+                this.setData('Filtered', aligned);
             },
         },
         mounted() {
@@ -77,6 +85,20 @@
             });
 
             this.chart = bb.bb.generate(chartConfig);
+        },
+        methods: {
+            setData(group, value) {
+                const sorted = _.sortBy(value, d => d.name);
+                const categories = _.map(sorted, 'name');
+                const values = _.map(sorted, 'value');
+
+                this.chart.load({
+                    columns: [
+                        _.flatten([['x'], categories]),
+                        _.flatten([[group], values]),
+                    ],
+                });
+            },
         },
     };
 </script>
