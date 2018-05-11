@@ -1,6 +1,7 @@
 <template>
     <div class="snow-report">
-        <report-panel label="Demographics">
+        <report-panel label="Demographics"
+                      class="demographics">
             <bar-chart stats-key="race"
                        :width="300"
                        :height="200"/>
@@ -18,18 +19,26 @@
                        :height="200"/>
         </report-panel>
 
-        <report-panel label="Conditions">
+        <report-panel label="Conditions"
+                      class="conditions">
             Placeholder
         </report-panel>
 
-        <report-panel label="YMCA Proximity">
-            Placeholder
+        <report-panel label="YMCA Proximity"
+                      class="ymca"
+        >
+            <histogram stats-key="ymca_fulton"
+                       :cumulative="true"
+                       :width="900"
+                       :height="200"/>
         </report-panel>
     </div>
 </template>
 
 <style scoped>
-
+    .conditions {
+        display: none;
+    }
 </style>
 
 <script>

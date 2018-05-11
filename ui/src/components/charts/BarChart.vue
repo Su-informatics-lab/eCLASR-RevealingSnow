@@ -30,6 +30,14 @@
                     return {};
                 },
             },
+            orderFunction: {
+                type: Function,
+                default: data => _.sortBy(data, d => d.name),
+            },
+            transformFunction: {
+                type: Function,
+                default: data => data,
+            },
         },
         computed: {
             unfiltered() {
@@ -88,9 +96,10 @@
         },
         methods: {
             setData(group, value) {
-                const sorted = _.sortBy(value, d => d.name);
-                const categories = _.map(sorted, 'name');
-                const values = _.map(sorted, 'value');
+                const sorted = this.orderFunction(value);
+                const xformed = this.transformFunction(sorted);
+                const categories = _.map(xformed, 'name');
+                const values = _.map(xformed, 'value');
 
                 this.chart.load({
                     columns: [
