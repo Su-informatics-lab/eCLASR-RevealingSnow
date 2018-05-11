@@ -1,7 +1,5 @@
 <template>
     <div class="snow-report">
-        <mode-switch/>
-
         <report-panel label="Demographics">
             <bar-chart stats-key="race"
                        :width="300"
@@ -35,7 +33,6 @@
 </style>
 
 <script>
-    import ModeSwitch from './ModeSwitch';
     import ReportPanel from './ReportPanel';
     import BarChart from './charts/BarChart';
     import Histogram from './charts/Histogram';
@@ -44,7 +41,6 @@
     export default {
         name: 'Report',
         components: {
-            ModeSwitch,
             ReportPanel,
             BarChart,
             Histogram,
