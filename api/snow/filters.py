@@ -21,6 +21,10 @@ def _date_field(key):
 
 
 def _expand_filter(key, value):
+    # TODO: Remove this and replace with a more robust distance filtering solution
+    if key == 'ymca_fulton':
+        return 'ymca_fulton < {value}'.format(value=value)
+
     if not isinstance(value, dict):
         return '{} == {}'.format(key, value)
 
@@ -72,6 +76,9 @@ def validate_filters(filters: dict):
     valid_filter_keys = model.cdm.filter_keys
 
     for key, value in filters.items():
+        # TODO: Repalce with more robust distance validation
+        if key == 'ymca_fulton':
+            continue
         if key not in valid_filter_keys:
             raise RSError("invalid filter key '{}'".format(key))
 

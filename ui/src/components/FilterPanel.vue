@@ -10,6 +10,10 @@
                        :default_date="filter.default_date"
         />
 
+        <distance-filter ref="ymca-filter"
+                         id="ymca_fulton"
+                         label="YMCA Fulton"/>
+
         <button type="submit"
                 id="update-filters"
                 @click="updateFilters"
@@ -36,6 +40,7 @@
 
     import { mapGetters } from 'vuex';
     import ToggleFilter from './filters/ToggleFilter';
+    import DistanceFilter from './filters/DistanceFilter';
 
 
     function flattenToDotNotation(filters) {
@@ -52,10 +57,18 @@
         name: 'FilterPanel',
         components: {
             ToggleFilter,
+            DistanceFilter,
         },
         methods: {
             updateFilters() {
                 const filters = flattenToDotNotation(this.filterValues);
+
+                // TODO: Replace with a more graceful way of including distance filters
+                const ymcaValue = this.ymcaFilter;
+                if (ymcaValue !== null) {
+                    filters.ymca_fulton = ymcaValue;
+                }
+
                 this.$store.dispatch('getFilteredStats', filters);
             },
         },
@@ -67,6 +80,10 @@
             filterValues() {
                 const activeFilters = _.keyBy(_.filter(this.$refs['toggle-filters'], f => f.checked), 'id');
                 return _.mapValues(activeFilters, f => f.value);
+            },
+            ymcaFilter() {
+                const ymcaFilter = this.$refs['ymca-filter'];
+                return ymcaFilter.value;
             },
         },
         mounted() {
