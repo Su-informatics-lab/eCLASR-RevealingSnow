@@ -8,7 +8,6 @@ CATEGORIES = {
     'race': _IDENTITY,
     'ethnicity': _IDENTITY,
     'age': _ROUND,
-    'ymca_fulton': _ROUND
 }
 
 
