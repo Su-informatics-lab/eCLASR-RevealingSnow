@@ -33,7 +33,14 @@ class CriteriaDataModel(object):
     def filter_keys(self):
         return {
             filter['key']
-            for filter in self.model['filters']
+            for filter in self.model[C.FILTERS]
+        }
+
+    @property
+    def ymca_site_keys(self):
+        return {
+            site['key']
+            for site in self.model[C.YMCA_SITES]
         }
 
 
