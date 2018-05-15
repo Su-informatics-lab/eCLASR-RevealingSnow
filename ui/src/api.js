@@ -1,4 +1,5 @@
 import request from 'superagent';
+import _ from 'lodash';
 
 
 class Api {
@@ -24,6 +25,11 @@ class Api {
 
     getPatientStats(filters) {
         return this.get('/stats', filters);
+    }
+
+    getYmcaStats(site, cutoff, filters) {
+        const query = _.merge({ site, cutoff }, filters);
+        return this.get('/ymca_stats', query);
     }
 
     getCriteriaDataModel() {

@@ -50,11 +50,14 @@
         },
         computed: {
             value() {
-                if (this.distance === '-1') {
+                if (this.maxValue === 0) {
                     return null;
                 }
 
-                return this.distance;
+                return {
+                    site: this.id,
+                    cutoff: this.maxValue,
+                };
             },
         },
     };

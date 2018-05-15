@@ -7,6 +7,7 @@
                    :options="barChartOptions"
                    :order-function="orderfn"
                    :transform-function="transform"
+                   :title="title"
         />
     </div>
 </template>
@@ -28,6 +29,7 @@
             filtered: { type: Array, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
+            title: { type: String, default: '' },
             cumulative: {
                 type: Boolean,
                 default: false,

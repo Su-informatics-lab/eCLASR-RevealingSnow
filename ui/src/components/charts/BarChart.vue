@@ -25,6 +25,7 @@
             filtered: { type: Array, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
+            title: { type: String, default: '' },
             options: {
                 type: Object,
                 default() {
@@ -40,14 +41,6 @@
                 default: data => data,
             },
         },
-        // computed: {
-        //     unfiltered() {
-        //         return this.$store.state.stats.unfiltered[this.statsKey];
-        //     },
-        //     filtered() {
-        //         return this.$store.state.stats.filtered[this.statsKey];
-        //     },
-        // },
         watch: {
             unfiltered(value) {
                 this.setData('Unfiltered', value);
@@ -92,6 +85,13 @@
                     show: false,
                 },
             });
+
+            if (this.title) {
+                chartConfig.title = {
+                    text: this.title,
+                    position: 'top-center',
+                };
+            }
 
             this.chart = bb.bb.generate(chartConfig);
         },
