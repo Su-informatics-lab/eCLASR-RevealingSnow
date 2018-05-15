@@ -3,7 +3,9 @@ import logging
 
 from flask import request
 
-from snow import stats
+from snow import constants as  C
+from snow import model
+from snow import stats, ymca
 from snow.exc import RSError
 from snow.filters import validate_filters
 from snow.ptscreen import pscr
@@ -41,7 +43,7 @@ def _build_nested_args(args, nested_keys):
     return nested_args
 
 
-def parse_query_args(args: dict):
+def parse_query_args(args: dict) -> dict:
     if not args:
         return args
 
@@ -65,6 +67,27 @@ def parse_query_args(args: dict):
     return args
 
 
+def parse_ymca_query_args(args: dict):
+    args = parse_query_args(args)
+
+    # Validate that the required 'site' argument is present
+    if C.QK_SITE in args:
+        site = args.pop(C.QK_SITE)
+        if site not in model.cdm.ymca_site_keys:
+            raise RSError("invalid YMCA site: '{}'".format(site))
+    else:
+        raise RSError("missing required argument: '{}'".format(C.QK_SITE))
+
+    # Pull out the optional 'cutoff' argument if present
+    if C.QK_CUTOFF in args:
+        cutoff = int(args.pop(C.QK_CUTOFF))
+    else:
+        cutoff = None
+
+    # Return a tuple of the site, the cutoff (optionally None), and the remaining filters
+    return site, cutoff, args
+
+
 def patient_stats():
     filters = parse_query_args(request.args)
     validate_filters(filters)
@@ -73,3 +96,13 @@ def patient_stats():
     ptstats = stats.patient_counts_by_category(patients)
 
     return make_json_response(ptstats)
+
+
+def ymca_stats():
+    site, cutoff, filters = parse_ymca_query_args(request.args)
+    validate_filters(filters)
+
+    patients = pscr.filter_patients(filters)
+    dist_stats = ymca.get_ymca_distance_stats(patients, site, cutoff)
+
+    return make_json_response(dist_stats)
