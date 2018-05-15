@@ -1,20 +1,31 @@
 <template>
     <div class="snow-distance-filter">
-        <label>
-            Distance to YMCA Fulton:
-            <select class="distances form-control"
-                    v-model="distance">
-                <option value="-1">Any Distance</option>
-                <option value="1">1 Mile</option>
-                <option value="5">5 Miles</option>
-                <option value="15">15 Miles</option>
-            </select>
-        </label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox"
+                       class="form-check-input"
+                       v-model="enabled">
+                {{ label }}
+            </label>
+        </div>
+
+        <div class="snow-distance-filter-controls"
+             v-if="enabled">
+            <div class="form-row">
+                <label>
+                    Max ({{ maxValue }}):
+                    <input type="range"
+                           v-model="maxValue">
+                </label>
+            </div>
+        </div>
     </div>
 </template>
 
 <style scoped>
-
+    .snow-distance-filter-controls {
+        padding-left: 1em;
+    }
 </style>
 
 <script>
@@ -32,6 +43,8 @@
         },
         data() {
             return {
+                enabled: false,
+                maxValue: 5,
                 distance: '5',
             };
         },

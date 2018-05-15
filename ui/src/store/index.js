@@ -15,8 +15,10 @@ const state = {
         unfiltered: [],
         filtered: [],
     },
-    criteria: [],
-    ymcaSites: [],
+    model: {
+        criteria: [],
+        ymcaSites: [],
+    },
 };
 
 export default new Vuex.Store({

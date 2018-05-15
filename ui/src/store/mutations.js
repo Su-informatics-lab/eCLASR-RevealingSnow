@@ -11,7 +11,7 @@ export default {
         state.stats.unfiltered = results;
     },
     [types.LOAD_CRITERIA_DATA_MODEL](state, { filters, ymca_sites }) {
-        state.criteria = filters;
-        state.ymcaSites = ymca_sites;
+        state.model.criteria = filters;
+        state.model.ymcaSites = ymca_sites;
     },
 };

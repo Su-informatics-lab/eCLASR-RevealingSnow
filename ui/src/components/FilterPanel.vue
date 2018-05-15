@@ -1,18 +1,24 @@
 <template>
     <div class="snow-filter-panel">
-        <h5>Filters</h5>
+        <div class="snow-condition-filters snow-filter-section">
+            <h5>Filters</h5>
+            <toggle-filter ref="toggle-filters"
+                           v-for="filter in toggleFilters"
+                           :key="filter.key"
+                           :id="filter.key"
+                           :label="filter.label"
+                           :default_date="filter.default_date"
+            />
+        </div>
 
-        <toggle-filter ref="toggle-filters"
-                       v-for="filter in toggleFilters"
-                       :key="filter.key"
-                       :id="filter.key"
-                       :label="filter.label"
-                       :default_date="filter.default_date"
-        />
-
-        <distance-filter ref="ymca-filter"
-                         id="ymca_fulton"
-                         label="YMCA Fulton"/>
+        <div class="snow-ymca-distance-filters snow-filter-section">
+            <h5>YMCA Sites</h5>
+            <distance-filter ref="ymca-filters"
+                             v-for="site in modelYmcaSites"
+                             :key="site.key"
+                             :id="site.key"
+                             :label="site.label"/>
+        </div>
 
         <button type="submit"
                 id="update-filters"
@@ -28,6 +34,11 @@
         padding-right: 1em;
         margin-right: 1em;
         border-right: 1px solid lightgrey;
+    }
+
+    .snow-filter-section {
+        margin-top: 0.5em;
+        padding-top: 0.5em;
     }
 
     #update-filters {
@@ -73,7 +84,7 @@
             },
         },
         computed: {
-            ...mapGetters(['modelFilters']),
+            ...mapGetters(['modelFilters', 'modelYmcaSites']),
             toggleFilters() {
                 return _.filter(this.modelFilters, o => o.type === 'toggle');
             },
