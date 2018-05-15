@@ -1,6 +1,7 @@
 <template>
     <div class="snow-chart-histogram">
-        <bar-chart :stats-key="statsKey"
+        <bar-chart :unfiltered="unfiltered"
+                   :filtered="filtered"
                    :width="width"
                    :height="height"
                    :options="barChartOptions"
@@ -23,7 +24,8 @@
     export default {
         name: 'Histogram',
         props: {
-            statsKey: { type: String, required: true },
+            unfiltered: { type: Array, required: true },
+            filtered: { type: Array, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
             cumulative: {

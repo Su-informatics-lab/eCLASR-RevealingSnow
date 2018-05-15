@@ -21,7 +21,8 @@
             };
         },
         props: {
-            statsKey: { type: String, required: true },
+            unfiltered: { type: Array, required: true },
+            filtered: { type: Array, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
             options: {
@@ -39,14 +40,14 @@
                 default: data => data,
             },
         },
-        computed: {
-            unfiltered() {
-                return this.$store.state.stats.unfiltered[this.statsKey];
-            },
-            filtered() {
-                return this.$store.state.stats.filtered[this.statsKey];
-            },
-        },
+        // computed: {
+        //     unfiltered() {
+        //         return this.$store.state.stats.unfiltered[this.statsKey];
+        //     },
+        //     filtered() {
+        //         return this.$store.state.stats.filtered[this.statsKey];
+        //     },
+        // },
         watch: {
             unfiltered(value) {
                 this.setData('Unfiltered', value);
