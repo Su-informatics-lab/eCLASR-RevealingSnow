@@ -2,19 +2,20 @@
     <div class="snow-report">
         <report-panel label="Demographics"
                       class="demographics">
-            <bar-chart stats-key="race"
+            <dem-chart stats-key="race"
                        :width="300"
                        :height="200"/>
 
-            <bar-chart stats-key="sex"
+            <dem-chart stats-key="sex"
                        :width="300"
                        :height="200"/>
 
-            <bar-chart stats-key="ethnicity"
+            <dem-chart stats-key="ethnicity"
                        :width="300"
                        :height="200"/>
 
-            <histogram stats-key="age"
+            <histogram :unfiltered="ageUnfiltered"
+                       :filtered="ageFiltered"
                        :width="900"
                        :height="200"/>
         </report-panel>
@@ -25,12 +26,10 @@
         </report-panel>
 
         <report-panel label="YMCA Proximity"
-                      class="ymca"
-        >
-            <histogram stats-key="ymca_fulton"
-                       :cumulative="true"
-                       :width="900"
-                       :height="200"/>
+                      class="ymca">
+            <ymca-site v-for="site in enabledYmcaSites"
+                       :key="site.site"
+                       :id="site.site"/>
         </report-panel>
     </div>
 </template>
@@ -42,17 +41,30 @@
 </style>
 
 <script>
+    import { mapGetters } from 'vuex';
+
     import ReportPanel from './ReportPanel';
-    import BarChart from './charts/BarChart';
+    import DemChart from './charts/GlobalDemographicChart';
     import Histogram from './charts/Histogram';
+    import YmcaSite from './charts/YmcaSite';
 
 
     export default {
         name: 'Report',
         components: {
             ReportPanel,
-            BarChart,
+            DemChart,
             Histogram,
+            YmcaSite,
+        },
+        computed: {
+            ...mapGetters(['enabledYmcaSites']),
+            ageUnfiltered() {
+                return this.$store.state.stats.unfiltered.age || [];
+            },
+            ageFiltered() {
+                return this.$store.state.stats.filtered.age || [];
+            },
         },
         mounted() {
             this.$store.dispatch('getFilteredStats');

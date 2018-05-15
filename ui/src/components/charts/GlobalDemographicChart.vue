@@ -26,10 +26,10 @@
         },
         computed: {
             unfiltered() {
-                return this.$store.state.stats.unfiltered[this.statsKey];
+                return this.$store.state.stats.unfiltered[this.statsKey] || [];
             },
             filtered() {
-                return this.$store.state.stats.filtered[this.statsKey];
+                return this.$store.state.stats.filtered[this.statsKey] || [];
             },
         },
         components: {
