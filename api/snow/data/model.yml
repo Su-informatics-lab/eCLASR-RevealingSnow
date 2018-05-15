@@ -154,7 +154,7 @@ ymca_sites:
   - key: ymca_hanes
     label: Hanes
   - key: ymca_davie
-    label: David
+    label: Davie
   - key: ymca_fulton
     label: Fulton
   - key: ymca_gateway
