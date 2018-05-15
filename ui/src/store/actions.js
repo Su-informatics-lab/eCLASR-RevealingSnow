@@ -11,6 +11,10 @@ function objectToArray(objdata) {
 
 
 export default {
+    setActiveFilters({ commit, dispatch }, { criteria, sites }) {
+        commit(types.SET_ACTIVE_FILTERS, { criteria, sites });
+        dispatch('getFilteredStats', criteria);
+    },
     loadUnfilteredStats({ commit }) {
         // eslint-disable-next-line no-underscore-dangle
         this._vm.$api.getPatientStats().then((result) => {

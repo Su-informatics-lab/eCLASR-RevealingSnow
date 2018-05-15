@@ -13,7 +13,7 @@
 
         <div class="snow-ymca-distance-filters snow-filter-section">
             <h5>YMCA Sites</h5>
-            <distance-filter ref="ymca-filters"
+            <distance-filter ref="ymca-sites"
                              v-for="site in modelYmcaSites"
                              :key="site.key"
                              :id="site.key"
@@ -72,15 +72,8 @@
         },
         methods: {
             updateFilters() {
-                const filters = flattenToDotNotation(this.filterValues);
-
-                // TODO: Replace with a more graceful way of including distance filters
-                const ymcaValue = this.ymcaFilter;
-                if (ymcaValue !== null) {
-                    filters.ymca_fulton = ymcaValue;
-                }
-
-                this.$store.dispatch('getFilteredStats', filters);
+                const criteria = flattenToDotNotation(this.filterValues);
+                this.$store.dispatch('setActiveFilters', { criteria, sites: this.ymcaSites });
             },
         },
         computed: {
@@ -92,9 +85,9 @@
                 const activeFilters = _.keyBy(_.filter(this.$refs['toggle-filters'], f => f.checked), 'id');
                 return _.mapValues(activeFilters, f => f.value);
             },
-            ymcaFilter() {
-                const ymcaFilter = this.$refs['ymca-filter'];
-                return ymcaFilter.value;
+            ymcaSites() {
+                const activeSites = _.keyBy(_.filter(this.$refs['ymca-sites'], f => f.enabled), 'id');
+                return _.mapValues(activeSites, f => f.value);
             },
         },
         mounted() {

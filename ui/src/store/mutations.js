@@ -14,4 +14,8 @@ export default {
         state.model.criteria = filters;
         state.model.ymcaSites = ymca_sites;
     },
+    [types.SET_ACTIVE_FILTERS](state, { criteria, sites }) {
+        state.filters.criteria = criteria;
+        state.filters.ymcaSites = sites;
+    },
 };
