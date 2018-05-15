@@ -144,3 +144,43 @@ filters:
 #    description: >
 #      Receives hospice care
 #    default_date:
+ymca_sites:
+  - key: ymca_administrative
+    label: Administrative
+  - key: ymca_alexander
+    label: Alexander
+  - key: ymca_barium_springs
+    label: Barium Springs
+  - key: ymca_hanes
+    label: Hanes
+  - key: ymca_davie
+    label: David
+  - key: ymca_fulton
+    label: Fulton
+  - key: ymca_gateway
+    label: Gateway
+  - key: ymca_innovation_quarter
+    label: Innovation Quarter
+  - key: ymca_jerry_long
+    label: Jerry Long
+  - key: ymca_kernersville
+    label: Kernersville
+  - key: ymca_robinhood
+    label: Robinhood
+  - key: ymca_statesville
+    label: Statesville
+  - key: ymca_stokes
+    label: Stokes
+  - key: ymca_wells_fargo
+    label: Wells Fargo
+  - key: ymca_wilkes
+    label: Wilkes
+  - key: ymca_wilkes_express
+    label: Wilkes Express
+  - key: ymca_william_white
+    label: William White
+  - key: ymca_winston
+    label: Winston
+  - key: ymca_yadkin
+    label: Yadkin
+
