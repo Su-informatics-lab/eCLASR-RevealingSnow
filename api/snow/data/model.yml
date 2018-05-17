@@ -137,12 +137,25 @@ filters:
     description: >
       Receives hospice care
     default_date:
+  - key: bmi
+    label: BMI
+    long_name: BMI >= 40
+    type: toggle
+    description: BMI >= 40
+    default_date:
 #  - key: drugs_ad
 #    label: "Drugs: AD"
 #    long_name: Drugs for Alzheimer's-Related Diseases
 #    type: toggle
 #    description: >
 #      Receives hospice care
+#    default_date:
+#  - key: drugs_insulin
+#    label: "Drugs: Insulin"
+#    long_name: Insulin to Treat Type 2 Diabetes
+#    type: toggle
+#    description: >
+#      Past or current use of insulin to treat type 2 diabetes
 #    default_date:
 ymca_sites:
   - key: ymca_administrative
