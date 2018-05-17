@@ -1,8 +1,8 @@
-version: '3'
+version: '2'
 services:
   api:
     build: api
-    command: dev_server
+    command: server
     ports:
       - "5000:5000"
     volumes:
@@ -16,7 +16,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - "./ui:/usr/src/app"
+      - "./ui/src:/usr/src/app/src"
     environment:
       HOST: 0.0.0.0
     links:
