@@ -196,4 +196,39 @@ ymca_sites:
     label: Winston
   - key: ymca_yadkin
     label: Yadkin
-
+legend:
+  sex:
+    - key: M
+      label: Male
+    - key: F
+      label: Female
+    - key: "?"
+      label: Unspecified
+  race:
+    - key: I
+      label: American Indian or Alaska Native
+    - key: O
+      label: Asian
+    - key: B
+      label: Black or African American
+    - key: S
+      label: Latin American or Hispanic
+    - key: P
+      label: Native Hawaiian or Other Pacific Islander
+    - key: X
+      label: Other
+    - key: R
+      label: Patient Refused
+    - key: U
+      label: Unknown
+    - key: W
+      label: White or Caucasian
+  ethnicity:
+    - key: H
+      label: Hispanic
+    - key: N
+      label: Not Hispanic
+    - key: P
+      label: Patient Refused to Identify
+    - key: U
+      label: Unknown
