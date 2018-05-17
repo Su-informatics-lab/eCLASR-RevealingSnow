@@ -44,8 +44,7 @@
         data() {
             return {
                 enabled: false,
-                maxValue: 5,
-                distance: '5',
+                maxValue: 15,
             };
         },
         computed: {
