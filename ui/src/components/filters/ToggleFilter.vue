@@ -119,6 +119,9 @@
             }
         },
         methods: {
+            setSelected(value) {
+                this.checked = value;
+            },
             resetToDefault() {
                 this.cutoff = stringToDate(this.default_date);
                 this.checked = this.default_value;

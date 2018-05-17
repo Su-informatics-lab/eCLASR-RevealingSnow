@@ -1,7 +1,25 @@
 <template>
     <div class="snow-filter-panel">
         <div class="snow-condition-filters snow-filter-section">
-            <h5>Filters</h5>
+            <div class="snow-filter-header">
+                <h5>Filters</h5>
+
+                <ul class="snow-condition-filter-bulk-controls">
+                    <li class="bulk-control">
+                        <a tabindex="0"
+                           @click="selectAll">All</a>
+                    </li>
+                    <li class="bulk-control">
+                        <a tabindex="0"
+                           @click="deselectAll">None</a>
+                    </li>
+                    <li class="bulk-control">
+                        <a tabindex="0"
+                           @click="resetAll">Reset</a>
+                    </li>
+                </ul>
+            </div>
+
             <toggle-filter ref="toggle-filters"
                            v-for="filter in toggleFilters"
                            :key="filter.key"
@@ -43,6 +61,36 @@
         padding-top: 0.5em;
     }
 
+    .snow-filter-header > h5 {
+        display: inline-block;
+    }
+
+    .snow-condition-filter-bulk-controls {
+        display: inline-block;
+        float: right;
+        list-style: none;
+
+        font-size: smaller;
+    }
+
+    .snow-condition-filter-bulk-controls a {
+        cursor: pointer;
+    }
+
+    .bulk-control {
+        display: inline-block;
+    }
+
+    .bulk-control + .bulk-control {
+        padding-left: 0.25em;
+    }
+
+    .bulk-control + .bulk-control::before {
+        display: inline-block;
+        content: "|";
+        padding-right: 0.25em;
+    }
+
     #update-filters {
         margin-top: 1em;
     }
@@ -76,6 +124,15 @@
             updateFilters() {
                 const criteria = flattenToDotNotation(this.filterValues);
                 this.$store.dispatch('setActiveFilters', { criteria, sites: this.ymcaSites });
+            },
+            selectAll() {
+                _.each(this.$refs['toggle-filters'], f => f.setSelected(true));
+            },
+            deselectAll() {
+                _.each(this.$refs['toggle-filters'], f => f.setSelected(false));
+            },
+            resetAll() {
+                _.each(this.$refs['toggle-filters'], f => f.resetToDefault());
             },
         },
         computed: {
