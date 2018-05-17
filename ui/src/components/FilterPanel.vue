@@ -8,6 +8,7 @@
                            :id="filter.key"
                            :label="filter.label"
                            :default_date="filter.default_date"
+                           :description="filter.description"
             />
         </div>
 

@@ -7,6 +7,17 @@
                        v-model="checked">
                 {{ label }}
             </label>
+
+            <a ref="description-link"
+               tabindex="0"
+               role="button"
+               class="snow-filter-help"
+               data-trigger="focus"
+               data-toggle="popover"
+               v-if="description"
+               :data-content="description">
+                <sup>?</sup>
+            </a>
         </div>
 
         <div class="cutoff-date"
@@ -23,9 +34,21 @@
     .cutoff-date {
         padding-left: 2em;
     }
+
+    .form-check-label {
+        display: inline;
+    }
+
+    .snow-filter-help {
+        font-size: xx-small;
+        font-weight: bold;
+        cursor: pointer;
+    }
 </style>
 
 <script>
+    import $ from 'jquery';
+
     import VueDatePicker from 'vuejs-datepicker';
     import moment from 'moment';
 
@@ -54,6 +77,10 @@
                 type: String,
                 default: null,
             },
+            description: {
+                type: String,
+                default: '',
+            },
         },
         data() {
             return {
@@ -81,6 +108,11 @@
         },
         mounted() {
             this.cutoff = stringToDate(this.default_date);
+
+            // Initialize the description popover
+            if (this.description) {
+                $(this.$refs['description-link']).popover();
+            }
         },
     };
 </script>
