@@ -1,5 +1,24 @@
 <template>
     <div class="snow-report">
+        <report-panel label="Patient Totals"
+                      class="totals">
+            <div class="patient-field">
+                <span class="label">Unfiltered:</span>
+
+                <span class="value">
+                    {{ patientCountUnfiltered }}
+                </span>
+            </div>
+
+            <div class="patient-field">
+                <span class="label">Filtered:</span>
+
+                <span class="value">
+                    {{ patientCountFiltered }}
+                </span>
+            </div>
+        </report-panel>
+
         <report-panel label="Demographics"
                       class="demographics">
             <dem-chart stats-key="race"
@@ -40,6 +59,14 @@
     .conditions {
         display: none;
     }
+
+    .patient-field {
+        padding-left: 1em;
+    }
+
+    .patient-field .label {
+        font-weight: bold;
+    }
 </style>
 
 <script>
@@ -60,7 +87,7 @@
             YmcaSite,
         },
         computed: {
-            ...mapGetters(['enabledYmcaSites']),
+            ...mapGetters(['enabledYmcaSites', 'patientCountUnfiltered', 'patientCountFiltered']),
             ageUnfiltered() {
                 return this.$store.state.stats.unfiltered.age || [];
             },

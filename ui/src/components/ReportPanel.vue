@@ -8,7 +8,9 @@
 </template>
 
 <style scoped>
-
+    .snow-report-panel {
+        padding-bottom: 1em;
+    }
 </style>
 
 <script>
