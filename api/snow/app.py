@@ -2,7 +2,7 @@ import logging.config
 import os
 
 import yaml
-from flask import Flask
+from flask import Flask, request
 
 from snow import constants as C
 
@@ -17,6 +17,18 @@ def _setup_logging(configfile, default_level=logging.INFO):
         logging.basicConfig(level=default_level)
 
 
+def log_request_info():
+    import logging
+    logger = logging.getLogger(__name__)
+
+    logger.debug(
+        "%s - %s - %s",
+        request.remote_addr,
+        request.method,
+        request.url
+    )
+
+
 def create_app():
     from snow import config
     from snow import query
@@ -25,7 +37,9 @@ def create_app():
 
     app = Flask(__name__)
     app.config.from_object(config.Configuration)
+
     _setup_logging(app.config[C.LOGGING_CONFIG_FILE])
+    app.before_request(log_request_info)
 
     pscr.init_app(app)
     model.cdm.init_app(app)

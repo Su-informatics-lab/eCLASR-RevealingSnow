@@ -17,6 +17,14 @@ loggers:
     level: DEBUG
     handler: [console]
     propagate: yes
+  flask:
+    level: DEBUG
+    handler: [console]
+    propagate: yes
+  werkzeug:
+    level: DEBUG
+    handler: [console]
+    propagate: yes
 
 root:
   level: INFO

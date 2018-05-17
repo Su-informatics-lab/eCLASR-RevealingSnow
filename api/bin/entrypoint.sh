@@ -18,7 +18,7 @@ flaskcmd() {
 }
 
 server() {
-    gunicorn -b 0.0.0.0:5000 --name snow -w4 snow.wsgi:app
+    gunicorn -b 0.0.0.0:5000 --name snow -w2 snow.wsgi:app
 }
 
 dev_server() {
