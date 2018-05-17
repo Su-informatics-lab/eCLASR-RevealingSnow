@@ -25,7 +25,7 @@
             Placeholder
         </report-panel>
 
-        <report-panel label="YMCA Proximity"
+        <report-panel label="Cumulative YMCA Proximity"
                       class="ymca">
             <ymca-site v-for="site in enabledYmcaSites"
                        :key="site.site"
