@@ -3,7 +3,9 @@
         <bar-chart :unfiltered="unfiltered"
                    :filtered="filtered"
                    :width="width"
-                   :height="height"/>
+                   :height="height"
+                   :data-legend="legend"
+        />
     </div>
 </template>
 
@@ -30,6 +32,9 @@
             },
             filtered() {
                 return this.$store.state.stats.filtered[this.statsKey] || [];
+            },
+            legend() {
+                return this.$store.getters.getLegendObject(this.statsKey);
             },
         },
         components: {

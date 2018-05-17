@@ -40,6 +40,12 @@
                 type: Function,
                 default: data => data,
             },
+            dataLegend: {
+                type: Object,
+                default() {
+                    return {};
+                },
+            },
         },
         watch: {
             unfiltered(value) {
@@ -84,6 +90,11 @@
                 legend: {
                     show: false,
                 },
+                tooltip: {
+                    format: {
+                        title: this.getTooltipTitle,
+                    },
+                },
             });
 
             if (this.title) {
@@ -108,6 +119,15 @@
                         _.flatten([[group], values]),
                     ],
                 });
+            },
+            getTooltipTitle(index) {
+                const key = this.chart.categories()[index];
+
+                if (!_.isEmpty(this.dataLegend)) {
+                    return this.dataLegend[key].label;
+                }
+
+                return key;
             },
         },
     };

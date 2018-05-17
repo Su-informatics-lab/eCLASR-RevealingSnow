@@ -18,6 +18,7 @@ const state = {
     model: {
         criteria: [],
         ymcaSites: [],
+        legend: null,
     },
     filters: {
         criteria: [],

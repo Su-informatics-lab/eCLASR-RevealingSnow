@@ -13,4 +13,12 @@ export default {
     ymcaSiteByKey: state => key => _.find(state.model.ymcaSites, site => site.key === key),
     patientCountUnfiltered: state => countPatients(state.stats.unfiltered),
     patientCountFiltered: state => countPatients(state.stats.filtered),
+    getLegendObject: state => (key) => {
+        if (state.model.legend === null) {
+            return {};
+        }
+
+        const legend = state.model.legend[key];
+        return _.keyBy(legend, 'key');
+    },
 };
