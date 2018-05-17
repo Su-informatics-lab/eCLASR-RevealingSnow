@@ -77,6 +77,10 @@
                 type: String,
                 default: null,
             },
+            default_value: {
+                type: Boolean,
+                default: null,
+            },
             description: {
                 type: String,
                 default: '',
@@ -107,12 +111,18 @@
             VueDatePicker,
         },
         mounted() {
-            this.cutoff = stringToDate(this.default_date);
+            this.resetToDefault();
 
             // Initialize the description popover
             if (this.description) {
                 $(this.$refs['description-link']).popover();
             }
+        },
+        methods: {
+            resetToDefault() {
+                this.cutoff = stringToDate(this.default_date);
+                this.checked = this.default_value;
+            },
         },
     };
 </script>
