@@ -12,11 +12,22 @@
         <div class="snow-distance-filter-controls"
              v-if="enabled">
             <div class="form-row">
-                <label>
-                    Max ({{ maxValue }}):
-                    <input type="range"
-                           v-model="maxValue">
-                </label>
+                <div class="col">
+                    <input title="Maximum Distance Slider"
+                           type="range"
+                           v-model="maxValue"
+                           :min="minDistance"
+                           :max="maxDistance"
+                           class="snow-distance-filter-slider-input">
+                </div>
+                <div class="col">
+                    <input title="Maximum Distance Input"
+                           type="number"
+                           v-model="maxValue"
+                           :min="minDistance"
+                           :max="maxDistance"
+                           class="snow-distance-filter-text-input">
+                </div>
             </div>
         </div>
     </div>
@@ -25,6 +36,10 @@
 <style scoped>
     .snow-distance-filter-controls {
         padding-left: 1em;
+    }
+
+    .snow-distance-filter-text-input {
+        width: 3em;
     }
 </style>
 
@@ -39,6 +54,14 @@
             label: {
                 type: String,
                 required: true,
+            },
+            minDistance: {
+                type: Number,
+                default: 1,
+            },
+            maxDistance: {
+                type: Number,
+                default: 100,
             },
         },
         data() {
