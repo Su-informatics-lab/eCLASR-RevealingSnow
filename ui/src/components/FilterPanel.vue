@@ -67,7 +67,6 @@
 
     .snow-condition-filter-bulk-controls {
         display: inline-block;
-        float: right;
         list-style: none;
 
         font-size: smaller;
