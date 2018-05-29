@@ -22,10 +22,8 @@
 
         <div class="cutoff-date"
              v-if="default_date !== null && checked">
-            <vue-date-picker v-model="cutoff"
-                             format="yyyy-MM"
-                             minimum-view="month"
-                             :bootstrap-styling="true"/>
+            <flat-pickr v-model="cutoff"
+                        :config="dateConfig"/>
         </div>
     </div>
 </template>
@@ -33,6 +31,10 @@
 <style scoped>
     .cutoff-date {
         padding-left: 2em;
+    }
+
+    .cutoff-date > input {
+        width: 100%;
     }
 
     .form-check-label {
@@ -49,7 +51,9 @@
 <script>
     import $ from 'jquery';
 
-    import VueDatePicker from 'vuejs-datepicker';
+    import FlatPickr from 'vue-flatpickr-component';
+    import 'flatpickr/dist/flatpickr.css';
+
     import moment from 'moment';
 
 
@@ -90,6 +94,10 @@
             return {
                 checked: null,
                 cutoff: null,
+                dateConfig: {
+                    dateFormat: 'Y-m',
+                    allowInput: true,
+                },
             };
         },
         computed: {
@@ -108,7 +116,7 @@
             },
         },
         components: {
-            VueDatePicker,
+            FlatPickr,
         },
         mounted() {
             this.resetToDefault();
