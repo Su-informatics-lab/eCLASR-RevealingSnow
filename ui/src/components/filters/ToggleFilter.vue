@@ -2,9 +2,8 @@
     <div class="snow-toggle-filter">
         <div class="form-check">
             <label class="form-check-label">
-                <input type="checkbox"
-                       class="form-check-input"
-                       v-model="checked">
+                <ternary-toggle v-model="state"/>
+
                 {{ label }}
             </label>
 
@@ -21,7 +20,7 @@
         </div>
 
         <div class="cutoff-date"
-             v-if="default_date !== null && checked">
+             v-if="default_date !== null && state !== null">
             <flat-pickr v-model="cutoff"
                         :config="dateConfig"/>
         </div>
@@ -55,6 +54,8 @@
     import 'flatpickr/dist/flatpickr.css';
 
     import moment from 'moment';
+
+    import TernaryToggle from './TernaryToggle';
 
 
     function stringToDate(value) {
@@ -92,7 +93,7 @@
         },
         data() {
             return {
-                checked: null,
+                state: null,
                 cutoff: null,
                 dateConfig: {
                     dateFormat: 'Y-m',
@@ -102,8 +103,11 @@
         },
         computed: {
             value() {
-                // Treating criteria as exclusion criteria for the moment; will change with RS-18
-                const filterValue = this.checked ? 0 : 1;
+                if (this.state === null) {
+                    return null;
+                }
+
+                const filterValue = this.state ? 1 : 0;
 
                 if (this.default_date === null) {
                     return filterValue;
@@ -114,9 +118,13 @@
                     date: dateToString(this.cutoff),
                 };
             },
+            checked() {
+                return this.state !== null;
+            },
         },
         components: {
             FlatPickr,
+            TernaryToggle,
         },
         mounted() {
             this.resetToDefault();
@@ -128,11 +136,11 @@
         },
         methods: {
             setSelected(value) {
-                this.checked = value;
+                this.state = value;
             },
             resetToDefault() {
                 this.cutoff = stringToDate(this.default_date);
-                this.checked = this.default_value;
+                this.state = this.default_value;
             },
         },
     };

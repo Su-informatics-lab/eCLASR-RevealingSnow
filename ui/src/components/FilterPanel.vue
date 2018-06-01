@@ -26,7 +26,7 @@
                            :id="filter.key"
                            :label="filter.label"
                            :default_date="filter.default_date"
-                           :default_value="true"
+                           :default_value="false"
                            :description="filter.description"
             />
         </div>
@@ -125,10 +125,10 @@
                 this.$store.dispatch('setActiveFilters', { criteria, sites: this.ymcaSites });
             },
             selectAll() {
-                _.each(this.$refs['toggle-filters'], f => f.setSelected(true));
+                _.each(this.$refs['toggle-filters'], f => f.setSelected(false));
             },
             deselectAll() {
-                _.each(this.$refs['toggle-filters'], f => f.setSelected(false));
+                _.each(this.$refs['toggle-filters'], f => f.setSelected(null));
             },
             resetAll() {
                 _.each(this.$refs['toggle-filters'], f => f.resetToDefault());
