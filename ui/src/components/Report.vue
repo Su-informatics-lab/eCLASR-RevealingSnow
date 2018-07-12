@@ -2,6 +2,15 @@
     <div class="snow-report">
         <report-panel label="Patient Totals"
                       class="totals">
+            <div class="export-button"
+                 v-if="filterCriteriaIsSet">
+                <a :href="exportUrl"
+                   id="export-filtered"
+                   class="btn btn-secondary">
+                    Export Patients
+                </a>
+            </div>
+
             <div class="patient-field">
                 <span class="label">Unfiltered:</span>
 
@@ -67,9 +76,15 @@
     .patient-field .label {
         font-weight: bold;
     }
+
+    .export-button {
+        float: right;
+    }
 </style>
 
 <script>
+    import _ from 'lodash';
+
     import { mapGetters } from 'vuex';
 
     import ReportPanel from './ReportPanel';
@@ -93,6 +108,12 @@
             },
             ageFiltered() {
                 return this.$store.state.stats.filtered.age || [];
+            },
+            filterCriteriaIsSet() {
+                return !_.isEmpty(this.$store.state.filters.criteria);
+            },
+            exportUrl() {
+                return this.$api.getExportUrl(this.$store.state.filters.criteria);
             },
         },
         mounted() {
