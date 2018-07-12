@@ -1,6 +1,7 @@
 import datetime
 import json
 
+import pandas as pd
 from flask import Response
 
 
@@ -27,4 +28,16 @@ def make_json_response(context, status=200, headers=None):
         mimetype='application/json'
     )
 
+    return response
+
+
+def make_csv_response(data: pd.DataFrame, status=200, headers=None):
+    response = Response(
+        data.to_csv(index=False),
+        status=status,
+        headers=headers,
+        mimetype='text/csv'
+    )
+
+    response.headers['Content-Disposition'] = 'attachment; filename=patients.csv'
     return response

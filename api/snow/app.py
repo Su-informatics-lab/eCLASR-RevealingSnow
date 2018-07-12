@@ -45,6 +45,7 @@ def create_app():
     model.cdm.init_app(app)
 
     app.add_url_rule('/stats', 'stats', query.patient_stats)
+    app.add_url_rule('/export', 'export', query.export_patients)
     app.add_url_rule('/ymca_stats', 'ymca_stats', query.ymca_stats)
     app.add_url_rule('/model', 'model', model.get_criteria_data_model)
 

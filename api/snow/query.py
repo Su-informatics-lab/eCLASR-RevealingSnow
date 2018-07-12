@@ -9,7 +9,7 @@ from snow import stats, ymca
 from snow.exc import RSError
 from snow.filters import validate_filters
 from snow.ptscreen import pscr
-from snow.util import make_json_response
+from snow.util import make_json_response, make_csv_response
 
 logger = logging.getLogger(__name__)
 
@@ -106,3 +106,16 @@ def ymca_stats():
     dist_stats = ymca.get_ymca_distance_stats(patients, site, cutoff)
 
     return make_json_response(dist_stats)
+
+
+def export_patients():
+    filters = parse_query_args(request.args)
+    validate_filters(filters)
+
+    patients = pscr.filter_patients(filters)
+
+    # Only return the patient_num and filtered columns (for now)
+    columns = ['patient_num'] + list(filters.keys())
+    patients = patients[columns]
+
+    return make_csv_response(patients)
