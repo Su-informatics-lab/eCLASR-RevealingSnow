@@ -97,6 +97,7 @@
 
 <script>
     import _ from 'lodash';
+    import Vue from 'vue';
 
     import { mapGetters } from 'vuex';
     import ToggleFilter from './filters/ToggleFilter';
@@ -150,6 +151,15 @@
         },
         mounted() {
             this.$store.dispatch('getCriteriaDataModel');
+        },
+        watch: {
+            toggleFilters() {
+                // Wait until all of the toggle controls have been built before
+                // initial update.
+                Vue.nextTick(() => {
+                    this.updateFilters();
+                });
+            },
         },
     };
 </script>

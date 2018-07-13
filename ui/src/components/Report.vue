@@ -116,8 +116,5 @@
                 return this.$api.getExportUrl(this.$store.state.filters.criteria);
             },
         },
-        mounted() {
-            this.$store.dispatch('getFilteredStats');
-        },
     };
 </script>
