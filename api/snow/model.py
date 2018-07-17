@@ -9,7 +9,7 @@ DEFAULT_MODEL_FILE = path.join(path.dirname(__file__), 'data', 'model.yml')
 
 
 def _load_model(filename):
-    with open(filename, 'r') as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         return yaml.safe_load(f)
 
 
