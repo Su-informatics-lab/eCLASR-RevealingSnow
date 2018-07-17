@@ -114,8 +114,8 @@ def export_patients():
 
     patients = pscr.filter_patients(filters)
 
-    # Only return the patient_num and filtered columns (for now)
-    columns = ['patient_num'] + list(filters.keys())
+    # Only return the patient_num, demographics, and filtered columns (for now)
+    columns = ['patient_num', 'sex', 'race', 'ethnicity', 'age'] + list(filters.keys())
     patients = patients[columns]
 
     return make_csv_response(patients)
