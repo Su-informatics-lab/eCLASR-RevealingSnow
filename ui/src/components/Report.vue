@@ -54,6 +54,7 @@
         </report-panel>
 
         <report-panel label="Cumulative YMCA Proximity"
+                      id="ymca-proximity-panel"
                       class="ymca">
             <ymca-site v-for="site in enabledYmcaSites"
                        :key="site.site"
@@ -79,6 +80,11 @@
 
     .export-button {
         float: right;
+    }
+
+    #ymca-proximity-panel {
+        border-top: 1px solid lightgray;
+        padding-top: 1em;
     }
 </style>
 
