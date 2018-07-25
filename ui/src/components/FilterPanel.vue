@@ -2,7 +2,41 @@
     <div class="snow-filter-panel">
         <div class="snow-condition-filters snow-filter-section">
             <div class="snow-filter-header">
-                <h5>Filters</h5>
+                <h5>
+                    Filters
+
+                    <a ref="legend-link"
+                       tabindex="0"
+                       role="button"
+                       class="snow-filter-legend"
+                       data-trigger="focus"
+                       data-toggle="popover"
+                       v-if="description"
+                       data-popover-content="#filter-description">
+                        <sup>?</sup>
+                    </a>
+
+                </h5>
+
+                <div class="hidden"
+                     id="filter-description">
+                    <ul class="legend-list">
+                        <li>
+                            <font-awesome-icon icon="circle-notch"/>
+                            Do not incorporate this condition when selecting patients.
+                        </li>
+                        <li>
+                            <font-awesome-icon icon="plus-circle"/>
+                            Only include patients with this condition on or after the
+                            specified date.
+                        </li>
+                        <li>
+                            <font-awesome-icon icon="times-circle"/>
+                            Exclude patients with this condition on or after the specified date.
+                        </li>
+                    </ul>
+                </div>
+
 
                 <ul class="snow-condition-filter-bulk-controls">
                     <li class="bulk-control">
@@ -93,11 +127,32 @@
     #update-filters {
         margin-top: 1em;
     }
+
+    .snow-filter-legend {
+        font-size: xx-small;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .legend-list {
+        margin: 0;
+        padding: 0;
+
+        list-style-type: none;
+    }
+
+    .hidden {
+        display: none;
+    }
 </style>
 
 <script>
+    import $ from 'jquery';
+
     import _ from 'lodash';
     import Vue from 'vue';
+
+    import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
 
     import { mapGetters } from 'vuex';
     import ToggleFilter from './filters/ToggleFilter';
@@ -119,6 +174,12 @@
         components: {
             ToggleFilter,
             DistanceFilter,
+            FontAwesomeIcon,
+        },
+        data() {
+            return {
+                description: 'foo<b>bar</b>!',
+            };
         },
         methods: {
             updateFilters() {
@@ -151,6 +212,15 @@
         },
         mounted() {
             this.$store.dispatch('getCriteriaDataModel');
+
+            // Initialize the legend popover
+            $(this.$refs['legend-link']).popover({
+                html: true,
+                content() {
+                    const content = $(this).attr('data-popover-content');
+                    return $(content).html();
+                },
+            });
         },
         watch: {
             toggleFilters() {
