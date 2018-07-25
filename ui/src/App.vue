@@ -1,6 +1,7 @@
 <template>
     <div id="app"
          class="container-fluid">
+        <masthead/>
         <dashboard/>
     </div>
 </template>
@@ -18,12 +19,14 @@
 
 <script>
     import Dashboard from './components/Dashboard';
+    import Masthead from './Masthead';
 
 
     export default {
         name: 'App',
         components: {
             Dashboard,
+            Masthead,
         },
         mounted() {
             this.$store.dispatch('loadUnfilteredStats');
