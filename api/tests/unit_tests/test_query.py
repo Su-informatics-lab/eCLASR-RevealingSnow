@@ -50,28 +50,21 @@ class YmcaQueryArgParserTests(TestCase):
 
     def test_query_with_invalid_site_argument_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            query.parse_ymca_query_args({'site': 'foobar'})
+            query.parse_ymca_query_args({'site': 'foobar', 'cutoff': '5'})
 
         self.assertIn("invalid YMCA site: 'foobar'", str(e.exception))
 
-    def test_query_with_only_site(self):
-        site, cutoff, filters = query.parse_ymca_query_args({'site': 'ymca_fulton'})
+    def test_query_with_only_site_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            query.parse_ymca_query_args({'site': 'ymca_fulton'})
 
-        self.assertEqual(site, 'ymca_fulton')
-        self.assertIsNone(cutoff)
-        self.assertEqual(filters, dict())
+        self.assertIn("missing required argument: 'cutoff'", str(e.exception))
 
     def test_query_with_cutoff(self):
         site, cutoff, filters = query.parse_ymca_query_args({'site': 'ymca_fulton', 'cutoff': '5'})
-        self.assertEqual(site, 'ymca_fulton')
-        self.assertEqual(cutoff, 5)
+        self.assertEqual(site, ['ymca_fulton'])
+        self.assertEqual(cutoff, [5])
         self.assertEqual(filters, dict())
-
-    def test_query_with_filters(self):
-        site, cutoff, filters = query.parse_ymca_query_args({'site': 'ymca_fulton', 'sex': 'M'})
-        self.assertEqual(site, 'ymca_fulton')
-        self.assertIsNone(cutoff)
-        self.assertEqual(filters, {'sex': 'M'})
 
     def test_query_with_cutoff_and_filters(self):
         site, cutoff, filters = query.parse_ymca_query_args({
@@ -80,16 +73,15 @@ class YmcaQueryArgParserTests(TestCase):
             'cutoff': '5'
         })
 
-        self.assertEqual(site, 'ymca_fulton')
-        self.assertEqual(cutoff, 5)
+        self.assertEqual(site, ['ymca_fulton'])
+        self.assertEqual(cutoff, [5])
         self.assertEqual(filters, {'sex': 'M'})
 
     def test_query_with_multiple_sites(self):
-        site, cutoff, filters = query.parse_ymca_query_args({'site': 'ymca_fulton,ymca_davie'})
+        with self.assertRaises(RSError) as e:
+            query.parse_ymca_query_args({'site': 'ymca_fulton,ymca_davie'})
 
-        self.assertEqual(site, ['ymca_fulton', 'ymca_davie'])
-        self.assertIsNone(cutoff)
-        self.assertEqual(filters, dict())
+        self.assertIn("missing required argument: 'cutoff'", str(e.exception))
 
     def test_query_with_multiple_sites_and_single_cutoff_raises_exception(self):
         with self.assertRaises(RSError) as e:

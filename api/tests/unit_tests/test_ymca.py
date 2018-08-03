@@ -4,6 +4,8 @@ import pandas as pd
 from parameterized import parameterized
 
 from snow import ymca
+from snow.exc import RSError
+from snow.ymca import SiteMode
 
 
 class YmcaDistanceTests(TestCase):
@@ -17,12 +19,18 @@ class YmcaDistanceTests(TestCase):
         }
         self.pscr = pd.DataFrame(data=pscr)
 
+    def test_get_ymca_distance_stats_with_multiple_sites_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            ymca.get_ymca_distance_stats(self.pscr, ['ymca_fulton', 'ymca_hanes'], cutoffs=[1, 2])
+
+        self.assertIn('get_ymca_distance_stats does not support multiple sites', str(e.exception))
+
     @parameterized.expand([
         ('ymca_fulton', {2: 1, 3: 1, 4: 2}),
         ('ymca_hanes', {2: 1, 3: 1, 5: 1, 8: 1}),
     ])
     def test_site_distance_without_cutoff(self, site, expected):
-        actual = ymca.get_ymca_distance_stats(self.pscr, site)
+        actual = ymca._get_distance_counts(self.pscr, site)
         self.assertEqual(actual, {site: expected})
 
     @parameterized.expand([
@@ -30,6 +38,26 @@ class YmcaDistanceTests(TestCase):
         ('ymca_hanes', 4, {2: 1, 3: 1}),
     ])
     def test_site_distance_with_cutoff(self, site, cutoff, expected):
-        actual = ymca.get_ymca_distance_stats(self.pscr, site, cutoff=cutoff)
+        actual = ymca.get_ymca_distance_stats(self.pscr, [site], cutoffs=[cutoff])
 
         self.assertEqual(actual, {site: expected})
+
+    def test_filter_multiple_sites_with_all_mode(self):
+        actual = ymca.filter_by_distance(
+            self.pscr,
+            sites=['ymca_fulton', 'ymca_hanes'],
+            cutoffs=[4, 4],
+            mode=SiteMode.ALL
+        )
+
+        self.assertEqual(set(actual.patient_num), {2})
+
+    def test_filter_multiple_sites_with_any_mode(self):
+        actual = ymca.filter_by_distance(
+            self.pscr,
+            sites=['ymca_fulton', 'ymca_hanes'],
+            cutoffs=[4, 4],
+            mode=SiteMode.ANY
+        )
+
+        self.assertEqual(set(actual.patient_num), {1, 2, 3})

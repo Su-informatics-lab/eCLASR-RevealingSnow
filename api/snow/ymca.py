@@ -1,11 +1,24 @@
-from typing import Optional
+from enum import Enum
+from typing import List
 
 import pandas as pd
 
+from snow.exc import RSError
 
-def _filter_by_distance(data: pd.DataFrame, site: str, cutoff: Optional[int]) -> pd.DataFrame:
-    if cutoff:
-        data = data.query('{site} < {cutoff}'.format(site=site, cutoff=cutoff))
+
+class SiteMode(Enum):
+    ALL = ' and '
+    ANY = ' or '
+
+
+def filter_by_distance(data: pd.DataFrame, sites: List[str], cutoffs: List[int],
+                       mode: SiteMode = SiteMode.ALL) -> pd.DataFrame:
+    criteria = mode.value.join([
+        '{site} < {cutoff}'.format(site=site, cutoff=cutoff)
+        for site, cutoff in zip(sites, cutoffs)
+    ])
+
+    data = data.query(criteria)
 
     return data
 
@@ -20,7 +33,9 @@ def _get_distance_counts(data: pd.DataFrame, site: str) -> dict:
     }
 
 
-def get_ymca_distance_stats(pscr: pd.DataFrame, site: str, cutoff: Optional[int] = None) -> dict:
-    pscr = _filter_by_distance(pscr, site, cutoff)
+def get_ymca_distance_stats(pscr: pd.DataFrame, sites: List[str], cutoffs: List[int]) -> dict:
+    if len(sites) > 1:
+        raise RSError('get_ymca_distance_stats does not support multiple sites')
 
-    return _get_distance_counts(pscr, site)
+    pscr = filter_by_distance(pscr, sites, cutoffs)
+    return _get_distance_counts(pscr, sites[0])

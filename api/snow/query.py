@@ -10,6 +10,7 @@ from snow.exc import RSError
 from snow.filters import validate_filters
 from snow.ptscreen import pscr
 from snow.util import make_json_response, make_csv_response
+from snow.ymca import SiteMode
 
 logger = logging.getLogger(__name__)
 
@@ -46,30 +47,25 @@ def _build_nested_args(args, nested_keys):
 def _split_sites_and_cutoffs(site, cutoff):
     if ',' in site:
         site = site.split(',')
+    else:
+        site = [site]
 
     if cutoff is not None:
         if ',' in cutoff:
             cutoff = [int(value) for value in cutoff.split(',')]
         else:
-            cutoff = int(cutoff)
+            cutoff = [int(cutoff)]
 
     return site, cutoff
 
 
 def _validate_ymca_sites_and_cutoffs(sites, cutoffs):
-    if isinstance(sites, str):
-        sites = [sites]
-
-    if cutoffs is not None:
-        if isinstance(cutoffs, int):
-            cutoffs = [cutoffs]
-
-        if len(sites) != len(cutoffs):
-            raise RSError(
-                "number of YMCA sites ({}) must match number of cutoffs ({})".format(
-                    len(sites), len(cutoffs)
-                )
+    if len(sites) != len(cutoffs):
+        raise RSError(
+            "number of YMCA sites ({}) must match number of cutoffs ({})".format(
+                len(sites), len(cutoffs)
             )
+        )
 
     for site in sites:
         if site not in model.cdm.ymca_site_keys:
@@ -100,9 +96,7 @@ def parse_query_args(args: dict) -> dict:
     return args
 
 
-def parse_ymca_query_args(args: dict):
-    args = parse_query_args(args)
-
+def parse_ymca_args(args: dict):
     # Validate that the required 'site' argument is present
     if C.QK_SITE in args:
         site = args.pop(C.QK_SITE)
@@ -113,10 +107,17 @@ def parse_ymca_query_args(args: dict):
     if C.QK_CUTOFF in args:
         cutoff = args.pop(C.QK_CUTOFF)
     else:
-        cutoff = None
+        raise RSError("missing required argument: '{}'".format(C.QK_CUTOFF))
 
     site, cutoff = _split_sites_and_cutoffs(site, cutoff)
     _validate_ymca_sites_and_cutoffs(site, cutoff)
+
+    return site, cutoff
+
+
+def parse_ymca_query_args(args: dict):
+    args = parse_query_args(args)
+    site, cutoff = parse_ymca_args(args)
 
     # Return a tuple of the site(s), the cutoff(s) (optionally None), and the remaining filters
     return site, cutoff, args
@@ -147,6 +148,10 @@ def export_patients():
     validate_filters(filters)
 
     patients = pscr.filter_patients(filters)
+
+    if C.QK_SITE in request.args:
+        sites, cutoffs = parse_ymca_args(request.args)
+        patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=SiteMode.ANY)
 
     # Only return the patient_num, demographics, and filtered columns (for now)
     columns = ['patient_num', 'sex', 'race', 'ethnicity', 'age'] + list(filters.keys())
