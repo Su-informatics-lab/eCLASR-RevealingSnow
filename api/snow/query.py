@@ -115,9 +115,12 @@ def parse_ymca_args(args: dict):
     return site, cutoff
 
 
-def parse_ymca_query_args(args: dict):
+def parse_ymca_query_args(args: dict, site_required=True):
     args = parse_query_args(args)
-    site, cutoff = parse_ymca_args(args)
+    if site_required or C.QK_SITE in args:
+        site, cutoff = parse_ymca_args(args)
+    else:
+        site, cutoff = None, None
 
     # Return a tuple of the site(s), the cutoff(s) (optionally None), and the remaining filters
     return site, cutoff, args
@@ -144,13 +147,12 @@ def ymca_stats():
 
 
 def export_patients():
-    filters = parse_query_args(request.args)
+    sites, cutoffs, filters = parse_ymca_query_args(request.args, site_required=False)
     validate_filters(filters)
 
     patients = pscr.filter_patients(filters)
 
-    if C.QK_SITE in request.args:
-        sites, cutoffs = parse_ymca_args(request.args)
+    if sites is not None:
         patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=SiteMode.ANY)
 
     # Only return the patient_num, demographics, and filtered columns (for now)
