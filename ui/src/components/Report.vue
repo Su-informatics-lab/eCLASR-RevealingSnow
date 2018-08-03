@@ -119,7 +119,7 @@
                 return !_.isEmpty(this.$store.state.filters.criteria);
             },
             exportUrl() {
-                return this.$api.getExportUrl(this.$store.state.filters.criteria);
+                return this.$api.getExportUrl(this.$store.state.filters);
             },
         },
     };

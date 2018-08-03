@@ -2,6 +2,15 @@ import request from 'superagent';
 import _ from 'lodash';
 
 
+function buildMultipleYmcaSiteQuery(ymcaSites) {
+    const sitesAndCutoffs = _.values(ymcaSites);
+    const site = _.join(_.map(sitesAndCutoffs, 'site'), ',');
+    const cutoff = _.join(_.map(sitesAndCutoffs, 'cutoff'), ',');
+
+    return { site, cutoff };
+}
+
+
 class Api {
     // noinspection JSUnusedGlobalSymbols
     static install(Vue, { endpoint, store }) {
@@ -36,11 +45,15 @@ class Api {
         return this.get('/model');
     }
 
-    getExportUrl(filters) {
+    getExportUrl({ criteria, ymcaSites }) {
         const url = `${this.endpoint}/export`;
         let req = request.get(url);
-        if (filters) {
-            req = req.query(filters);
+
+        if (!_.isEmpty(criteria)) {
+            req = req.query(criteria);
+        }
+        if (!_.isEmpty(ymcaSites)) {
+            req = req.query(buildMultipleYmcaSiteQuery(ymcaSites));
         }
 
         // Let SuperAgent do the heavy lifting of assembling the query URL
