@@ -43,6 +43,39 @@ def _build_nested_args(args, nested_keys):
     return nested_args
 
 
+def _split_sites_and_cutoffs(site, cutoff):
+    if ',' in site:
+        site = site.split(',')
+
+    if cutoff is not None:
+        if ',' in cutoff:
+            cutoff = [int(value) for value in cutoff.split(',')]
+        else:
+            cutoff = int(cutoff)
+
+    return site, cutoff
+
+
+def _validate_ymca_sites_and_cutoffs(sites, cutoffs):
+    if isinstance(sites, str):
+        sites = [sites]
+
+    if cutoffs is not None:
+        if isinstance(cutoffs, int):
+            cutoffs = [cutoffs]
+
+        if len(sites) != len(cutoffs):
+            raise RSError(
+                "number of YMCA sites ({}) must match number of cutoffs ({})".format(
+                    len(sites), len(cutoffs)
+                )
+            )
+
+    for site in sites:
+        if site not in model.cdm.ymca_site_keys:
+            raise RSError("invalid YMCA site: '{}'".format(site))
+
+
 def parse_query_args(args: dict) -> dict:
     if not args:
         return args
@@ -73,18 +106,19 @@ def parse_ymca_query_args(args: dict):
     # Validate that the required 'site' argument is present
     if C.QK_SITE in args:
         site = args.pop(C.QK_SITE)
-        if site not in model.cdm.ymca_site_keys:
-            raise RSError("invalid YMCA site: '{}'".format(site))
     else:
         raise RSError("missing required argument: '{}'".format(C.QK_SITE))
 
     # Pull out the optional 'cutoff' argument if present
     if C.QK_CUTOFF in args:
-        cutoff = int(args.pop(C.QK_CUTOFF))
+        cutoff = args.pop(C.QK_CUTOFF)
     else:
         cutoff = None
 
-    # Return a tuple of the site, the cutoff (optionally None), and the remaining filters
+    site, cutoff = _split_sites_and_cutoffs(site, cutoff)
+    _validate_ymca_sites_and_cutoffs(site, cutoff)
+
+    # Return a tuple of the site(s), the cutoff(s) (optionally None), and the remaining filters
     return site, cutoff, args
 
 

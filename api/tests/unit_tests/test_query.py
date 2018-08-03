@@ -83,3 +83,38 @@ class YmcaQueryArgParserTests(TestCase):
         self.assertEqual(site, 'ymca_fulton')
         self.assertEqual(cutoff, 5)
         self.assertEqual(filters, {'sex': 'M'})
+
+    def test_query_with_multiple_sites(self):
+        site, cutoff, filters = query.parse_ymca_query_args({'site': 'ymca_fulton,ymca_davie'})
+
+        self.assertEqual(site, ['ymca_fulton', 'ymca_davie'])
+        self.assertIsNone(cutoff)
+        self.assertEqual(filters, dict())
+
+    def test_query_with_multiple_sites_and_single_cutoff_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            query.parse_ymca_query_args({'site': 'ymca_fulton,ymca_davie', 'cutoff': '5'})
+
+        self.assertIn(
+            'number of YMCA sites (2) must match number of cutoffs (1)',
+            str(e.exception)
+        )
+
+    def test_query_with_single_site_and_multiple_cutoffs_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            query.parse_ymca_query_args({'site': 'ymca_fulton', 'cutoff': '5,10'})
+
+        self.assertIn(
+            'number of YMCA sites (1) must match number of cutoffs (2)',
+            str(e.exception)
+        )
+
+    def test_query_with_multiple_sites_and_cutoffs(self):
+        site, cutoff, filters = query.parse_ymca_query_args({
+            'site': 'ymca_fulton,ymca_davie',
+            'cutoff': '5,10'
+        })
+
+        self.assertEqual(site, ['ymca_fulton', 'ymca_davie'])
+        self.assertEqual(cutoff, [5, 10])
+        self.assertEqual(filters, dict())
