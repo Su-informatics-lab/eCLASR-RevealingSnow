@@ -1,5 +1,8 @@
 from unittest import TestCase
 
+import yaml
+
+from snow import constants as C
 from snow import query
 from snow.exc import RSError
 
@@ -110,3 +113,70 @@ class YmcaQueryArgParserTests(TestCase):
         self.assertEqual(site, ['ymca_fulton', 'ymca_davie'])
         self.assertEqual(cutoff, [5, 10])
         self.assertEqual(filters, dict())
+
+
+class MetadataTests(TestCase):
+    def _round_trip(self, site, cutoff, filters):
+        metadata = query.create_metadata_from_parameters(site, cutoff, filters)
+        return yaml.safe_load(metadata)
+
+    def test_empty_metadata(self):
+        actual = self._round_trip(None, None, None)
+        self.assertEqual(actual, {C.FILTERS: None})
+
+    def test_metadata_from_sites_only_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            self._round_trip(['ymca_hanes'], None, None)
+
+        self.assertIn('sites and cutoffs must both be present or both be None', str(e.exception))
+
+    def test_metadata_from_cutoffs_only_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            self._round_trip(None, [5], None)
+
+        self.assertIn('sites and cutoffs must both be present or both be None', str(e.exception))
+
+    def test_metadata_from_sites_and_cutoffs(self):
+        expected = {
+            C.YMCA_SITES: {
+                'ymca_fulton': 5,
+                'ymca_davie': 10
+            },
+            C.FILTERS: None
+        }
+
+        actual = self._round_trip(['ymca_fulton', 'ymca_davie'], [5, 10], None)
+
+        self.assertEqual(actual, expected)
+
+    def test_metadata_from_filters(self):
+        filters = {'hospice': '0', 'bariatric': {
+            'value': '1',
+            'date': '2018-01-01'
+        }}
+
+        expected = {
+            C.FILTERS: filters
+        }
+
+        actual = self._round_trip(None, None, filters)
+
+        self.assertEqual(actual, expected)
+
+    def test_metadata_from_sites_cutoffs_and_filters(self):
+        filters = {'hospice': '0', 'bariatric': {
+            'value': '1',
+            'date': '2018-01-01'
+        }}
+
+        expected = {
+            C.YMCA_SITES: {
+                'ymca_fulton': 5,
+                'ymca_davie': 10
+            },
+            C.FILTERS: filters
+        }
+
+        actual = self._round_trip(['ymca_fulton', 'ymca_davie'], [5, 10], filters)
+
+        self.assertEqual(actual, expected)

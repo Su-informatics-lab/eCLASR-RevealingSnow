@@ -1,6 +1,7 @@
 import itertools
 import logging
 
+import yaml
 from flask import request
 
 from snow import constants as  C
@@ -93,6 +94,7 @@ def parse_query_args(args: dict) -> dict:
     args = {key: args[key] for key in simple_keys}
     args.update(nested_args)
 
+    print(args)
     return args
 
 
@@ -103,7 +105,7 @@ def parse_ymca_args(args: dict):
     else:
         raise RSError("missing required argument: '{}'".format(C.QK_SITE))
 
-    # Pull out the optional 'cutoff' argument if present
+    # Pull out the 'cutoff' argument if present
     if C.QK_CUTOFF in args:
         cutoff = args.pop(C.QK_CUTOFF)
     else:
@@ -160,3 +162,20 @@ def export_patients():
     patients = patients[columns]
 
     return make_csv_response(patients)
+
+
+def create_metadata_from_parameters(sites, cutoffs, filters):
+    metadata = {
+        C.FILTERS: filters
+    }
+
+    if sites is not None and cutoffs is not None:
+        _validate_ymca_sites_and_cutoffs(sites, cutoffs)
+        metadata[C.YMCA_SITES] = {
+            site: cutoff
+            for site, cutoff in zip(sites, cutoffs)
+        }
+    elif sites != cutoffs:
+        raise RSError('sites and cutoffs must both be present or both be None')
+
+    return yaml.safe_dump(metadata, default_flow_style=False, explicit_start=True, canonical=True)

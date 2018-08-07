@@ -3,7 +3,7 @@ LOGGING_CONFIG_FILE = 'LOGGING_CONFIG_FILE'
 SCREENING_DATA_FILE = 'SCREENING_DATA_FILE'
 CRITERIA_DATA_MODEL_FILE = 'CRITERIA_DATA_MODEL_FILE'
 
-# Criteria Data Model Keys
+# Criteria Data Model & Metadata Keys
 FILTERS = 'filters'
 YMCA_SITES = 'ymca_sites'
 
