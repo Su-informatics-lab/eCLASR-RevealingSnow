@@ -10,7 +10,7 @@ from snow import stats, ymca
 from snow.exc import RSError
 from snow.filters import validate_filters
 from snow.ptscreen import pscr
-from snow.util import make_json_response, make_csv_response
+from snow.util import make_json_response, make_zip_response
 from snow.ymca import SiteMode
 
 logger = logging.getLogger(__name__)
@@ -94,7 +94,6 @@ def parse_query_args(args: dict) -> dict:
     args = {key: args[key] for key in simple_keys}
     args.update(nested_args)
 
-    print(args)
     return args
 
 
@@ -157,11 +156,12 @@ def export_patients():
     if sites is not None:
         patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=SiteMode.ANY)
 
-    # Only return the patient_num, demographics, and filtered columns (for now)
-    columns = ['patient_num', 'sex', 'race', 'ethnicity', 'age'] + list(filters.keys())
-    patients = patients[columns]
+    files = {
+        C.EXPORT_FILE_PATIENTS: patients.to_csv(index=False),
+        C.EXPORT_FILE_METADATA: create_metadata_from_parameters(sites, cutoffs, filters)
+    }
 
-    return make_csv_response(patients)
+    return make_zip_response(C.EXPORT_FILENAME, files)
 
 
 def create_metadata_from_parameters(sites, cutoffs, filters):
@@ -178,4 +178,4 @@ def create_metadata_from_parameters(sites, cutoffs, filters):
     elif sites != cutoffs:
         raise RSError('sites and cutoffs must both be present or both be None')
 
-    return yaml.safe_dump(metadata, default_flow_style=False, explicit_start=True, canonical=True)
+    return yaml.safe_dump(metadata, default_flow_style=False, explicit_start=True)
