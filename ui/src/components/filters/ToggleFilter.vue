@@ -134,6 +134,14 @@
                 $(this.$refs['description-link']).popover();
             }
         },
+        watch: {
+            state() {
+                this.$emit('updated');
+            },
+            cutoff() {
+                this.$emit('updated');
+            },
+        },
         methods: {
             setSelected(value) {
                 this.state = value;

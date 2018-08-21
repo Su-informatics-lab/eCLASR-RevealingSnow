@@ -55,6 +55,7 @@
             </div>
 
             <toggle-filter ref="toggle-filters"
+                           @updated="updateFilters"
                            v-for="filter in toggleFilters"
                            :key="filter.key"
                            :id="filter.key"
@@ -68,18 +69,12 @@
         <div class="snow-ymca-distance-filters snow-filter-section">
             <h5>YMCA Sites</h5>
             <distance-filter ref="ymca-sites"
+                             @updated="updateFilters"
                              v-for="site in modelYmcaSites"
                              :key="site.key"
                              :id="site.key"
                              :label="site.label"/>
         </div>
-
-        <button type="submit"
-                id="update-filters"
-                @click="updateFilters"
-                class="btn btn-primary">
-            Update
-        </button>
     </div>
 </template>
 
@@ -122,10 +117,6 @@
         display: inline-block;
         content: "|";
         padding-right: 0.25em;
-    }
-
-    #update-filters {
-        margin-top: 1em;
     }
 
     .snow-filter-legend {
@@ -178,14 +169,16 @@
         },
         data() {
             return {
-                description: 'foo<b>bar</b>!',
+                description: true,
+                ready: false,
             };
         },
         methods: {
-            updateFilters() {
+            // eslint-disable-next-line func-names
+            updateFilters: _.debounce(function () {
                 const criteria = flattenToDotNotation(this.filterValues);
                 this.$store.dispatch('setActiveFilters', { criteria, sites: this.ymcaSites });
-            },
+            }, 500),
             selectAll() {
                 _.each(this.$refs['toggle-filters'], f => f.setSelected(false));
             },
@@ -227,6 +220,7 @@
                 // Wait until all of the toggle controls have been built before
                 // initial update.
                 Vue.nextTick(() => {
+                    this.ready = true;
                     this.updateFilters();
                 });
             },

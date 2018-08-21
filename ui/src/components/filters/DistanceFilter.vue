@@ -82,5 +82,13 @@
                 };
             },
         },
+        watch: {
+            enabled() {
+                this.$emit('updated');
+            },
+            maxValue() {
+                this.$emit('updated');
+            },
+        },
     };
 </script>
