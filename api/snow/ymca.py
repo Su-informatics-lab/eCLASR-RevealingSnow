@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List
 
+import numpy as np
 import pandas as pd
 
 from snow.exc import RSError
@@ -25,7 +26,7 @@ def filter_by_distance(data: pd.DataFrame, sites: List[str], cutoffs: List[int],
 
 def _get_distance_counts(data: pd.DataFrame, site: str) -> dict:
     values = data[site]
-    values = values.round()
+    values = np.ceil(values)
     value_counts = values.value_counts().to_dict()
 
     return {
