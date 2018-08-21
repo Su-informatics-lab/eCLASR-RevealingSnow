@@ -28,6 +28,11 @@
 </template>
 
 <style scoped>
+    .snow-toggle-filter {
+        padding-top: 0.25em;
+        padding-bottom: 0.25em;
+    }
+
     .cutoff-date {
         padding-left: 2em;
     }

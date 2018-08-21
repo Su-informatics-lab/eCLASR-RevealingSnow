@@ -1,7 +1,7 @@
 <template>
     <div class="snow-dashboard row">
-        <filter-panel class="col-2"/>
-        <report class="col"/>
+        <filter-panel class="col-12 col-xl-2 col-md-4"/>
+        <report class="col-12 col-xl col-md-7"/>
     </div>
 </template>
 
