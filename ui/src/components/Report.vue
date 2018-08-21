@@ -79,7 +79,9 @@
     }
 
     .export-button {
-        float: right;
+        position: fixed;
+        top: 1em;
+        right: 1em;
     }
 
     #ymca-proximity-panel {
