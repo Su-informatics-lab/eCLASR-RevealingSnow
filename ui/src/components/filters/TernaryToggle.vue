@@ -14,6 +14,14 @@
     .icon-button {
         cursor: pointer;
     }
+
+    svg[data-icon="times-circle"] {
+        color: red;
+    }
+
+    svg[data-icon="plus-circle"] {
+        color: green;
+    }
 </style>
 
 <script>
