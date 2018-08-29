@@ -8,8 +8,8 @@
 <style scoped>
     .snow-dashboard {
         text-align: left;
-        margin: 0.5em;
-        padding: 0.5em;
+        margin: 0;
+        padding: 0;
     }
 </style>
 

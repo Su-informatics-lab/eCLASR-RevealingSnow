@@ -9,6 +9,9 @@
 
 <style scoped>
     .snow-report-panel {
+        margin-top: 0.5em;
+        padding-top: 0.5em;
+
         padding-bottom: 1em;
     }
 </style>

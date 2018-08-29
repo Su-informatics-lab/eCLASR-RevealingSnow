@@ -15,7 +15,6 @@
                        data-popover-content="#filter-description">
                         <sup>?</sup>
                     </a>
-
                 </h5>
 
                 <div class="hidden"
@@ -68,21 +67,27 @@
 
         <div class="snow-ymca-distance-filters snow-filter-section">
             <h5>YMCA Sites</h5>
-            <distance-filter ref="ymca-sites"
-                             @updated="updateFilters"
-                             v-for="site in modelYmcaSites"
-                             :key="site.key"
-                             :id="site.key"
-                             :label="site.label"/>
+
+            <div class="snow-distance-filters">
+                <distance-filter ref="ymca-sites"
+                                 @updated="updateFilters"
+                                 v-for="site in modelYmcaSites"
+                                 :key="site.key"
+                                 :id="site.key"
+                                 :label="site.label"/>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
     .snow-filter-panel {
-        padding-right: 1em;
-        margin-right: 1em;
-        border-right: 1px solid lightgrey;
+        /*padding-right: 1em;*/
+        /*margin-right: 1em;*/
+        padding-bottom: 1em;
+
+        border-right: 1px solid #999;
+        background: #EEEBE0;
     }
 
     .snow-filter-section {
@@ -103,6 +108,10 @@
 
     .snow-condition-filter-bulk-controls a {
         cursor: pointer;
+    }
+
+    .snow-distance-filters {
+        padding-left: 0.5em;
     }
 
     .bulk-control {

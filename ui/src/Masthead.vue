@@ -8,6 +8,11 @@
 <style scoped>
     #us-pointer-logo {
     }
+
+    #snow-masthead {
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
 </style>
 
 <script>

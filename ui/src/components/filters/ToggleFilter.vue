@@ -1,10 +1,10 @@
 <template>
     <div class="snow-toggle-filter">
-        <div class="form-check">
+        <div class="snow-toggle-control">
             <label class="form-check-label">
                 <ternary-toggle v-model="state"/>
 
-                {{ label }}
+                <span> {{ label }} </span>
             </label>
 
             <a ref="description-link"
@@ -31,6 +31,10 @@
     .snow-toggle-filter {
         padding-top: 0.25em;
         padding-bottom: 0.25em;
+    }
+
+    .snow-toggle-control {
+        padding-left: 0.5em;
     }
 
     .cutoff-date {

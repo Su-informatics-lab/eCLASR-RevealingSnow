@@ -9,11 +9,14 @@
 <style scoped>
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        font-size: small;
+
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
         color: #2c3e50;
-        margin-top: 1em;
+
+        padding: 0;
     }
 </style>
 
