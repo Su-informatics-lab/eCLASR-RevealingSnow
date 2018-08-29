@@ -128,10 +128,13 @@ def parse_ymca_query_args(args: dict, site_required=True):
 
 
 def patient_stats():
-    filters = parse_query_args(request.args)
+    sites, cutoffs, filters = parse_ymca_query_args(request.args, site_required=False)
     validate_filters(filters)
 
     patients = pscr.filter_patients(filters)
+    if sites is not None:
+        patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=SiteMode.ANY)
+
     ptstats = stats.patient_counts_by_category(patients)
 
     return make_json_response(ptstats)
