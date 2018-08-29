@@ -95,10 +95,10 @@
 
     import { mapGetters } from 'vuex';
 
-    import ReportPanel from './ReportPanel';
-    import DemChart from './charts/GlobalDemographicChart';
-    import Histogram from './charts/Histogram';
-    import YmcaSite from './charts/YmcaSite';
+    import ReportPanel from '../components/ReportPanel';
+    import DemChart from '../components/charts/GlobalDemographicChart';
+    import Histogram from '../components/charts/Histogram';
+    import YmcaSite from '../components/charts/YmcaSite';
 
 
     export default {

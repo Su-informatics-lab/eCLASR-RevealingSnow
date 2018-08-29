@@ -21,8 +21,8 @@
 </style>
 
 <script>
-    import Dashboard from './components/Dashboard';
-    import Masthead from './Masthead';
+    import Dashboard from './views/Dashboard';
+    import Masthead from './components/Masthead';
 
 
     export default {

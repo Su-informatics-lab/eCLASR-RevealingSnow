@@ -1,7 +1,7 @@
 <template>
     <div id="snow-masthead">
         <img id="us-pointer-logo"
-             src="./assets/logo.png">
+             src="../assets/logo.png">
     </div>
 </template>
 

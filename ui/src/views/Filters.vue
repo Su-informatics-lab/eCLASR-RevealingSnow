@@ -163,8 +163,8 @@
     import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
 
     import { mapGetters } from 'vuex';
-    import ToggleFilter from './filters/ToggleFilter';
-    import DistanceFilter from './filters/DistanceFilter';
+    import ToggleFilter from '../components/filters/ToggleFilter';
+    import DistanceFilter from '../components/filters/DistanceFilter';
 
 
     function flattenToDotNotation(filters) {
