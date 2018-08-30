@@ -1,13 +1,15 @@
 import pandas as pd
 
+import snow.constants as C
+
 _IDENTITY = lambda x: x
 _ROUND = lambda x: x.round()
 
 CATEGORIES = {
-    'sex': _IDENTITY,
-    'race': _IDENTITY,
-    'ethnicity': _IDENTITY,
-    'age': _ROUND,
+    C.COL_SEX: _IDENTITY,
+    C.COL_RACE: _IDENTITY,
+    C.COL_ETHNICITY: _IDENTITY,
+    C.COL_AGE: _ROUND,
 }
 
 

@@ -15,3 +15,12 @@ QK_CUTOFF = 'cutoff'
 EXPORT_FILENAME = 'patients.zip'
 EXPORT_FILE_PATIENTS = 'patients.csv'
 EXPORT_FILE_METADATA = 'metadata.yml'
+
+# Demographic Columns
+COL_SEX = 'sex'
+COL_RACE = 'race'
+COL_ETHNICITY = 'ethnicity'
+COL_AGE = 'age'
+
+# Special Response Keys
+RK_TOTAL = 'total'

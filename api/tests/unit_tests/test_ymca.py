@@ -3,6 +3,7 @@ from unittest import TestCase
 import pandas as pd
 from parameterized import parameterized
 
+import snow.constants as C
 from snow import ymca
 from snow.exc import RSError
 from snow.ymca import SiteMode
@@ -14,8 +15,11 @@ class YmcaDistanceTests(TestCase):
 
         pscr = {
             'patient_num': [1, 2, 3, 4],
-            'ymca_fulton': [2, 3, 4, 4],
-            'ymca_hanes': [8, 3, 2, 5],
+            C.COL_SEX: ['M', 'F', 'M', 'F'],
+            C.COL_RACE: ['W', 'W', 'B', 'B'],
+            C.COL_ETHNICITY: ['N', 'U', 'U', 'N'],
+            'ymca_fulton': [2, 2.3, 4, 4],
+            'ymca_hanes': [8, 2.8, 2, 5],
         }
         self.pscr = pd.DataFrame(data=pscr)
 
@@ -61,3 +65,18 @@ class YmcaDistanceTests(TestCase):
         )
 
         self.assertEqual(set(actual.patient_num), {1, 2, 3})
+
+    @parameterized.expand([
+        (C.COL_SEX, {2: {'M': 1}, 3: {'F': 1}, 4: {'M': 1, 'F': 1}}),
+        (C.COL_RACE, {2: {'W': 1}, 3: {'W': 1}, 4: {'B': 2}}),
+        (C.COL_ETHNICITY, {2: {'N': 1}, 3: {'U': 1}, 4: {'N': 1, 'U': 1}}),
+    ])
+    def test_site_distance_with_categories(self, category, expected):
+        stats = ymca.get_ymca_distance_stats(self.pscr, ['ymca_fulton'], [10], categories=[category])
+        self.assertIn('ymca_fulton', stats)
+
+        stats = stats['ymca_fulton']
+        self.assertIn(C.RK_TOTAL, stats)
+        self.assertIn(category, stats)
+
+        self.assertEqual(stats[category], expected)
