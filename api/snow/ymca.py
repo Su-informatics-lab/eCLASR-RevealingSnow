@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import List
 
-import numpy as np
 import pandas as pd
 
 import snow.constants as C
@@ -28,16 +27,18 @@ def filter_by_distance(data: pd.DataFrame, sites: List[str], cutoffs: List[int],
     return data
 
 
-def _get_distance_counts_by_category(values, category):
+def _get_distance_counts_by_category(values, site, category):
+    values = values.groupby(category)
+
     return {
-        dist: counts[category].value_counts().to_dict()
+        dist: counts[site].value_counts().to_dict()
         for dist, counts in values
     }
 
 
 def _get_distance_counts(data: pd.DataFrame, site: str, categories: List[str] = None) -> dict:
     # Use the ceiling of the distances for grouping
-    values = data.groupby(np.ceil(data[site]))
+    values = data.groupby(data[site])
 
     # Get overall totals, even if we're also going to get categories
     total_counts = values.size().to_dict()
@@ -47,7 +48,7 @@ def _get_distance_counts(data: pd.DataFrame, site: str, categories: List[str] = 
     else:
         value_counts = {C.RK_TOTAL: total_counts}
         for category in categories:
-            value_counts[category] = _get_distance_counts_by_category(values, category)
+            value_counts[category] = _get_distance_counts_by_category(data, site, category)
 
     return {
         site: value_counts
