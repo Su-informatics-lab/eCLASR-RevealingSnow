@@ -1,5 +1,7 @@
 .idea/
 *.iml
 
+.tmuxp.yaml
+
 # Folder with the screening data
 screening-data
