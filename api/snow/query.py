@@ -145,7 +145,7 @@ def ymca_stats():
     validate_filters(filters)
 
     patients = pscr.filter_patients(filters)
-    dist_stats = ymca.get_ymca_distance_stats(patients, site, cutoff)
+    dist_stats = ymca.get_ymca_distance_stats(patients, site, cutoff, ymca.YMCA_DEMOGRAPHIC_CATEGORIES)
 
     return make_json_response(dist_stats)
 

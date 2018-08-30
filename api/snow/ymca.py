@@ -13,6 +13,9 @@ class SiteMode(Enum):
     ANY = ' or '
 
 
+YMCA_DEMOGRAPHIC_CATEGORIES = {C.COL_SEX, C.COL_RACE, C.COL_ETHNICITY}
+
+
 def filter_by_distance(data: pd.DataFrame, sites: List[str], cutoffs: List[int],
                        mode: SiteMode = SiteMode.ALL) -> pd.DataFrame:
     criteria = mode.value.join([
