@@ -1,13 +1,13 @@
 <template>
     <div class="snow-chart-histogram">
-        <bar-chart :unfiltered="unfiltered"
-                   :filtered="filtered"
+        <bar-chart :data="data"
                    :width="width"
                    :height="height"
                    :options="barChartOptions"
                    :order-function="orderfn"
                    :transform-function="transform"
                    :title="title"
+                   :group-legend="groupLegend"
         />
     </div>
 </template>
@@ -25,8 +25,7 @@
     export default {
         name: 'Histogram',
         props: {
-            unfiltered: { type: Array, required: true },
-            filtered: { type: Array, required: true },
+            data: { type: Object, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
             title: { type: String, default: '' },
@@ -34,10 +33,22 @@
                 type: Boolean,
                 default: false,
             },
+            groupLegend: {
+                type: Object,
+                default() {
+                    return {};
+                },
+            },
+            chartOptions: {
+                type: Object,
+                default() {
+                    return {};
+                },
+            },
         },
-        data() {
-            return {
-                barChartOptions: {
+        computed: {
+            barChartOptions() {
+                return _.defaultsDeep(this.chartOptions, {
                     axis: {
                         x: {
                             tick: {
@@ -48,8 +59,8 @@
                             },
                         },
                     },
-                },
-            };
+                });
+            },
         },
         components: {
             BarChart,

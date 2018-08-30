@@ -42,10 +42,10 @@
                        :width="300"
                        :height="200"/>
 
-            <histogram :unfiltered="ageUnfiltered"
-                       :filtered="ageFiltered"
+            <histogram :data="ageData"
                        :width="900"
-                       :height="200"/>
+                       :height="200"
+                       :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"/>
         </report-panel>
 
         <report-panel label="Conditions"
@@ -59,7 +59,7 @@
             <ymca-site v-for="site in enabledYmcaSites"
                        :key="site.site"
                        :id="site.site"
-                       :width="450"
+                       :width="900"
                        :height="200"/>
         </report-panel>
     </div>
@@ -82,6 +82,7 @@
         position: fixed;
         top: 1em;
         right: 1em;
+        z-index: 100;
     }
 
     #ymca-proximity-panel {
@@ -111,11 +112,11 @@
         },
         computed: {
             ...mapGetters(['enabledYmcaSites', 'patientCountUnfiltered', 'patientCountFiltered']),
-            ageUnfiltered() {
-                return this.$store.state.stats.unfiltered.age || [];
-            },
-            ageFiltered() {
-                return this.$store.state.stats.filtered.age || [];
+            ageData() {
+                return {
+                    unfiltered: this.$store.state.stats.unfiltered.age || [],
+                    filtered: this.$store.state.stats.filtered.age || [],
+                };
             },
             filterCriteriaIsSet() {
                 return !_.isEmpty(this.$store.state.filters.criteria);

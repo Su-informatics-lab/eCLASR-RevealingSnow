@@ -1,10 +1,10 @@
 <template>
     <div class="snow-global-demographic-chart">
-        <bar-chart :unfiltered="unfiltered"
-                   :filtered="filtered"
+        <bar-chart :data="data"
                    :width="width"
                    :height="height"
                    :data-legend="legend"
+                   :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"
         />
     </div>
 </template>
@@ -32,6 +32,12 @@
             },
             filtered() {
                 return this.$store.state.stats.filtered[this.statsKey] || [];
+            },
+            data() {
+                return {
+                    unfiltered: this.unfiltered,
+                    filtered: this.filtered,
+                };
             },
             legend() {
                 return this.$store.getters.getLegendObject(this.statsKey);

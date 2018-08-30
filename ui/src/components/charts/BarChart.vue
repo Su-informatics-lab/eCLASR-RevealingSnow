@@ -14,6 +14,25 @@
     import _ from 'lodash';
 
 
+    function alignData(data) {
+        // Get the list of x-values present across all categories
+        const keys = _.uniq(_.flatMap(_.mapValues(data, x => _.map(x, 'name'))));
+
+        // Rebuild the dataset, ensuring that each category has the same set of 'x' values.
+        return _.mapValues(data, (category) => {
+            const valueLookup = _.keyBy(category, 'name');
+
+            return _.map(keys, (d) => {
+                const v = _.get(valueLookup, d, null);
+
+                return {
+                    name: d,
+                    value: v !== null ? v.value : null,
+                };
+            });
+        });
+    }
+
     export default {
         data() {
             return {
@@ -21,8 +40,7 @@
             };
         },
         props: {
-            unfiltered: { type: Array, required: true },
-            filtered: { type: Array, required: true },
+            data: { type: Object, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
             title: { type: String, default: '' },
@@ -46,25 +64,18 @@
                     return {};
                 },
             },
+            groupLegend: {
+                type: Object,
+                default() {
+                    return {};
+                },
+            },
         },
         watch: {
-            unfiltered(value) {
-                this.setData('Unfiltered', value);
-            },
-            filtered(value) {
-                // Align the filtered values to the unfiltered categories; this is only
-                // relevant when the filtered is missing some category from the unfiltered,
-                // but the results will be misleading if it's not done in that case.
-                const valueLookup = _.keyBy(value, 'name');
-                const aligned = _.map(this.unfiltered, (d) => {
-                    const v = _.get(valueLookup, d.name, null);
-                    return {
-                        name: d.name,
-                        value: v !== null ? v.value : null,
-                    };
-                });
+            data(value) {
+                const aligned = alignData(value);
 
-                this.setData('Filtered', aligned);
+                _.forIn(aligned, (values, key) => this.setData(key, values));
             },
         },
         mounted() {
@@ -108,6 +119,7 @@
         },
         methods: {
             setData(group, value) {
+                const groupLabel = _.get(this.groupLegend, group, group);
                 const sorted = this.orderFunction(value);
                 const xformed = this.transformFunction(sorted);
                 const categories = _.map(xformed, 'name');
@@ -116,7 +128,7 @@
                 this.chart.load({
                     columns: [
                         _.flatten([['x'], categories]),
-                        _.flatten([[group], values]),
+                        _.flatten([[groupLabel], values]),
                     ],
                 });
             },
