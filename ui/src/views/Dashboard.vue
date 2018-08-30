@@ -10,6 +10,8 @@
         text-align: left;
         margin: 0;
         padding: 0;
+
+        border-top: 1px solid #999;
     }
 </style>
 
