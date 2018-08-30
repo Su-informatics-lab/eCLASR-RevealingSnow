@@ -22,5 +22,7 @@ COL_RACE = 'race'
 COL_ETHNICITY = 'ethnicity'
 COL_AGE = 'age'
 
+COL_YMCA_PREFIX = 'ymca_'
+
 # Special Response Keys
 RK_TOTAL = 'total'

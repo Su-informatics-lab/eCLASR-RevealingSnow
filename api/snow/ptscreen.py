@@ -1,12 +1,25 @@
 import logging
 from os import path
+from typing import List
 
+import numpy as np
 import pandas as pd
 
 from snow import constants as C
 from snow.filters import filter_patients
 
 logger = logging.getLogger(__name__)
+
+
+def _round_ymca_columns(data: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
+    return np.ceil(data[columns])
+
+
+def _pre_process(data: pd.DataFrame) -> pd.DataFrame:
+    ymca_columns = [column for column in data.columns if column.startswith(C.COL_YMCA_PREFIX)]
+    data.update(_round_ymca_columns(data, ymca_columns))
+
+    return data
 
 
 class PatientScreeningData(object):
@@ -25,7 +38,7 @@ class PatientScreeningData(object):
         if not path.exists(filename):
             logger.warning('Screening file %s does not exist; no data will be loaded', filename)
         else:
-            self.pscr = pd.read_csv(filename, low_memory=False)
+            self.pscr = _pre_process(pd.read_csv(filename, low_memory=False))
             logger.debug('Loaded %d records', self.pscr.shape[0])
 
     def filter_patients(self, filters: dict) -> pd.DataFrame:
