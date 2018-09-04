@@ -64,7 +64,7 @@
         padding: 0.5em;
     }
 
-    .ymca-site-body.hidden {
+    .hidden {
         display: none;
     }
 
@@ -78,6 +78,7 @@
     import isotope from 'vueisotope';
     import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
     import { faChevronDown, faChevronRight } from '@fortawesome/fontawesome-free-solid';
+    import Vue from 'vue';
 
     import Histogram from './Histogram';
     import BarChart from './BarChart';
@@ -176,10 +177,16 @@
                 return _.sortBy(data, d => _.round(d.name));
             },
             layout() {
-                this.$refs['isotope-grid'].layout();
+                Vue.nextTick(() => {
+                    this.$refs['isotope-grid'].layout();
+                });
             },
             toggleBody() {
                 this.expanded = !this.expanded;
+
+                if (this.expanded) {
+                    this.layout();
+                }
             },
         },
         components: {
