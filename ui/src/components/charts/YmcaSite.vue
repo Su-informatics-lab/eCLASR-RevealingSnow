@@ -1,7 +1,8 @@
 <template>
     <div class="snow-chart-ymca-site">
         <isotope :list="demographicKeys"
-                 :options="isotopeOptions">
+                 :options="isotopeOptions"
+                 ref="isotope-grid">
             <div v-for="key in demographicKeys"
                  :key="key">
                 <demographic-histogram :data="demographics"
@@ -10,6 +11,8 @@
                                        :height="height"
                                        :cumulative="true"
                                        :title="key"
+                                       :allow-resize="true"
+                                       @resized="layout"
                 />
             </div>
         </isotope>
@@ -116,6 +119,9 @@
             },
             orderfn(data) {
                 return _.sortBy(data, d => _.round(d.name));
+            },
+            layout() {
+                this.$refs['isotope-grid'].layout();
             },
         },
         components: {

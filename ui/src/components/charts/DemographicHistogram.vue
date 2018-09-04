@@ -6,7 +6,10 @@
                    :cumulative="cumulative"
                    :group-legend="demographicLegend"
                    :chart-options="{bar: {width: {ratio: 0.9}}, legend: true}"
-                   :title="title"/>
+                   :allow-resize="allowResize"
+                   :title="transformedTitle"
+                   @resized="$emit('resized')"
+        />
     </div>
 </template>
 
@@ -27,6 +30,7 @@
             demographic: { type: String, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
+            allowResize: { type: Boolean, default: false },
             title: { type: String, default: '' },
             cumulative: {
                 type: Boolean,
@@ -49,6 +53,14 @@
             demographicLegend() {
                 const legend = _.keyBy(this.$store.getters.getLegendObject(this.demographic), 'key');
                 return _.mapValues(legend, 'label');
+            },
+            transformedTitle() {
+                return _.startCase(this.title);
+            },
+        },
+        methods: {
+            makeBigger() {
+                this.width = this.width * 2;
             },
         },
     };

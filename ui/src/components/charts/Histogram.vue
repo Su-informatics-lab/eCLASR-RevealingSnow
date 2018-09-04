@@ -3,11 +3,15 @@
         <bar-chart :data="data"
                    :width="width"
                    :height="height"
+                   :max-width="width * 2"
+                   :max-height="height * 2"
+                   :allow-resize="allowResize"
                    :options="barChartOptions"
                    :order-function="orderfn"
                    :transform-function="transform"
                    :title="title"
                    :group-legend="groupLegend"
+                   @resized="$emit('resized')"
         />
     </div>
 </template>
@@ -28,6 +32,7 @@
             data: { type: Object, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
+            allowResize: { type: Boolean, default: false },
             title: { type: String, default: '' },
             cumulative: {
                 type: Boolean,

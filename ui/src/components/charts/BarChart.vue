@@ -1,14 +1,34 @@
 <template>
-    <div class="snow-barchart"/>
+    <div class="snow-barchart">
+        <div ref="chart-container"/>
+
+        <div class="chart-size-toggler"
+             v-if="allowResize"
+             @click="toggleSizeMode">
+            <font-awesome-icon :icon="toggleIcon"/>
+        </div>
+    </div>
 </template>
 
 <style>
     .snow-barchart {
         display: inline-block;
+        position: relative;
+    }
+
+    .chart-size-toggler {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        cursor: pointer;
     }
 </style>
 
 <script>
+    import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
+    import { faCompress, faExpand } from '@fortawesome/fontawesome-free-solid';
+
     import * as bb from 'billboard.js';
     import 'billboard.js/dist/billboard.min.css';
     import _ from 'lodash';
@@ -37,6 +57,7 @@
         data() {
             return {
                 chart: null,
+                expanded: false,
             };
         },
         props: {
@@ -44,6 +65,9 @@
             width: { type: Number, required: true },
             height: { type: Number, required: true },
             title: { type: String, default: '' },
+            maxWidth: { type: Number, default: 0 },
+            maxHeight: { type: Number, default: 0 },
+            allowResize: { type: Boolean, default: false },
             options: {
                 type: Object,
                 default() {
@@ -75,10 +99,16 @@
             data(value) {
                 this.setData(value);
             },
+            width(value) {
+                this.chart.config('size_width', value, true);
+            },
+            height(value) {
+                this.chart.config('size_height', value, true);
+            },
         },
         mounted() {
             const baseConfig = {
-                bindto: this.$el,
+                bindto: this.$refs['chart-container'],
                 data: {
                     x: 'x',
                     columns: [],
@@ -148,6 +178,30 @@
 
                 return key;
             },
+            toggleSizeMode() {
+                this.expanded = !this.expanded;
+
+                this.resizeChart({
+                    width: this.expanded ? this.maxWidth : this.width,
+                    height: this.expanded ? this.maxHeight : this.height,
+                });
+            },
+            resizeChart({ width, height }) {
+                // Using the chart.config method instead of resize because the latter doesn't
+                // animate the change.
+                this.chart.config('size_width', width, true);
+                this.chart.config('size_height', height, true);
+
+                this.$emit('resized');
+            },
+        },
+        computed: {
+            toggleIcon() {
+                return this.expanded ? faCompress : faExpand;
+            },
+        },
+        components: {
+            FontAwesomeIcon,
         },
     };
 </script>

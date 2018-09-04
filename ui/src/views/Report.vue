@@ -59,7 +59,7 @@
             <ymca-site v-for="site in enabledYmcaSites"
                        :key="site.site"
                        :id="site.site"
-                       :width="900"
+                       :width="450"
                        :height="200"/>
         </report-panel>
     </div>
