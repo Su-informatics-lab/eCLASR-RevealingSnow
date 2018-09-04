@@ -70,7 +70,7 @@
 
             <div class="snow-distance-filters">
                 <distance-filter ref="ymca-sites"
-                                 @updated="updateFilters"
+                                 @updated="updateSites"
                                  v-for="site in modelYmcaSites"
                                  :key="site.key"
                                  :id="site.key"
@@ -177,6 +177,8 @@
         }));
     }
 
+    const DEBOUNCE_DELAY = 500;
+
     export default {
         name: 'FilterPanel',
         components: {
@@ -195,7 +197,10 @@
             updateFilters: _.debounce(function () {
                 const criteria = flattenToDotNotation(this.filterValues);
                 this.$store.dispatch('setActiveFilters', { criteria, sites: this.ymcaSites });
-            }, 500),
+            }, DEBOUNCE_DELAY),
+            updateSites: _.debounce(function () {
+                this.$store.dispatch('setActiveSites', { sites: this.ymcaSites });
+            }, DEBOUNCE_DELAY),
             selectAll() {
                 _.each(this.$refs['toggle-filters'], f => f.setSelected(false));
             },
