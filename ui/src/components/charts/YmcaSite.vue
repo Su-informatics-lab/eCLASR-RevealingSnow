@@ -11,19 +11,22 @@
                                demographic="race"
                                :width="width"
                                :height="height"
-                               :cumulative="true"/>
+                               :cumulative="true"
+                               :title="label + ' (Race)'"/>
 
         <demographic-histogram :data="demographics"
                                demographic="sex"
                                :width="width"
                                :height="height"
-                               :cumulative="true"/>
+                               :cumulative="true"
+                               :title="label + ' (Sex)'"/>
 
         <demographic-histogram :data="demographics"
                                demographic="ethnicity"
                                :width="width"
                                :height="height"
-                               :cumulative="true"/>
+                               :cumulative="true"
+                               :title="label + ' (Ethnicity)'"/>
     </div>
 </template>
 
