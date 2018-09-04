@@ -1,43 +1,29 @@
 <template>
     <div class="snow-chart-ymca-site">
-        <histogram :data="totalData"
-                   :width="width"
-                   :height="height"
-                   :cumulative="true"
-                   :title="label"
-                   :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"/>
-
-        <demographic-histogram :data="demographics"
-                               demographic="race"
-                               :width="width"
-                               :height="height"
-                               :cumulative="true"
-                               :title="label + ' (Race)'"/>
-
-        <demographic-histogram :data="demographics"
-                               demographic="sex"
-                               :width="width"
-                               :height="height"
-                               :cumulative="true"
-                               :title="label + ' (Sex)'"/>
-
-        <demographic-histogram :data="demographics"
-                               demographic="ethnicity"
-                               :width="width"
-                               :height="height"
-                               :cumulative="true"
-                               :title="label + ' (Ethnicity)'"/>
+        <isotope :list="demographicKeys"
+                 :options="isotopeOptions">
+            <div v-for="key in demographicKeys"
+                 :key="key">
+                <demographic-histogram :data="demographics"
+                                       :demographic="key"
+                                       :width="width"
+                                       :height="height"
+                                       :cumulative="true"
+                                       :title="key"
+                />
+            </div>
+        </isotope>
     </div>
 </template>
 
 <style scoped>
     .snow-chart-ymca-site {
-        display: inline-block;
     }
 </style>
 
 <script>
     import _ from 'lodash';
+    import isotope from 'vueisotope';
 
     import Histogram from './Histogram';
     import BarChart from './BarChart';
@@ -65,12 +51,10 @@
             return {
                 unfiltered: [],
                 filtered: [],
-                filteredStats: [],
-                unfilteredStats: [],
-                data: {},
-                rd: {},
-                totals: {},
                 demographics: {},
+                isotopeOptions: {
+                    layoutMode: 'fitRows',
+                },
             };
         },
         computed: {
@@ -83,11 +67,13 @@
             label() {
                 return this.$store.getters.ymcaSiteByKey(this.id).label;
             },
-            totalData() {
-                return {
-                    filtered: objectToArray(this.filtered),
-                    unfiltered: objectToArray(this.unfiltered),
-                };
+            demographicKeys() {
+                if (!_.isEmpty(this.demographics)) {
+                    // The 'total' key always comes first
+                    return _.concat(['total'], _.without(_.keys(this.demographics), 'total'));
+                }
+
+                return [];
             },
         },
         watch: {
@@ -117,10 +103,15 @@
             loadFiltered() {
                 this.$api.getYmcaStats(this.id, this.cutoff, this.filters).then((result) => {
                     this.filtered = _.pick(result[this.id], 'total').total;
+
                     this.demographics = _.mapValues(
                         _.omit(result[this.id], 'total'),
                         x => _.mapValues(x, objectToArray),
                     );
+                    this.demographics.total = {
+                        filtered: objectToArray(this.filtered),
+                        unfiltered: objectToArray(this.unfiltered),
+                    };
                 });
             },
             orderfn(data) {
@@ -131,6 +122,7 @@
             Histogram,
             BarChart,
             DemographicHistogram,
+            isotope,
         },
     };
 </script>

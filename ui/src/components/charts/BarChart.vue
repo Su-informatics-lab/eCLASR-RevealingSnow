@@ -73,9 +73,7 @@
         },
         watch: {
             data(value) {
-                const aligned = alignData(value);
-
-                _.forIn(aligned, (values, key) => this.setData(key, values));
+                this.setData(value);
             },
         },
         mounted() {
@@ -116,9 +114,18 @@
             }
 
             this.chart = bb.bb.generate(chartConfig);
+
+            if (this.data) {
+                this.setData(this.data);
+            }
         },
         methods: {
-            setData(group, value) {
+            setData(value) {
+                const aligned = alignData(value);
+
+                _.forIn(aligned, (values, key) => this.setDataGroup(key, values));
+            },
+            setDataGroup(group, value) {
                 const groupLabel = _.get(this.groupLegend, group, group);
                 const sorted = this.orderFunction(value);
                 const xformed = this.transformFunction(sorted);

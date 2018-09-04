@@ -232,3 +232,8 @@ legend:
       label: Patient Refused to Identify
     - key: U
       label: Unknown
+  total:
+  - key: filtered
+    label: Filtered
+  - key: unfiltered
+    label: Unfiltered
