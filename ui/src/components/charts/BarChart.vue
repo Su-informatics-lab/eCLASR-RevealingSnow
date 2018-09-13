@@ -53,11 +53,23 @@
         });
     }
 
+    function getMissingKeys(oldData, newData) {
+        if (!oldData) {
+            return [];
+        }
+
+        const oldKeys = _.keys(oldData);
+        const newKeys = _.keys(newData);
+
+        return _.difference(oldKeys, newKeys);
+    }
+
     export default {
         data() {
             return {
                 chart: null,
                 expanded: false,
+                alignedData: null,
             };
         },
         props: {
@@ -153,10 +165,17 @@
             setData(value) {
                 const aligned = alignData(value);
 
+                // Identify any data groups that should be removed
+                const missingKeys = getMissingKeys(this.alignedData, aligned);
+                this.unsetDataGroups(missingKeys);
+
+                this.alignedData = aligned;
+
                 _.forIn(aligned, (values, key) => this.setDataGroup(key, values));
             },
             setDataGroup(group, value) {
                 const groupLabel = _.get(this.groupLegend, group, group);
+
                 const sorted = this.orderFunction(value);
                 const xformed = this.transformFunction(sorted);
                 const categories = _.map(xformed, 'name');
@@ -168,6 +187,15 @@
                         _.flatten([[groupLabel], values]),
                     ],
                 });
+            },
+            unsetDataGroups(groups) {
+                if (!_.isEmpty(groups)) {
+                    const groupLabels = _.map(groups, g => _.get(this.groupLegend, g, g));
+
+                    this.chart.unload({
+                        ids: groupLabels,
+                    });
+                }
             },
             getTooltipTitle(index) {
                 const key = this.chart.categories()[index];

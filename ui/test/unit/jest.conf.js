@@ -9,6 +9,7 @@ module.exports = {
     ],
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
+        '.+\\.css$': 'jest-transform-stub',
     },
     transform: {
         '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
@@ -16,7 +17,6 @@ module.exports = {
     },
     snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
     setupFiles: ['<rootDir>/test/unit/setup'],
-    mapCoverage: true,
     coverageDirectory: '<rootDir>/test/unit/coverage',
     collectCoverageFrom: [
         'src/**/*.{js,vue}',
