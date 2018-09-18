@@ -90,5 +90,10 @@
                 this.$emit('updated');
             },
         },
+        methods: {
+            setSelected(value) {
+                this.enabled = value;
+            },
+        },
     };
 </script>

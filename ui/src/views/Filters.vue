@@ -66,7 +66,16 @@
         </div>
 
         <div class="snow-ymca-distance-filters snow-filter-section">
-            <h5>YMCA Sites</h5>
+            <div class="snow-filter-header">
+                <h5>YMCA Sites</h5>
+
+                <ul class="snow-condition-filter-bulk-controls">
+                    <li class="bulk-control">
+                        <a tabindex="0"
+                           @click="clearYmcaSites">Clear</a>
+                    </li>
+                </ul>
+            </div>
 
             <div class="snow-distance-filters">
                 <distance-filter ref="ymca-sites"
@@ -209,6 +218,9 @@
             },
             resetAll() {
                 _.each(this.$refs['toggle-filters'], f => f.resetToDefault());
+            },
+            clearYmcaSites() {
+                _.each(this.$refs['ymca-sites'], f => f.setSelected(false));
             },
         },
         computed: {
