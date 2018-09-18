@@ -11,6 +11,7 @@
                    :transform-function="transform"
                    :title="title"
                    :group-legend="groupLegend"
+                   :group-colors="groupColors"
                    @resized="$emit('resized')"
         />
     </div>
@@ -39,6 +40,12 @@
                 default: false,
             },
             groupLegend: {
+                type: Object,
+                default() {
+                    return {};
+                },
+            },
+            groupColors: {
                 type: Object,
                 default() {
                     return {};

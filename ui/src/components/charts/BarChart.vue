@@ -106,6 +106,12 @@
                     return {};
                 },
             },
+            groupColors: {
+                type: Object,
+                default() {
+                    return {};
+                },
+            },
         },
         watch: {
             data(value) {
@@ -172,10 +178,16 @@
                 this.alignedData = aligned;
 
                 _.forIn(aligned, (values, key) => this.setDataGroup(key, values));
+
+                if (this.groupLegend) {
+                    this.chart.data.names(this.groupLegend);
+                }
+
+                if (this.groupColors) {
+                    this.chart.data.colors(this.groupColors);
+                }
             },
             setDataGroup(group, value) {
-                const groupLabel = _.get(this.groupLegend, group, group);
-
                 const sorted = this.orderFunction(value);
                 const xformed = this.transformFunction(sorted);
                 const categories = _.map(xformed, 'name');
@@ -184,16 +196,14 @@
                 this.chart.load({
                     columns: [
                         _.flatten([['x'], categories]),
-                        _.flatten([[groupLabel], values]),
+                        _.flatten([[group], values]),
                     ],
                 });
             },
             unsetDataGroups(groups) {
                 if (!_.isEmpty(groups)) {
-                    const groupLabels = _.map(groups, g => _.get(this.groupLegend, g, g));
-
                     this.chart.unload({
-                        ids: groupLabels,
+                        ids: groups,
                     });
                 }
             },

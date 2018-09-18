@@ -1,10 +1,12 @@
 import _ from 'lodash';
+import * as d3 from 'd3-scale-chromatic';
 
 
 function countPatients(data) {
     return _.sumBy(data.sex, 'value');
 }
 
+const colors = d3.schemeCategory10;
 
 export default {
     modelFilters: state => state.model.criteria,
@@ -20,5 +22,13 @@ export default {
 
         const legend = state.model.legend[key];
         return _.keyBy(legend, 'key');
+    },
+    getLegendColor: state => (key) => {
+        if (state.model.legend === null) {
+            return {};
+        }
+
+        const legend = state.model.legend[key];
+        return _.zipObject(_.map(legend, 'key'), colors);
     },
 };

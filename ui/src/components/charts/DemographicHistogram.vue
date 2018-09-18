@@ -5,6 +5,7 @@
                    :height="height"
                    :cumulative="cumulative"
                    :group-legend="demographicLegend"
+                   :group-colors="demographicColors"
                    :chart-options="{bar: {width: {ratio: 0.9}}, legend: true}"
                    :allow-resize="allowResize"
                    :title="transformedTitle"
@@ -51,8 +52,11 @@
                 return this.data[this.demographic] || {};
             },
             demographicLegend() {
-                const legend = _.keyBy(this.$store.getters.getLegendObject(this.demographic), 'key');
+                const legend = this.$store.getters.getLegendObject(this.demographic);
                 return _.mapValues(legend, 'label');
+            },
+            demographicColors() {
+                return this.$store.getters.getLegendColor(this.demographic);
             },
             transformedTitle() {
                 return _.startCase(this.title);
