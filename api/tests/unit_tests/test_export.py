@@ -1,6 +1,8 @@
 from unittest import TestCase
 
+import pandas as pd
 import yaml
+from parameterized import parameterized
 
 from snow import constants as C
 from snow import export
@@ -59,6 +61,55 @@ class ExportOptionParserTests(TestCase):
         export.parse_export_options(args)
 
         self.assertEqual(args, {'foo': 'bar'})
+
+
+class LimitPatientsTests(TestCase):
+    def setUp(self):
+        super(LimitPatientsTests, self).setUp()
+
+        data = {
+            'patient_num': [1, 2, 3],
+            'last_visit_date': ['2017-01-01', '2016-06-01', '2018-08-08'],
+        }
+
+        self.data = pd.DataFrame(data=data)
+
+    def _get_subset_patient_nums(self, limit, order):
+        result = export.limit_patient_set(self.data, limit, order)
+        return set(result['patient_num'].values)
+
+    def test_no_limit_returns_same_data(self):
+        pt_nums = self._get_subset_patient_nums(None, None)
+        self.assertEqual(pt_nums, {1, 2, 3})
+
+    def test_no_order_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            self._get_subset_patient_nums(5, None)
+
+        self.assertIn('order required when limit is specified', str(e.exception))
+
+    def test_limit_greater_than_length_returns_same_data(self):
+        pt_nums = self._get_subset_patient_nums(5, 'last_visit_date')
+        self.assertEqual(pt_nums, {1, 2, 3})
+
+    def test_limit_zero_returns_empty_data_frame(self):
+        result = export.limit_patient_set(self.data, 0, 'last_visit_date')
+        self.assertEqual(result.size, 0)
+
+    def test_order_by_missing_column_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            self._get_subset_patient_nums(5, 'foobar')
+
+        self.assertIn('missing order column', str(e.exception))
+
+    @parameterized.expand([
+        (1, {3}),
+        (2, {1, 3}),
+        (3, {1, 2, 3})
+    ])
+    def test_limit_returns_patients_with_highest_values(self, limit, expected):
+        actual = self._get_subset_patient_nums(limit, 'last_visit_date')
+        self.assertEqual(actual, expected)
 
 
 class MetadataTests(TestCase):

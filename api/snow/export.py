@@ -1,3 +1,4 @@
+import pandas as pd
 import yaml
 from flask import request
 
@@ -31,6 +32,20 @@ def parse_export_options(args: dict):
             raise RSError("invalid order field '{}'".format(order))
 
     return limit, order
+
+
+def limit_patient_set(patients: pd.DataFrame, limit, order_by):
+    if limit is None:
+        return patients
+
+    if not order_by:
+        raise RSError('order required when limit is specified')
+
+    if order_by not in patients.columns:
+        raise RSError("missing order column: '{}'".format(order_by))
+
+    patients = patients.sort_values(by=[order_by], ascending=False)
+    return patients.head(limit)
 
 
 def export_patients():
