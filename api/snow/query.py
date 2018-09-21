@@ -127,6 +127,28 @@ def parse_ymca_query_args(args: dict, site_required=True):
     return site, cutoff, args
 
 
+def parse_export_options(args: dict):
+    limit = None
+    order = None
+
+    if C.QK_EXPORT_LIMIT in args:
+        if C.QK_EXPORT_ORDER not in args:
+            raise RSError('export limit requires {} argument'.format(C.QK_EXPORT_ORDER))
+
+        limit = args.pop(C.QK_EXPORT_LIMIT)
+        order = args.pop(C.QK_EXPORT_ORDER)
+
+        try:
+            limit = int(limit)
+        except ValueError:
+            raise RSError("invalid export limit '{}'".format(limit))
+
+        if order not in C.QK_EXPORT_ORDER_VALUES:
+            raise RSError("invalid order field '{}'".format(order))
+
+    return limit, order
+
+
 def patient_stats():
     sites, cutoffs, filters = parse_ymca_query_args(request.args, site_required=False)
     validate_filters(filters)
