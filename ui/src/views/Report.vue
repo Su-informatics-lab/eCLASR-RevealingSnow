@@ -1,15 +1,9 @@
 <template>
     <div class="snow-report">
+        <export-dialog/>
+
         <report-panel label="Patient Totals"
                       class="totals">
-            <div class="export-button"
-                 v-if="filterCriteriaIsSet">
-                <a :href="exportUrl"
-                   id="export-filtered"
-                   class="btn btn-secondary">
-                    Export Patients
-                </a>
-            </div>
 
             <div class="patient-field">
                 <span class="label">Unfiltered:</span>
@@ -78,13 +72,6 @@
         font-weight: bold;
     }
 
-    .export-button {
-        position: fixed;
-        top: 1em;
-        right: 1em;
-        z-index: 100;
-    }
-
     #ymca-proximity-panel {
         border-top: 1px solid lightgray;
         padding-top: 1em;
@@ -92,14 +79,13 @@
 </style>
 
 <script>
-    import _ from 'lodash';
-
     import { mapGetters } from 'vuex';
 
     import ReportPanel from '../components/ReportPanel';
     import DemChart from '../components/charts/GlobalDemographicChart';
     import Histogram from '../components/charts/Histogram';
     import YmcaSite from '../components/charts/YmcaSite';
+    import ExportDialog from '../components/ExportDialog';
 
 
     export default {
@@ -109,6 +95,7 @@
             DemChart,
             Histogram,
             YmcaSite,
+            ExportDialog,
         },
         computed: {
             ...mapGetters(['enabledYmcaSites', 'patientCountUnfiltered', 'patientCountFiltered']),
@@ -117,9 +104,6 @@
                     unfiltered: this.$store.state.stats.unfiltered.age || [],
                     filtered: this.$store.state.stats.filtered.age || [],
                 };
-            },
-            filterCriteriaIsSet() {
-                return !_.isEmpty(this.$store.state.filters.criteria);
             },
             exportUrl() {
                 return this.$api.getExportUrl(this.$store.state.filters);
