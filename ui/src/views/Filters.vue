@@ -60,7 +60,7 @@
                            :id="filter.key"
                            :label="filter.label"
                            :default_date="filter.default_date"
-                           :default_value="false"
+                           :default_value="getFilterValue(filter)"
                            :description="filter.description"
             />
         </div>
@@ -221,6 +221,9 @@
             },
             clearYmcaSites() {
                 _.each(this.$refs['ymca-sites'], f => f.setSelected(false));
+            },
+            getFilterValue(filter) {
+                return _.get(filter, 'default_value', false);
             },
         },
         computed: {

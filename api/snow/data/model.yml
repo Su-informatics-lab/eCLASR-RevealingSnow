@@ -143,6 +143,14 @@ filters:
     type: toggle
     description: BMI >= 40
     default_date:
+  - key: last_visit
+    label: Last Visit
+    long_name: Date of Last Encounter
+    type: toggle
+    description: >
+      Date of most recent encounter in the EMR database.
+    default_date: 2010-01-01
+    default_value: True
 #  - key: drugs_ad
 #    label: "Drugs: AD"
 #    long_name: Drugs for Alzheimer's-Related Diseases
