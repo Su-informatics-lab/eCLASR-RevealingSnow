@@ -63,6 +63,10 @@
                            :default_value="getFilterValue(filter)"
                            :description="filter.description"
             />
+
+            <select-filter id="pt_status"
+                           label="Patient Status"
+                           :enabled="false"/>
         </div>
 
         <div class="snow-ymca-distance-filters snow-filter-section">
@@ -172,8 +176,10 @@
     import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
 
     import { mapGetters } from 'vuex';
+
     import ToggleFilter from '../components/filters/ToggleFilter';
     import DistanceFilter from '../components/filters/DistanceFilter';
+    import SelectFilter from '../components/filters/SelectFilter';
 
 
     function flattenToDotNotation(filters) {
@@ -194,6 +200,7 @@
             ToggleFilter,
             DistanceFilter,
             FontAwesomeIcon,
+            SelectFilter,
         },
         data() {
             return {

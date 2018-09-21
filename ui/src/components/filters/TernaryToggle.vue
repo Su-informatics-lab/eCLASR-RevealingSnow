@@ -1,5 +1,6 @@
 <template>
     <div class="snow-ternary-toggle"
+         :data-enabled="enabled"
          @click="nextState">
         <font-awesome-icon class="icon-button"
                            :icon="icon"/>
@@ -11,8 +12,12 @@
         display: inline;
     }
 
-    .icon-button {
+    .snow-ternary-toggle[data-enabled="true"] {
         cursor: pointer;
+    }
+
+    .snow-ternary-toggle:not([data-enabled="true"]) {
+        cursor: not-allowed;
     }
 
     svg[data-icon="times-circle"] {
@@ -42,6 +47,10 @@
                 type: Boolean,
                 default: null,
             },
+            enabled: {
+                type: Boolean,
+                default: true,
+            },
         },
         data() {
             return {
@@ -58,6 +67,10 @@
         },
         methods: {
             nextState() {
+                if (!this.enabled) {
+                    return;
+                }
+
                 let nextState;
 
                 switch (this.state) {
