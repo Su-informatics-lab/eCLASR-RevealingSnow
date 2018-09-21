@@ -1,17 +1,14 @@
 import itertools
 import logging
 
-import yaml
 from flask import request
 
 from snow import constants as  C
-from snow import model
 from snow import stats, ymca
 from snow.exc import RSError
 from snow.filters import validate_filters
 from snow.ptscreen import pscr
-from snow.util import make_json_response, make_zip_response
-from snow.ymca import SiteMode
+from snow.util import make_json_response
 
 logger = logging.getLogger(__name__)
 
@@ -45,34 +42,6 @@ def _build_nested_args(args, nested_keys):
     return nested_args
 
 
-def _split_sites_and_cutoffs(site, cutoff):
-    if ',' in site:
-        site = site.split(',')
-    else:
-        site = [site]
-
-    if cutoff is not None:
-        if ',' in cutoff:
-            cutoff = [int(value) for value in cutoff.split(',')]
-        else:
-            cutoff = [int(cutoff)]
-
-    return site, cutoff
-
-
-def _validate_ymca_sites_and_cutoffs(sites, cutoffs):
-    if len(sites) != len(cutoffs):
-        raise RSError(
-            "number of YMCA sites ({}) must match number of cutoffs ({})".format(
-                len(sites), len(cutoffs)
-            )
-        )
-
-    for site in sites:
-        if site not in model.cdm.ymca_site_keys:
-            raise RSError("invalid YMCA site: '{}'".format(site))
-
-
 def parse_query_args(args: dict) -> dict:
     if not args:
         return args
@@ -97,56 +66,15 @@ def parse_query_args(args: dict) -> dict:
     return args
 
 
-def parse_ymca_args(args: dict):
-    # Validate that the required 'site' argument is present
-    if C.QK_SITE in args:
-        site = args.pop(C.QK_SITE)
-    else:
-        raise RSError("missing required argument: '{}'".format(C.QK_SITE))
-
-    # Pull out the 'cutoff' argument if present
-    if C.QK_CUTOFF in args:
-        cutoff = args.pop(C.QK_CUTOFF)
-    else:
-        raise RSError("missing required argument: '{}'".format(C.QK_CUTOFF))
-
-    site, cutoff = _split_sites_and_cutoffs(site, cutoff)
-    _validate_ymca_sites_and_cutoffs(site, cutoff)
-
-    return site, cutoff
-
-
 def parse_ymca_query_args(args: dict, site_required=True):
     args = parse_query_args(args)
     if site_required or C.QK_SITE in args:
-        site, cutoff = parse_ymca_args(args)
+        site, cutoff = ymca.parse_ymca_args(args)
     else:
         site, cutoff = None, None
 
     # Return a tuple of the site(s), the cutoff(s) (optionally None), and the remaining filters
     return site, cutoff, args
-
-
-def parse_export_options(args: dict):
-    limit = None
-    order = None
-
-    if C.QK_EXPORT_LIMIT in args:
-        if C.QK_EXPORT_ORDER not in args:
-            raise RSError('export limit requires {} argument'.format(C.QK_EXPORT_ORDER))
-
-        limit = args.pop(C.QK_EXPORT_LIMIT)
-        order = args.pop(C.QK_EXPORT_ORDER)
-
-        try:
-            limit = int(limit)
-        except ValueError:
-            raise RSError("invalid export limit '{}'".format(limit))
-
-        if order not in C.QK_EXPORT_ORDER_VALUES:
-            raise RSError("invalid order field '{}'".format(order))
-
-    return limit, order
 
 
 def patient_stats():
@@ -155,7 +83,7 @@ def patient_stats():
 
     patients = pscr.filter_patients(filters)
     if sites is not None:
-        patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=SiteMode.ANY)
+        patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=ymca.SiteMode.ANY)
 
     ptstats = stats.patient_counts_by_category(patients)
 
@@ -170,37 +98,3 @@ def ymca_stats():
     dist_stats = ymca.get_ymca_distance_stats(patients, site, cutoff, ymca.YMCA_DEMOGRAPHIC_CATEGORIES)
 
     return make_json_response(dist_stats)
-
-
-def export_patients():
-    sites, cutoffs, filters = parse_ymca_query_args(request.args, site_required=False)
-    validate_filters(filters)
-
-    patients = pscr.filter_patients(filters)
-
-    if sites is not None:
-        patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=SiteMode.ANY)
-
-    files = {
-        C.EXPORT_FILE_PATIENTS: patients.to_csv(index=False),
-        C.EXPORT_FILE_METADATA: create_metadata_from_parameters(sites, cutoffs, filters)
-    }
-
-    return make_zip_response(C.EXPORT_FILENAME, files)
-
-
-def create_metadata_from_parameters(sites, cutoffs, filters):
-    metadata = {
-        C.FILTERS: filters
-    }
-
-    if sites is not None and cutoffs is not None:
-        _validate_ymca_sites_and_cutoffs(sites, cutoffs)
-        metadata[C.YMCA_SITES] = {
-            site: cutoff
-            for site, cutoff in zip(sites, cutoffs)
-        }
-    elif sites != cutoffs:
-        raise RSError('sites and cutoffs must both be present or both be None')
-
-    return yaml.safe_dump(metadata, default_flow_style=False, explicit_start=True)
