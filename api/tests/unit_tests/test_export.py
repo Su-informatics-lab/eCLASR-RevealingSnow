@@ -13,24 +13,24 @@ class ExportOptionParserTests(TestCase):
     def _parse_opts(self, limit, order, **kwargs):
         args = {
             C.QK_EXPORT_LIMIT: limit,
-            C.QK_EXPORT_ORDER: order,
+            C.QK_EXPORT_ORDER_BY: order,
         }
         args.update(kwargs)
 
         return export.parse_export_options(args)
 
     def test_args_without_export_options_returns_none(self):
-        limit, order = export.parse_export_options({'foo': 'bar'})
+        limit, order_by, _ = export.parse_export_options({'foo': 'bar'})
 
         self.assertIsNone(limit)
-        self.assertIsNone(order)
+        self.assertIsNone(order_by)
 
     def test_export_limit_without_order_by_raises_exception(self):
         with self.assertRaises(RSError) as e:
             export.parse_export_options({C.QK_EXPORT_LIMIT: '500'})
 
         self.assertIn(
-            'export limit requires {} argument'.format(C.QK_EXPORT_ORDER),
+            'export limit requires {} argument'.format(C.QK_EXPORT_ORDER_BY),
             str(e.exception)
         )
 
@@ -47,20 +47,44 @@ class ExportOptionParserTests(TestCase):
         self.assertIn('invalid export limit', str(e.exception))
 
     def test_export_limit_and_order_returned(self):
-        limit, order = export.parse_export_options({
+        limit, order_by, _ = export.parse_export_options({
             C.QK_EXPORT_LIMIT: 50,
-            C.QK_EXPORT_ORDER: 'last_visit_date',
+            C.QK_EXPORT_ORDER_BY: 'last_visit_date',
             'foo': 'bar'
         })
 
         self.assertEqual(limit, 50)
-        self.assertEqual(order, 'last_visit_date')
+        self.assertEqual(order_by, 'last_visit_date')
 
     def test_export_limit_and_order_removed_from_args(self):
-        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER: 'last_visit_date', 'foo': 'bar'}
+        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: 'last_visit_date', 'foo': 'bar'}
         export.parse_export_options(args)
 
         self.assertEqual(args, {'foo': 'bar'})
+
+    def test_order_asc_defaults_to_false(self):
+        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: 'last_visit_date'}
+        _, _, order_dir = export.parse_export_options(args)
+
+        self.assertFalse(order_dir)
+
+    @parameterized.expand([
+        (None, False),
+        (False, False),
+        ('0', False),
+        ('false', False),
+        ('1', True),
+        ('true', True),
+        ('True', True),
+        ('t', True),
+        ('T', True)
+    ])
+    def test_order_asc_parsed_as_boolean(self, order_asc, expected):
+        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: 'last_visit_date', C.QK_EXPORT_ORDER_ASC: order_asc}
+        _, _, order_dir = export.parse_export_options(args)
+
+        self.assertEqual(order_dir, expected)
+
 
 
 class LimitPatientsTests(TestCase):

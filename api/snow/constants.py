@@ -12,7 +12,8 @@ QK_SITE = 'site'
 QK_CUTOFF = 'cutoff'
 
 QK_EXPORT_LIMIT = 'limit'
-QK_EXPORT_ORDER = 'order_by'
+QK_EXPORT_ORDER_BY = 'order_by'
+QK_EXPORT_ORDER_ASC = 'order_asc'
 QK_EXPORT_ORDER_VALUES = ['last_visit_date']
 
 # Export

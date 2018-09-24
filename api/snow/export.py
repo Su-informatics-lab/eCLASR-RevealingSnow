@@ -8,30 +8,32 @@ from snow.exc import RSError
 from snow.filters import validate_filters
 from snow.ptscreen import pscr
 from snow.query import parse_ymca_query_args
-from snow.util import make_zip_response
+from snow.util import make_zip_response, parse_boolean
 from snow.ymca import SiteMode
 
 
 def parse_export_options(args: dict):
     limit = None
-    order = None
+    order_by = None
+    order_asc = False
 
     if C.QK_EXPORT_LIMIT in args:
-        if C.QK_EXPORT_ORDER not in args:
-            raise RSError('export limit requires {} argument'.format(C.QK_EXPORT_ORDER))
+        if C.QK_EXPORT_ORDER_BY not in args:
+            raise RSError('export limit requires {} argument'.format(C.QK_EXPORT_ORDER_BY))
 
         limit = args.pop(C.QK_EXPORT_LIMIT)
-        order = args.pop(C.QK_EXPORT_ORDER)
+        order_by = args.pop(C.QK_EXPORT_ORDER_BY)
+        order_asc = parse_boolean(args.pop(C.QK_EXPORT_ORDER_ASC, False))
 
         try:
             limit = int(limit)
         except ValueError:
             raise RSError("invalid export limit '{}'".format(limit))
 
-        if order not in C.QK_EXPORT_ORDER_VALUES:
-            raise RSError("invalid order field '{}'".format(order))
+        if order_by not in C.QK_EXPORT_ORDER_VALUES:
+            raise RSError("invalid order field '{}'".format(order_by))
 
-    return limit, order
+    return limit, order_by, order_asc
 
 
 def limit_patient_set(patients: pd.DataFrame, limit, order_by):
@@ -50,7 +52,7 @@ def limit_patient_set(patients: pd.DataFrame, limit, order_by):
 
 def export_patients():
     sites, cutoffs, filters = parse_ymca_query_args(request.args, site_required=False)
-    limit, order = parse_export_options(filters)
+    limit, order, _ = parse_export_options(filters)
 
     validate_filters(filters)
 
