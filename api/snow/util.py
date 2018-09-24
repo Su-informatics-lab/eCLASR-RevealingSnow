@@ -58,3 +58,21 @@ def make_zip_response(filename, files):
 
     mem.seek(0)
     return send_file(mem, attachment_filename=filename, as_attachment=True)
+
+
+def parse_boolean(value):
+    if isinstance(value, bool):
+        return value
+
+    # If it's not Python-truthy, consider it definitely False
+    if not value:
+        return False
+
+    # Check if its lower-case string representation is one of the known True values
+    value = str(value).lower()
+
+    if value in ['1', 't', 'true']:
+        return True
+
+    # Otherwise, safer to assume False
+    return False
