@@ -59,6 +59,9 @@ def export_patients():
     if sites is not None:
         patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=SiteMode.ANY)
 
+    if limit is not None:
+        patients = limit_patient_set(patients, limit, order)
+
     files = {
         C.EXPORT_FILE_PATIENTS: patients.to_csv(index=False),
         C.EXPORT_FILE_METADATA: create_metadata_from_parameters(sites, cutoffs, filters)
