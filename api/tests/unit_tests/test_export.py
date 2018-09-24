@@ -86,7 +86,6 @@ class ExportOptionParserTests(TestCase):
         self.assertEqual(order_dir, expected)
 
 
-
 class LimitPatientsTests(TestCase):
     def setUp(self):
         super(LimitPatientsTests, self).setUp()
@@ -98,8 +97,8 @@ class LimitPatientsTests(TestCase):
 
         self.data = pd.DataFrame(data=data)
 
-    def _get_subset_patient_nums(self, limit, order):
-        result = export.limit_patient_set(self.data, limit, order)
+    def _get_subset_patient_nums(self, limit, order_by, order_asc=False):
+        result = export.limit_patient_set(self.data, limit, order_by, order_asc)
         return set(result['patient_num'].values)
 
     def test_no_limit_returns_same_data(self):
@@ -117,7 +116,7 @@ class LimitPatientsTests(TestCase):
         self.assertEqual(pt_nums, {1, 2, 3})
 
     def test_limit_zero_returns_empty_data_frame(self):
-        result = export.limit_patient_set(self.data, 0, 'last_visit_date')
+        result = export.limit_patient_set(self.data, 0, 'last_visit_date', False)
         self.assertEqual(result.size, 0)
 
     def test_order_by_missing_column_raises_exception(self):
@@ -135,10 +134,19 @@ class LimitPatientsTests(TestCase):
         actual = self._get_subset_patient_nums(limit, 'last_visit_date')
         self.assertEqual(actual, expected)
 
+    @parameterized.expand([
+        (1, {2}),
+        (2, {1, 2}),
+        (3, {1, 2, 3})
+    ])
+    def test_limit_with_asc_true_returns_patients_with_lowest_values(self, limit, expected):
+        actual = self._get_subset_patient_nums(limit, 'last_visit_date', True)
+        self.assertEqual(actual, expected)
+
 
 class MetadataTests(TestCase):
-    def _round_trip(self, site, cutoff, filters):
-        metadata = export.create_metadata_from_parameters(site, cutoff, filters)
+    def _round_trip(self, site, cutoff, filters, limit=None, order_by=None, order_asc=None):
+        metadata = export.create_metadata_from_parameters(site, cutoff, filters, limit, order_by, order_asc)
         return yaml.safe_load(metadata)
 
     def test_empty_metadata(self):
@@ -199,5 +207,19 @@ class MetadataTests(TestCase):
         }
 
         actual = self._round_trip(['ymca_fulton', 'ymca_davie'], [5, 10], filters)
+
+        self.assertEqual(actual, expected)
+
+    def test_metadata_with_limit(self):
+        expected = {
+            C.FILTERS: None,
+            C.PATIENT_SUBSET: {
+                C.QK_EXPORT_LIMIT: 50,
+                C.QK_EXPORT_ORDER_BY: 'foo',
+                C.QK_EXPORT_ORDER_ASC: True
+            }
+        }
+
+        actual = self._round_trip(None, None, None, 50, 'foo', True)
 
         self.assertEqual(actual, expected)

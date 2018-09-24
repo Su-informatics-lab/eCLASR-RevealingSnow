@@ -6,6 +6,7 @@ CRITERIA_DATA_MODEL_FILE = 'CRITERIA_DATA_MODEL_FILE'
 # Criteria Data Model & Metadata Keys
 FILTERS = 'filters'
 YMCA_SITES = 'ymca_sites'
+PATIENT_SUBSET = 'patient_subset'
 
 # Special Query Argument Keys
 QK_SITE = 'site'

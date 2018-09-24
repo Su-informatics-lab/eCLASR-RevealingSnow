@@ -36,7 +36,7 @@ def parse_export_options(args: dict):
     return limit, order_by, order_asc
 
 
-def limit_patient_set(patients: pd.DataFrame, limit, order_by):
+def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):
     if limit is None:
         return patients
 
@@ -46,13 +46,13 @@ def limit_patient_set(patients: pd.DataFrame, limit, order_by):
     if order_by not in patients.columns:
         raise RSError("missing order column: '{}'".format(order_by))
 
-    patients = patients.sort_values(by=[order_by], ascending=False)
+    patients = patients.sort_values(by=[order_by], ascending=order_asc)
     return patients.head(limit)
 
 
 def export_patients():
     sites, cutoffs, filters = parse_ymca_query_args(request.args, site_required=False)
-    limit, order, _ = parse_export_options(filters)
+    limit, order_by, order_asc = parse_export_options(filters)
 
     validate_filters(filters)
 
@@ -62,17 +62,17 @@ def export_patients():
         patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=SiteMode.ANY)
 
     if limit is not None:
-        patients = limit_patient_set(patients, limit, order)
+        patients = limit_patient_set(patients, limit, order_by, order_asc)
 
     files = {
         C.EXPORT_FILE_PATIENTS: patients.to_csv(index=False),
-        C.EXPORT_FILE_METADATA: create_metadata_from_parameters(sites, cutoffs, filters)
+        C.EXPORT_FILE_METADATA: create_metadata_from_parameters(sites, cutoffs, filters, limit, order_by, order_asc)
     }
 
     return make_zip_response(C.EXPORT_FILENAME, files)
 
 
-def create_metadata_from_parameters(sites, cutoffs, filters):
+def create_metadata_from_parameters(sites, cutoffs, filters, limit, order_by, order_asc):
     metadata = {
         C.FILTERS: filters
     }
@@ -85,5 +85,12 @@ def create_metadata_from_parameters(sites, cutoffs, filters):
         }
     elif sites != cutoffs:
         raise RSError('sites and cutoffs must both be present or both be None')
+
+    if limit is not None:
+        metadata[C.PATIENT_SUBSET] = {
+            C.QK_EXPORT_LIMIT: limit,
+            C.QK_EXPORT_ORDER_BY: order_by,
+            C.QK_EXPORT_ORDER_ASC: order_asc
+        }
 
     return yaml.safe_dump(metadata, default_flow_style=False, explicit_start=True)
