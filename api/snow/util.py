@@ -5,6 +5,7 @@ import zipfile
 from io import BytesIO
 
 import pandas as pd
+import yaml
 from flask import Response, send_file
 
 
@@ -18,6 +19,10 @@ def _json_serializer(obj):
 
 def jsonify(context):
     return json.dumps(context, default=_json_serializer)
+
+
+def to_yaml(data):
+    return yaml.safe_dump(data, default_flow_style=False, explicit_start=True)
 
 
 def make_json_response(context, status=200, headers=None):

@@ -1,5 +1,7 @@
+import time
+import uuid
+
 import pandas as pd
-import yaml
 from flask import request
 
 from snow import constants as  C
@@ -8,7 +10,7 @@ from snow.exc import RSError
 from snow.filters import validate_filters
 from snow.ptscreen import pscr
 from snow.query import parse_ymca_query_args
-from snow.util import make_zip_response, parse_boolean
+from snow.util import make_zip_response, parse_boolean, to_yaml
 from snow.ymca import SiteMode
 
 
@@ -45,7 +47,24 @@ class ExportOptions(object):
                 C.QK_EXPORT_ORDER_ASC: self.order_asc
             }
 
-        return yaml.safe_dump(metadata, default_flow_style=False, explicit_start=True)
+        return metadata
+
+
+class ExportData(object):
+    def __init__(self, options, patients, identifier=None, timestamp=None):
+        self.options = options
+        self.patients = patients
+        self.identifier = identifier or str(uuid.uuid4())
+        self.timestamp = timestamp or str(time.time())
+
+    def create_export_payload(self):
+        return {
+            C.EP_ID: self.identifier,
+            C.EP_TS: self.timestamp,
+            C.EP_SUBJECTS: self.patients[C.COL_PTNUM].tolist(),
+            C.EP_METADATA: self.options.create_metadata()
+        }
+
 
 def parse_export_limits(args: dict):
     limit = None
@@ -107,7 +126,7 @@ def download_patients():
 
     files = {
         C.EXPORT_FILE_PATIENTS: patients.to_csv(index=False),
-        C.EXPORT_FILE_METADATA: opts.create_metadata()
+        C.EXPORT_FILE_METADATA: to_yaml(opts.create_metadata())
     }
 
     return make_zip_response(C.EXPORT_FILENAME, files)

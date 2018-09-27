@@ -23,6 +23,7 @@ EXPORT_FILE_PATIENTS = 'patients.csv'
 EXPORT_FILE_METADATA = 'metadata.yml'
 
 # Demographic Columns
+COL_PTNUM = 'patient_num'
 COL_SEX = 'sex'
 COL_RACE = 'race'
 COL_ETHNICITY = 'ethnicity'
@@ -32,3 +33,9 @@ COL_YMCA_PREFIX = 'ymca_'
 
 # Special Response Keys
 RK_TOTAL = 'total'
+
+# Export Payload Keys
+EP_ID = 'id'
+EP_TS = 'timestamp'
+EP_SUBJECTS = 'subjects'
+EP_METADATA = 'metadata'

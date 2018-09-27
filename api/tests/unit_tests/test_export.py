@@ -1,7 +1,7 @@
+import re
 from unittest import TestCase
 
 import pandas as pd
-import yaml
 from parameterized import parameterized
 
 from snow import constants as C
@@ -145,25 +145,23 @@ class LimitPatientsTests(TestCase):
 
 
 class ExportOptionTests(TestCase):
-    def _round_trip(self, site, cutoff, filters, limit=None, order_by=None, order_asc=None):
+    def _create_metadata(self, site, cutoff, filters, limit=None, order_by=None, order_asc=None):
         opts = export.ExportOptions(site, cutoff, filters, limit, order_by, order_asc)
-        metadata = opts.create_metadata()
-
-        return yaml.safe_load(metadata)
+        return opts.create_metadata()
 
     def test_empty_metadata(self):
-        actual = self._round_trip(None, None, None)
+        actual = self._create_metadata(None, None, None)
         self.assertEqual(actual, {C.FILTERS: None})
 
     def test_metadata_from_sites_only_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            self._round_trip(['ymca_hanes'], None, None)
+            self._create_metadata(['ymca_hanes'], None, None)
 
         self.assertIn('sites and cutoffs must both be present or both be None', str(e.exception))
 
     def test_metadata_from_cutoffs_only_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            self._round_trip(None, [5], None)
+            self._create_metadata(None, [5], None)
 
         self.assertIn('sites and cutoffs must both be present or both be None', str(e.exception))
 
@@ -176,7 +174,7 @@ class ExportOptionTests(TestCase):
             C.FILTERS: None
         }
 
-        actual = self._round_trip(['ymca_fulton', 'ymca_davie'], [5, 10], None)
+        actual = self._create_metadata(['ymca_fulton', 'ymca_davie'], [5, 10], None)
 
         self.assertEqual(actual, expected)
 
@@ -190,7 +188,7 @@ class ExportOptionTests(TestCase):
             C.FILTERS: filters
         }
 
-        actual = self._round_trip(None, None, filters)
+        actual = self._create_metadata(None, None, filters)
 
         self.assertEqual(actual, expected)
 
@@ -208,7 +206,7 @@ class ExportOptionTests(TestCase):
             C.FILTERS: filters
         }
 
-        actual = self._round_trip(['ymca_fulton', 'ymca_davie'], [5, 10], filters)
+        actual = self._create_metadata(['ymca_fulton', 'ymca_davie'], [5, 10], filters)
 
         self.assertEqual(actual, expected)
 
@@ -222,6 +220,55 @@ class ExportOptionTests(TestCase):
             }
         }
 
-        actual = self._round_trip(None, None, None, 50, 'foo', True)
+        actual = self._create_metadata(None, None, None, 50, 'foo', True)
 
         self.assertEqual(actual, expected)
+
+
+class ExportDataTests(TestCase):
+    def setUp(self):
+        super(ExportDataTests, self).setUp()
+
+        self.opts = export.ExportOptions(None, None, None, None, None, None)
+        self.subj = pd.DataFrame(data={'patient_num': [1, 2, 3]})
+
+    def _create_export_data(self, **kwargs):
+        return export.ExportData(self.opts, self.subj, **kwargs)
+
+    def test_export_data_constructor_sets_identifier_when_absent(self):
+        data = self._create_export_data()
+
+        self.assertIsNotNone(data.identifier)
+        self.assertTrue(re.match(r'[0-9a-fA-F-]{36}', data.identifier))
+
+    def test_export_data_constructor_sets_timestamp_when_absent(self):
+        data = self._create_export_data()
+
+        self.assertIsNotNone(data.timestamp)
+        self.assertTrue(re.match(r'[0-9]{10}', data.timestamp))
+
+    def test_export_data_uses_provided_identifier(self):
+        data = self._create_export_data(identifier='foobar')
+
+        self.assertEqual(data.identifier, 'foobar')
+
+    def test_export_data_uses_provided_timestamp(self):
+        data = self._create_export_data(timestamp='foobar')
+
+        self.assertEqual(data.timestamp, 'foobar')
+
+    def test_export_payload_structured_as_expected(self):
+        data = self._create_export_data()
+        payload = data.create_export_payload()
+
+        print(payload)
+
+        self.assertIn(C.EP_ID, payload)
+        self.assertIn(C.EP_TS, payload)
+        self.assertIn(C.EP_SUBJECTS, payload)
+        self.assertIn(C.EP_METADATA, payload)
+
+        self.assertIsInstance(payload[C.EP_ID], str)
+        self.assertIsInstance(payload[C.EP_TS], str)
+        self.assertIsInstance(payload[C.EP_SUBJECTS], list)
+        self.assertIsInstance(payload[C.EP_METADATA], dict)
