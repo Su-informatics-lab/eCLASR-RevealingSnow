@@ -1,20 +1,38 @@
 <template>
     <div class="snow-export-dialog">
-        <sweet-modal ref="export">
-            Content.
+        <sweet-modal ref="exportDialog"
+                     title="Export Patients">
+            <export-form ref="exportForm"
+                         :max-export-count="maxExportCount"
+            />
+
+            <button slot="button"
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="startDownload">
+                Download
+            </button>
         </sweet-modal>
 
         <div class="export-button"
              v-if="filterCriteriaIsSet">
-            <a @click="showDialog"
-               id="export-filtered"
-               class="btn btn-secondary">
+            <button @click="showDialog"
+                    id="export-filtered"
+                    type="button"
+                    class="btn btn-secondary">
                 Export Patients
-            </a>
+            </button>
         </div>
 
     </div>
 </template>
+
+
+<style>
+    .sweet-title > h2 {
+        line-height: inherit;
+    }
+</style>
 
 <style scoped>
     .snow-export-dialog {
@@ -32,6 +50,7 @@
 <script>
     import _ from 'lodash';
     import { SweetModal, SweetModalTab } from 'sweet-modal-vue';
+    import ExportForm from './ExportForm';
 
 
     export default {
@@ -39,15 +58,24 @@
         components: {
             SweetModal,
             SweetModalTab,
+            ExportForm,
         },
         methods: {
             showDialog() {
-                this.$refs.export.open();
+                this.$refs.exportDialog.open();
+            },
+            startDownload() {
+                const limit = this.$refs.exportForm.getLimitArgs();
+
+                window.location.href = this.$api.getExportUrl(this.$store.state.filters, limit);
             },
         },
         computed: {
             filterCriteriaIsSet() {
                 return !_.isEmpty(this.$store.state.filters.criteria);
+            },
+            maxExportCount() {
+                return this.$store.getters.patientCountFiltered;
             },
         },
     };

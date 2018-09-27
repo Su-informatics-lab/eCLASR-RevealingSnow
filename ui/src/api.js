@@ -45,7 +45,7 @@ class Api {
         return this.get('/model');
     }
 
-    getExportUrl({ criteria, ymcaSites }) {
+    getExportUrl({ criteria, ymcaSites }, limit) {
         const url = `${this.endpoint}/export`;
         let req = request.get(url);
 
@@ -54,6 +54,9 @@ class Api {
         }
         if (!_.isEmpty(ymcaSites)) {
             req = req.query(buildMultipleYmcaSiteQuery(ymcaSites));
+        }
+        if (!_.isEmpty(limit)) {
+            req = req.query(limit);
         }
 
         // Let SuperAgent do the heavy lifting of assembling the query URL
