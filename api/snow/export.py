@@ -10,7 +10,7 @@ from snow.exc import RSError
 from snow.filters import validate_filters
 from snow.ptscreen import pscr
 from snow.query import parse_ymca_query_args
-from snow.util import make_zip_response, parse_boolean, to_yaml
+from snow.util import make_zip_response, parse_boolean, to_yaml, jsonify
 from snow.ymca import SiteMode
 
 
@@ -65,6 +65,14 @@ class ExportData(object):
             C.EP_METADATA: self.options.create_metadata()
         }
 
+    def create_download_payload(self):
+        files = {
+            C.EXPORT_FILE_PATIENTS: self.patients.to_csv(index=False),
+            C.EXPORT_FILE_METADATA: to_yaml(self.options.create_metadata())
+        }
+
+        return make_zip_response(C.EXPORT_FILENAME, files)
+
 
 def parse_export_limits(args: dict):
     limit = None
@@ -111,7 +119,7 @@ def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):
     return patients.head(limit)
 
 
-def download_patients():
+def prepare_export_data():
     opts = parse_export_options(request.args)
 
     validate_filters(opts.filters)
@@ -124,11 +132,16 @@ def download_patients():
     if opts.limit is not None:
         patients = limit_patient_set(patients, opts.limit, opts.order_by, opts.order_asc)
 
-    files = {
-        C.EXPORT_FILE_PATIENTS: patients.to_csv(index=False),
-        C.EXPORT_FILE_METADATA: to_yaml(opts.create_metadata())
-    }
-
-    return make_zip_response(C.EXPORT_FILENAME, files)
+    return ExportData(opts, patients)
 
 
+def download_patients():
+    export_data = prepare_export_data()
+
+    return export_data.create_download_payload()
+
+
+def export_patients():
+    export_data = prepare_export_data()
+
+    return jsonify(export_data.create_export_payload())
