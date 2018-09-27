@@ -24,6 +24,28 @@ class ExportOptions(object):
         self.order_by = order_by
         self.order_asc = order_asc
 
+    def create_metadata(self):
+        metadata = {
+            C.FILTERS: self.filters
+        }
+
+        if self.sites is not None and self.cutoffs is not None:
+            ymca._validate_ymca_sites_and_cutoffs(self.sites, self.cutoffs)
+            metadata[C.YMCA_SITES] = {
+                site: cutoff
+                for site, cutoff in zip(self.sites, self.cutoffs)
+            }
+        elif self.sites != self.cutoffs:
+            raise RSError('sites and cutoffs must both be present or both be None')
+
+        if self.limit is not None:
+            metadata[C.PATIENT_SUBSET] = {
+                C.QK_EXPORT_LIMIT: self.limit,
+                C.QK_EXPORT_ORDER_BY: self.order_by,
+                C.QK_EXPORT_ORDER_ASC: self.order_asc
+            }
+
+        return yaml.safe_dump(metadata, default_flow_style=False, explicit_start=True)
 
 def parse_export_limits(args: dict):
     limit = None
@@ -85,31 +107,9 @@ def download_patients():
 
     files = {
         C.EXPORT_FILE_PATIENTS: patients.to_csv(index=False),
-        C.EXPORT_FILE_METADATA: create_metadata_from_export_options(opts)
+        C.EXPORT_FILE_METADATA: opts.create_metadata()
     }
 
     return make_zip_response(C.EXPORT_FILENAME, files)
 
 
-def create_metadata_from_export_options(options: ExportOptions):
-    metadata = {
-        C.FILTERS: options.filters
-    }
-
-    if options.sites is not None and options.cutoffs is not None:
-        ymca._validate_ymca_sites_and_cutoffs(options.sites, options.cutoffs)
-        metadata[C.YMCA_SITES] = {
-            site: cutoff
-            for site, cutoff in zip(options.sites, options.cutoffs)
-        }
-    elif options.sites != options.cutoffs:
-        raise RSError('sites and cutoffs must both be present or both be None')
-
-    if options.limit is not None:
-        metadata[C.PATIENT_SUBSET] = {
-            C.QK_EXPORT_LIMIT: options.limit,
-            C.QK_EXPORT_ORDER_BY: options.order_by,
-            C.QK_EXPORT_ORDER_ASC: options.order_asc
-        }
-
-    return yaml.safe_dump(metadata, default_flow_style=False, explicit_start=True)
