@@ -12,7 +12,7 @@ from snow.util import make_zip_response, parse_boolean
 from snow.ymca import SiteMode
 
 
-class ExportMetadata(object):
+class ExportOptions(object):
     def __init__(self,
                  sites, cutoffs, filters,
                  limit, order_by, order_asc):
@@ -49,6 +49,13 @@ def parse_export_limits(args: dict):
     return limit, order_by, order_asc
 
 
+def parse_export_options(args: dict) -> ExportOptions:
+    sites, cutoffs, filters = parse_ymca_query_args(args, site_required=False)
+    limit, order_by, order_asc = parse_export_limits(filters)
+
+    return ExportOptions(sites, cutoffs, filters, limit, order_by, order_asc)
+
+
 def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):
     if limit is None:
         return patients
@@ -64,46 +71,45 @@ def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):
 
 
 def download_patients():
-    sites, cutoffs, filters = parse_ymca_query_args(request.args, site_required=False)
-    limit, order_by, order_asc = parse_export_limits(filters)
+    opts = parse_export_options(request.args)
 
-    validate_filters(filters)
+    validate_filters(opts.filters)
 
-    patients = pscr.filter_patients(filters)
+    patients = pscr.filter_patients(opts.filters)
 
-    if sites is not None:
-        patients = ymca.filter_by_distance(patients, sites, cutoffs, mode=SiteMode.ANY)
+    if opts.sites is not None:
+        patients = ymca.filter_by_distance(patients, opts.sites, opts.cutoffs, mode=SiteMode.ANY)
 
-    if limit is not None:
-        patients = limit_patient_set(patients, limit, order_by, order_asc)
+    if opts.limit is not None:
+        patients = limit_patient_set(patients, opts.limit, opts.order_by, opts.order_asc)
 
     files = {
         C.EXPORT_FILE_PATIENTS: patients.to_csv(index=False),
-        C.EXPORT_FILE_METADATA: create_metadata_from_parameters(sites, cutoffs, filters, limit, order_by, order_asc)
+        C.EXPORT_FILE_METADATA: create_metadata_from_export_options(opts)
     }
 
     return make_zip_response(C.EXPORT_FILENAME, files)
 
 
-def create_metadata_from_parameters(sites, cutoffs, filters, limit, order_by, order_asc):
+def create_metadata_from_export_options(options: ExportOptions):
     metadata = {
-        C.FILTERS: filters
+        C.FILTERS: options.filters
     }
 
-    if sites is not None and cutoffs is not None:
-        ymca._validate_ymca_sites_and_cutoffs(sites, cutoffs)
+    if options.sites is not None and options.cutoffs is not None:
+        ymca._validate_ymca_sites_and_cutoffs(options.sites, options.cutoffs)
         metadata[C.YMCA_SITES] = {
             site: cutoff
-            for site, cutoff in zip(sites, cutoffs)
+            for site, cutoff in zip(options.sites, options.cutoffs)
         }
-    elif sites != cutoffs:
+    elif options.sites != options.cutoffs:
         raise RSError('sites and cutoffs must both be present or both be None')
 
-    if limit is not None:
+    if options.limit is not None:
         metadata[C.PATIENT_SUBSET] = {
-            C.QK_EXPORT_LIMIT: limit,
-            C.QK_EXPORT_ORDER_BY: order_by,
-            C.QK_EXPORT_ORDER_ASC: order_asc
+            C.QK_EXPORT_LIMIT: options.limit,
+            C.QK_EXPORT_ORDER_BY: options.order_by,
+            C.QK_EXPORT_ORDER_ASC: options.order_asc
         }
 
     return yaml.safe_dump(metadata, default_flow_style=False, explicit_start=True)

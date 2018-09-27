@@ -146,7 +146,9 @@ class LimitPatientsTests(TestCase):
 
 class MetadataTests(TestCase):
     def _round_trip(self, site, cutoff, filters, limit=None, order_by=None, order_asc=None):
-        metadata = export.create_metadata_from_parameters(site, cutoff, filters, limit, order_by, order_asc)
+        opts = export.ExportOptions(site, cutoff, filters, limit, order_by, order_asc)
+        metadata = export.create_metadata_from_export_options(opts)
+
         return yaml.safe_load(metadata)
 
     def test_empty_metadata(self):
