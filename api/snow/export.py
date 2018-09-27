@@ -12,7 +12,20 @@ from snow.util import make_zip_response, parse_boolean
 from snow.ymca import SiteMode
 
 
-def parse_export_options(args: dict):
+class ExportMetadata(object):
+    def __init__(self,
+                 sites, cutoffs, filters,
+                 limit, order_by, order_asc):
+        self.sites = sites
+        self.cutoffs = cutoffs
+        self.filters = filters
+
+        self.limit = limit
+        self.order_by = order_by
+        self.order_asc = order_asc
+
+
+def parse_export_limits(args: dict):
     limit = None
     order_by = None
     order_asc = False
@@ -52,7 +65,7 @@ def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):
 
 def download_patients():
     sites, cutoffs, filters = parse_ymca_query_args(request.args, site_required=False)
-    limit, order_by, order_asc = parse_export_options(filters)
+    limit, order_by, order_asc = parse_export_limits(filters)
 
     validate_filters(filters)
 

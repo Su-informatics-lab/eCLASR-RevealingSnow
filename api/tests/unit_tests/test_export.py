@@ -9,7 +9,7 @@ from snow import export
 from snow.exc import RSError
 
 
-class ExportOptionParserTests(TestCase):
+class ParseExportLimitTests(TestCase):
     def _parse_opts(self, limit, order, **kwargs):
         args = {
             C.QK_EXPORT_LIMIT: limit,
@@ -17,17 +17,17 @@ class ExportOptionParserTests(TestCase):
         }
         args.update(kwargs)
 
-        return export.parse_export_options(args)
+        return export.parse_export_limits(args)
 
     def test_args_without_export_options_returns_none(self):
-        limit, order_by, _ = export.parse_export_options({'foo': 'bar'})
+        limit, order_by, _ = export.parse_export_limits({'foo': 'bar'})
 
         self.assertIsNone(limit)
         self.assertIsNone(order_by)
 
     def test_export_limit_without_order_by_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            export.parse_export_options({C.QK_EXPORT_LIMIT: '500'})
+            export.parse_export_limits({C.QK_EXPORT_LIMIT: '500'})
 
         self.assertIn(
             'export limit requires {} argument'.format(C.QK_EXPORT_ORDER_BY),
@@ -47,7 +47,7 @@ class ExportOptionParserTests(TestCase):
         self.assertIn('invalid export limit', str(e.exception))
 
     def test_export_limit_and_order_returned(self):
-        limit, order_by, _ = export.parse_export_options({
+        limit, order_by, _ = export.parse_export_limits({
             C.QK_EXPORT_LIMIT: 50,
             C.QK_EXPORT_ORDER_BY: 'last_visit_date',
             'foo': 'bar'
@@ -58,13 +58,13 @@ class ExportOptionParserTests(TestCase):
 
     def test_export_limit_and_order_removed_from_args(self):
         args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: 'last_visit_date', 'foo': 'bar'}
-        export.parse_export_options(args)
+        export.parse_export_limits(args)
 
         self.assertEqual(args, {'foo': 'bar'})
 
     def test_order_asc_defaults_to_false(self):
         args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: 'last_visit_date'}
-        _, _, order_dir = export.parse_export_options(args)
+        _, _, order_dir = export.parse_export_limits(args)
 
         self.assertFalse(order_dir)
 
@@ -81,7 +81,7 @@ class ExportOptionParserTests(TestCase):
     ])
     def test_order_asc_parsed_as_boolean(self, order_asc, expected):
         args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: 'last_visit_date', C.QK_EXPORT_ORDER_ASC: order_asc}
-        _, _, order_dir = export.parse_export_options(args)
+        _, _, order_dir = export.parse_export_limits(args)
 
         self.assertEqual(order_dir, expected)
 
