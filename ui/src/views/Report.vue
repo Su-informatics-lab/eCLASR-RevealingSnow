@@ -106,7 +106,7 @@
                 };
             },
             exportUrl() {
-                return this.$api.getExportUrl(this.$store.state.filters);
+                return this.$api.getDownloadUrl(this.$store.state.filters);
             },
         },
     };

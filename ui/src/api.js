@@ -45,7 +45,7 @@ class Api {
         return this.get('/model');
     }
 
-    getExportUrl({ criteria, ymcaSites }, limit) {
+    getDownloadUrl({ criteria, ymcaSites }, limit) {
         const url = `${this.endpoint}/export`;
         let req = request.get(url);
 

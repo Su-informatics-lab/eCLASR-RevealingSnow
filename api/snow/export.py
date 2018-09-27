@@ -50,7 +50,7 @@ def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):
     return patients.head(limit)
 
 
-def export_patients():
+def download_patients():
     sites, cutoffs, filters = parse_ymca_query_args(request.args, site_required=False)
     limit, order_by, order_asc = parse_export_options(filters)
 

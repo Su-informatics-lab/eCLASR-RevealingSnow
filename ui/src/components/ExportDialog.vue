@@ -67,7 +67,7 @@
             startDownload() {
                 const limit = this.$refs.exportForm.getLimitArgs();
 
-                window.location.href = this.$api.getExportUrl(this.$store.state.filters, limit);
+                window.location.href = this.$api.getDownloadUrl(this.$store.state.filters, limit);
             },
         },
         computed: {
