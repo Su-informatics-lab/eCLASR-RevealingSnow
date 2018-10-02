@@ -5,6 +5,13 @@ import tempfile
 from os import path
 from unittest import TestCase
 
+from snow.app import create_app
+from snow.config import Configuration
+
+
+class TestConfig(Configuration):
+    pass
+
 
 class TestBase(TestCase):
     def setUp(self):
@@ -19,6 +26,12 @@ class TestBase(TestCase):
 
         if self.tmpdir is not None:
             shutil.rmtree(self.tmpdir)
+
+    def create_app(self, config=None):
+        if config is None:
+            config = TestConfig
+
+        return create_app(config)
 
     def get_data_folder(self):
         test_file = inspect.getfile(self.__class__)

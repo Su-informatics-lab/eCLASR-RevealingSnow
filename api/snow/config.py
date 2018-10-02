@@ -29,3 +29,8 @@ class Configuration(metaclass=MetaFlaskEnv):
 
     LOGGING_CONFIG_FILE = 'logging.yaml'
     SCREENING_DATA_FILE = "screening.csv"
+
+    TRACKING_API_URL_BASE = None
+    TRACKING_API_EXPORT_PATH = None
+    TRACKING_API_AUTH_USER = None
+    TRACKING_API_AUTH_PASS = None

@@ -29,14 +29,14 @@ def log_request_info():
     )
 
 
-def create_app():
+def create_app(configuration=None):
     from snow import config
     from snow import query
     from snow import model
     from snow.ptscreen import pscr
 
     app = Flask(__name__)
-    app.config.from_object(config.Configuration)
+    app.config.from_object(configuration or config.Configuration)
 
     _setup_logging(app.config[C.LOGGING_CONFIG_FILE])
     app.before_request(log_request_info)
