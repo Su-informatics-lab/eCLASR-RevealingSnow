@@ -2,6 +2,11 @@
     <div class="snow-export-dialog">
         <sweet-modal ref="exportDialog"
                      title="Export Patients">
+            <div class="snow-export-error alert alert-danger"
+                 v-if="error !== null">
+                Export Failed: {{ errorReason }}
+            </div>
+
             <export-form ref="exportForm"
                          :max-export-count="maxExportCount"
             />
@@ -9,6 +14,13 @@
             <button slot="button"
                     type="button"
                     class="btn btn-secondary"
+                    @click="startExport">
+                Export to Tracking System
+            </button>
+
+            <button slot="button"
+                    type="button"
+                    class="btn btn-primary"
                     @click="startDownload">
                 Download
             </button>
@@ -23,7 +35,6 @@
                 Export Patients
             </button>
         </div>
-
     </div>
 </template>
 
@@ -32,11 +43,20 @@
     .sweet-title > h2 {
         line-height: inherit;
     }
+
+    .sweet-buttons > button {
+        margin-left: 0.5em;
+        margin-right: 0.5em;
+    }
 </style>
 
 <style scoped>
     .snow-export-dialog {
 
+    }
+
+    .snow-export-error {
+        padding: 1em;
     }
 
     .export-button {
@@ -60,14 +80,38 @@
             SweetModalTab,
             ExportForm,
         },
+        data() {
+            return {
+                error: null,
+                errorReason: null,
+            };
+        },
         methods: {
             showDialog() {
+                this.error = null;
                 this.$refs.exportDialog.open();
+            },
+            closeDialog() {
+                this.error = null;
+                this.$refs.exportDialog.close();
             },
             startDownload() {
                 const limit = this.$refs.exportForm.getLimitArgs();
 
                 window.location.href = this.$api.getDownloadUrl(this.$store.state.filters, limit);
+            },
+            startExport() {
+                const limit = this.$refs.exportForm.getLimitArgs();
+
+                this.$api.exportToRemoteTrackingSystem(this.$store.state.filters, limit)
+                    .then(() => {
+                        this.error = null;
+                        this.closeDialog();
+                    }, (error) => {
+                        console.log(`Failed: ${error}`);
+                        this.error = error;
+                        this.errorReason = error.response.text;
+                    });
             },
         },
         computed: {
