@@ -18,9 +18,22 @@ class TrackingSystemTests(TestBase):
         self.app = self.create_app(TrackingConfig)
         self.tracking = tracking.TrackingSystem(self.app)
 
+    def test_initializing_tracking_system_with_invalid_config_raises_exception(self):
+        class BadConfig(TestConfig):
+            pass
+
+        with self.assertRaises(exc.RSConfigError) as e:
+            app = self.create_app(BadConfig)
+            tracking.TrackingSystem(app)
+
+        self.assertIn('missing required configuration value for tracking system integration', str(e.exception))
+
+    def _prepare_valid_response(self):
+        responses.add(responses.POST, 'http://localhost/ehr/export', json='')
+
     @responses.activate
     def test_export_posts_to_configured_url(self):
-        responses.add(responses.POST, 'http://localhost/ehr/export')
+        self._prepare_valid_response()
         self.tracking.export_data(None)
 
         self.assertEqual(len(responses.calls), 1)
@@ -28,7 +41,7 @@ class TrackingSystemTests(TestBase):
 
     @responses.activate
     def test_export_posts_with_authorization_header(self):
-        responses.add(responses.POST, 'http://localhost/ehr/export')
+        self._prepare_valid_response()
         self.tracking.export_data(None)
 
         headers = responses.calls[0].request.headers
@@ -37,7 +50,7 @@ class TrackingSystemTests(TestBase):
 
     @responses.activate
     def test_export_posts_with_expected_headers(self):
-        responses.add(responses.POST, 'http://localhost/ehr/export')
+        self._prepare_valid_response()
         self.tracking.export_data(None)
 
         headers = responses.calls[0].request.headers
@@ -46,17 +59,32 @@ class TrackingSystemTests(TestBase):
 
     @responses.activate
     def test_export_posts_with_json_payload_as_body(self):
-        responses.add(responses.POST, 'http://localhost/ehr/export')
+        self._prepare_valid_response()
         self.tracking.export_data({'foo': 'bar'})
 
         self.assertEqual(responses.calls[0].request.body, b'{"foo": "bar"}')
 
-    def test_initializing_tracking_system_with_invalid_config_raises_exception(self):
-        class BadConfig(TestConfig):
-            pass
+    @responses.activate
+    def test_export_reponse_with_non_json_body_raises_exception(self):
+        responses.add(responses.POST, 'http://localhost/ehr/export', body='foobar')
 
-        with self.assertRaises(exc.RSError) as e:
-            app = self.create_app(BadConfig)
-            tracking.TrackingSystem(app)
+        with self.assertRaises(exc.RSExportError) as e:
+            self.tracking.export_data({'foo': 'bar'})
 
-        self.assertIn('missing required configuration value for tracking system integration', str(e.exception))
+        self.assertIn('export to tracking failed: expected JSON response from remote API', str(e.exception))
+
+    @responses.activate
+    def test_export_reponse_returns_json_body(self):
+        responses.add(responses.POST, 'http://localhost/ehr/export', json='foobar')
+
+        response = self.tracking.export_data({'foo': 'bar'})
+        self.assertEqual(response, 'foobar')
+
+    @responses.activate
+    def test_export_status_not_200_raises_exception(self):
+        responses.add(responses.POST, 'http://localhost/ehr/export', json='foobar', status=400)
+
+        with self.assertRaises(exc.RSExportError) as e:
+            self.tracking.export_data({'foo': 'bar'})
+
+        self.assertIn('export to tracking failed: unexpected status code', str(e.exception))

@@ -1,3 +1,4 @@
+import logging
 import time
 import uuid
 
@@ -5,14 +6,15 @@ import pandas as pd
 from flask import request
 
 from snow import constants as  C
+from snow import exc
 from snow import ymca
-from snow.exc import RSError
 from snow.filters import validate_filters
 from snow.ptscreen import pscr
 from snow.query import parse_ymca_query_args
-from snow.util import make_zip_response, parse_boolean, to_yaml, jsonify
-from snow.ymca import SiteMode
+from snow.tracking import tracking
+from snow.util import make_zip_response, parse_boolean, to_yaml, make_json_response
 
+logger = logging.getLogger(__name__)
 
 class ExportOptions(object):
     def __init__(self,
@@ -38,7 +40,7 @@ class ExportOptions(object):
                 for site, cutoff in zip(self.sites, self.cutoffs)
             }
         elif self.sites != self.cutoffs:
-            raise RSError('sites and cutoffs must both be present or both be None')
+            raise exc.RSError('sites and cutoffs must both be present or both be None')
 
         if self.limit is not None:
             metadata[C.PATIENT_SUBSET] = {
@@ -81,7 +83,7 @@ def parse_export_limits(args: dict):
 
     if C.QK_EXPORT_LIMIT in args:
         if C.QK_EXPORT_ORDER_BY not in args:
-            raise RSError('export limit requires {} argument'.format(C.QK_EXPORT_ORDER_BY))
+            raise exc.RSError('export limit requires {} argument'.format(C.QK_EXPORT_ORDER_BY))
 
         limit = args.pop(C.QK_EXPORT_LIMIT)
         order_by = args.pop(C.QK_EXPORT_ORDER_BY)
@@ -90,10 +92,10 @@ def parse_export_limits(args: dict):
         try:
             limit = int(limit)
         except ValueError:
-            raise RSError("invalid export limit '{}'".format(limit))
+            raise exc.RSError("invalid export limit '{}'".format(limit))
 
         if order_by not in C.QK_EXPORT_ORDER_VALUES:
-            raise RSError("invalid order field '{}'".format(order_by))
+            raise exc.RSError("invalid order field '{}'".format(order_by))
 
     return limit, order_by, order_asc
 
@@ -110,10 +112,10 @@ def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):
         return patients
 
     if not order_by:
-        raise RSError('order required when limit is specified')
+        raise exc.RSError('order required when limit is specified')
 
     if order_by not in patients.columns:
-        raise RSError("missing order column: '{}'".format(order_by))
+        raise exc.RSError("missing order column: '{}'".format(order_by))
 
     patients = patients.sort_values(by=[order_by], ascending=order_asc)
     return patients.head(limit)
@@ -127,7 +129,7 @@ def prepare_export_data():
     patients = pscr.filter_patients(opts.filters)
 
     if opts.sites is not None:
-        patients = ymca.filter_by_distance(patients, opts.sites, opts.cutoffs, mode=SiteMode.ANY)
+        patients = ymca.filter_by_distance(patients, opts.sites, opts.cutoffs, mode=ymca.SiteMode.ANY)
 
     if opts.limit is not None:
         patients = limit_patient_set(patients, opts.limit, opts.order_by, opts.order_asc)
@@ -143,5 +145,13 @@ def download_patients():
 
 def export_patients():
     export_data = prepare_export_data()
+    payload = export_data.create_export_payload()
 
-    return jsonify(export_data.create_export_payload())
+    try:
+        return make_json_response(tracking.export_data(payload))
+    except exc.RSExportError as e:
+        logger.error('export failed: %s', e)
+        return make_json_response(str(e), status=500)
+    except Exception as e:
+        logger.error('export failed: %s', e)
+        return make_json_response('export failed for unrecognized reason', status=500)

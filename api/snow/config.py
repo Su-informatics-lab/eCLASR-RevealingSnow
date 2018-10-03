@@ -34,3 +34,4 @@ class Configuration(metaclass=MetaFlaskEnv):
     TRACKING_API_EXPORT_PATH = None
     TRACKING_API_AUTH_USER = None
     TRACKING_API_AUTH_PASS = None
+    TRACKING_API_TIMEOUT = 5

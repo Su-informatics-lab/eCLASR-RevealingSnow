@@ -8,3 +8,11 @@ class RSError(Exception):
 
     def __str__(self):
         return self.msg
+
+
+class RSConfigError(RSError):
+    pass
+
+
+class RSExportError(RSError):
+    pass

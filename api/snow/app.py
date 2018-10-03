@@ -4,7 +4,7 @@ import os
 import yaml
 from flask import Flask, request
 
-from snow import constants as C, export
+from snow import constants as C
 
 
 # Adapted From: https://fangpenlin.com/posts/2012/08/26/good-logging-practice-in-python/
@@ -33,6 +33,9 @@ def create_app(configuration=None):
     from snow import config
     from snow import query
     from snow import model
+    from snow import export
+
+    from snow.tracking import tracking
     from snow.ptscreen import pscr
 
     app = Flask(__name__)
@@ -43,6 +46,7 @@ def create_app(configuration=None):
 
     pscr.init_app(app)
     model.cdm.init_app(app)
+    tracking.init_app(app)
 
     app.add_url_rule('/stats', 'stats', query.patient_stats)
     app.add_url_rule('/download', 'download', export.download_patients)
