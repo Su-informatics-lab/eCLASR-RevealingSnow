@@ -46,7 +46,7 @@ class Api {
     }
 
     getDownloadUrl({ criteria, ymcaSites }, limit) {
-        const url = `${this.endpoint}/export`;
+        const url = `${this.endpoint}/download`;
         let req = request.get(url);
 
         if (!_.isEmpty(criteria)) {
