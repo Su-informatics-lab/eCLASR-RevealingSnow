@@ -50,7 +50,7 @@ def create_app(configuration=None):
 
     app.add_url_rule('/stats', 'stats', query.patient_stats)
     app.add_url_rule('/download', 'download', export.download_patients)
-    app.add_url_rule('/export', 'export', export.export_patients)
+    app.add_url_rule('/export', 'export', export.export_patients, methods=['POST'])
     app.add_url_rule('/ymca_stats', 'ymca_stats', query.ymca_stats)
     app.add_url_rule('/model', 'model', model.get_criteria_data_model)
 
