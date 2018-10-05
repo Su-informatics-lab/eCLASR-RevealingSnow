@@ -65,7 +65,7 @@
             />
 
             <select-filter id="pt_status"
-                           label="Patient Status"
+                           label="Recruitment Status"
                            :enabled="false"/>
         </div>
 
