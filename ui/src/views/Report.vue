@@ -25,18 +25,22 @@
         <report-panel label="Demographics"
                       class="demographics">
             <dem-chart stats-key="race"
+                       title="Race"
                        :width="300"
                        :height="200"/>
 
             <dem-chart stats-key="sex"
+                       title="Sex"
                        :width="300"
                        :height="200"/>
 
             <dem-chart stats-key="ethnicity"
+                       title="Ethnicity"
                        :width="300"
                        :height="200"/>
 
             <histogram :data="ageData"
+                       title="Age"
                        :width="900"
                        :height="200"
                        :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"/>

@@ -5,6 +5,7 @@
                    :height="height"
                    :data-legend="legend"
                    :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"
+                   :title="title"
         />
     </div>
 </template>
@@ -25,6 +26,7 @@
             statsKey: { type: String, required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
+            title: { type: String, default: '' },
         },
         computed: {
             unfiltered() {
