@@ -43,6 +43,7 @@
                        title="Age"
                        :width="900"
                        :height="200"
+                       :chart-options="{legend: true}"
                        :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"/>
         </report-panel>
 

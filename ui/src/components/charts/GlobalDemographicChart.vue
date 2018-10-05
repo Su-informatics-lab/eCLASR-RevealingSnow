@@ -5,6 +5,7 @@
                    :height="height"
                    :data-legend="legend"
                    :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"
+                   :options="barChartOptions"
                    :title="title"
         />
     </div>
@@ -17,6 +18,7 @@
 </style>
 
 <script>
+    import _ from 'lodash';
     import BarChart from './BarChart';
 
 
@@ -27,6 +29,12 @@
             width: { type: Number, required: true },
             height: { type: Number, required: true },
             title: { type: String, default: '' },
+            chartOptions: {
+                type: Object,
+                default() {
+                    return {};
+                },
+            },
         },
         computed: {
             unfiltered() {
@@ -43,6 +51,11 @@
             },
             legend() {
                 return this.$store.getters.getLegendObject(this.statsKey);
+            },
+            barChartOptions() {
+                return _.defaultsDeep(this.chartOptions, {
+                    legend: true,
+                });
             },
         },
         components: {
