@@ -11,6 +11,7 @@
                    :title="transformedTitle"
                    :x-axis-label="xAxisLabel"
                    :y-axis-label="yAxisLabel"
+                   :percent-by-group="percentByGroup"
                    @resized="$emit('resized')"
         />
     </div>
@@ -52,6 +53,10 @@
             yAxisLabel: {
                 type: String,
                 default: '# of Patients',
+            },
+            percentByGroup: {
+                type: Boolean,
+                default: true,
             },
         },
         components: {

@@ -53,6 +53,13 @@
         });
     }
 
+    function transformData(data, orderFn, transformFn) {
+        return _.mapValues(data, (d) => {
+            const sorted = orderFn(d);
+            return transformFn(sorted);
+        });
+    }
+
     function getMissingKeys(oldData, newData) {
         if (!oldData) {
             return [];
@@ -70,6 +77,7 @@
                 chart: null,
                 expanded: false,
                 alignedData: null,
+                transformedData: null,
             };
         },
         props: {
@@ -120,6 +128,10 @@
                 type: String,
                 default: '',
             },
+            percentByGroup: {
+                type: Boolean,
+                default: true,
+            },
         },
         watch: {
             data(value) {
@@ -159,6 +171,7 @@
                 tooltip: {
                     format: {
                         title: this.getTooltipTitle,
+                        value: this.getTooltipValue,
                     },
                 },
             });
@@ -201,8 +214,12 @@
                 this.unsetDataGroups(missingKeys);
 
                 this.alignedData = aligned;
+                this.transformedData = transformData(
+                    this.alignedData,
+                    this.orderFunction, this.transformFunction,
+                );
 
-                _.forIn(aligned, (values, key) => this.setDataGroup(key, values));
+                _.forIn(this.transformedData, (values, key) => this.setDataGroup(key, values));
 
                 if (this.groupLegend) {
                     this.chart.data.names(this.groupLegend);
@@ -213,10 +230,8 @@
                 }
             },
             setDataGroup(group, value) {
-                const sorted = this.orderFunction(value);
-                const xformed = this.transformFunction(sorted);
-                const categories = _.map(xformed, 'name');
-                const values = _.map(xformed, 'value');
+                const categories = _.map(value, 'name');
+                const values = _.map(value, 'value');
 
                 this.chart.load({
                     columns: [
@@ -241,6 +256,19 @@
 
                 return key;
             },
+            getTooltipValue(name, ratio, id, index) {
+                const groupTotalFn = this.groupTotalFunction;
+                const groupTotal = groupTotalFn(id, index);
+                const percentage = _.round(100.0 * (name / groupTotal), 2);
+
+                return `${name} (${percentage}%)`;
+            },
+            totalByGroup(id) {
+                return _.sumBy(this.transformedData[id], 'value');
+            },
+            totalByIndex(id, index) {
+                return _.sumBy(_.map(this.transformedData, d => d[index]), 'value');
+            },
             toggleSizeMode() {
                 this.expanded = !this.expanded;
 
@@ -261,6 +289,9 @@
         computed: {
             toggleIcon() {
                 return this.expanded ? faCompress : faExpand;
+            },
+            groupTotalFunction() {
+                return this.percentByGroup ? this.totalByGroup : this.totalByIndex;
             },
         },
         components: {

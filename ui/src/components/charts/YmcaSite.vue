@@ -23,6 +23,7 @@
                                            :cumulative="true"
                                            :title="key"
                                            :allow-resize="true"
+                                           :percent-by-group="false"
                                            @resized="layout"
                     />
                 </div>
