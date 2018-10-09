@@ -44,7 +44,10 @@
                        :width="900"
                        :height="200"
                        :chart-options="{legend: true}"
-                       :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"/>
+                       :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"
+                       x-axis-label="Patient Age"
+                       y-axis-label="# of Patients"
+            />
         </report-panel>
 
         <report-panel label="Conditions"

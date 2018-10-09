@@ -7,6 +7,7 @@
                    :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"
                    :options="barChartOptions"
                    :title="title"
+                   y-axis-label="# of Patients"
         />
     </div>
 </template>

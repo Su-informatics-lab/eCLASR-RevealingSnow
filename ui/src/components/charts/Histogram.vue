@@ -12,6 +12,8 @@
                    :title="title"
                    :group-legend="groupLegend"
                    :group-colors="groupColors"
+                   :x-axis-label="xAxisLabel"
+                   :y-axis-label="yAxisLabel"
                    @resized="$emit('resized')"
         />
     </div>
@@ -56,6 +58,14 @@
                 default() {
                     return {};
                 },
+            },
+            xAxisLabel: {
+                type: String,
+                default: '',
+            },
+            yAxisLabel: {
+                type: String,
+                default: '',
             },
         },
         computed: {

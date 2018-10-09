@@ -9,6 +9,8 @@
                    :chart-options="{bar: {width: {ratio: 0.9}}, legend: true}"
                    :allow-resize="allowResize"
                    :title="transformedTitle"
+                   :x-axis-label="xAxisLabel"
+                   :y-axis-label="yAxisLabel"
                    @resized="$emit('resized')"
         />
     </div>
@@ -42,6 +44,14 @@
                 default() {
                     return {};
                 },
+            },
+            xAxisLabel: {
+                type: String,
+                default: 'Cumulative Distance',
+            },
+            yAxisLabel: {
+                type: String,
+                default: '# of Patients',
             },
         },
         components: {

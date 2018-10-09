@@ -112,6 +112,14 @@
                     return {};
                 },
             },
+            xAxisLabel: {
+                type: String,
+                default: '',
+            },
+            yAxisLabel: {
+                type: String,
+                default: '',
+            },
         },
         watch: {
             data(value) {
@@ -134,6 +142,7 @@
                 },
             };
 
+
             const chartConfig = _.defaultsDeep(baseConfig, this.options, {
                 size: {
                     width: this.width,
@@ -153,6 +162,22 @@
                     },
                 },
             });
+
+            if (this.xAxisLabel) {
+                chartConfig.axis.x.label = {
+                    text: this.xAxisLabel,
+                    position: 'outer-right',
+                };
+            }
+
+            if (this.yAxisLabel) {
+                chartConfig.axis.y = {
+                    label: {
+                        text: this.yAxisLabel,
+                        position: 'outer-top',
+                    },
+                };
+            }
 
             if (this.title) {
                 chartConfig.title = {
