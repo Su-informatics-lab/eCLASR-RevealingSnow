@@ -29,7 +29,7 @@ QK_EXPORT_ORDER_VALUES = ['last_visit_date']
 
 # Export
 EXPORT_FILENAME = 'patients.zip'
-EXPORT_FILE_PATIENTS = 'patients.csv'
+EXPORT_FILE_PATIENTS = 'patients.txt'
 EXPORT_FILE_METADATA = 'metadata.yml'
 
 # Demographic Columns
