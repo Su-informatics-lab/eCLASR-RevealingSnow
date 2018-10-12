@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 class ExportOptions(object):
     def __init__(self,
                  sites, cutoffs, filters,
-                 limit, order_by, order_asc):
+                 limit, order_by, order_asc,
+                 label=None, description=None):
         self.sites = sites
         self.cutoffs = cutoffs
         self.filters = filters
@@ -27,6 +28,9 @@ class ExportOptions(object):
         self.limit = limit
         self.order_by = order_by
         self.order_asc = order_asc
+
+        self.label = label
+        self.description = description
 
     def create_metadata(self):
         metadata = {
@@ -48,6 +52,12 @@ class ExportOptions(object):
                 C.QK_EXPORT_ORDER_BY: self.order_by,
                 C.QK_EXPORT_ORDER_ASC: self.order_asc
             }
+
+        if self.label is not None:
+            metadata[C.EXPORT_LABEL] = self.label
+
+        if self.description is not None:
+            metadata[C.EXPORT_DESCRIPTION] = self.description
 
         return metadata
 
@@ -102,11 +112,24 @@ def parse_export_limits(args: dict):
     return limit, order_by, order_asc
 
 
-def parse_export_options(args: dict) -> ExportOptions:
-    sites, cutoffs, filters = parse_ymca_query_args(args, site_required=False)
-    limit, order_by, order_asc = parse_export_limits(filters)
+def parse_export_identifiers(args: dict):
+    label = None
+    description = None
 
-    return ExportOptions(sites, cutoffs, filters, limit, order_by, order_asc)
+    if C.EXPORT_LABEL in args:
+        label = args.pop(C.EXPORT_LABEL)
+    if C.EXPORT_DESCRIPTION in args:
+        description = args.pop(C.EXPORT_DESCRIPTION)
+
+    return label, description
+
+
+def parse_export_options(args: dict) -> ExportOptions:
+    sites, cutoffs, args = parse_ymca_query_args(args, site_required=False)
+    limit, order_by, order_asc = parse_export_limits(args)
+    label, description = parse_export_identifiers(args)
+
+    return ExportOptions(sites, cutoffs, args, limit, order_by, order_asc, label=label, description=description)
 
 
 def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):

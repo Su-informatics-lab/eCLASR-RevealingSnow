@@ -17,6 +17,8 @@ RSENV_FILE = 'RSENV_FILE'
 FILTERS = 'filters'
 YMCA_SITES = 'ymca_sites'
 PATIENT_SUBSET = 'patient_subset'
+EXPORT_LABEL = 'label'
+EXPORT_DESCRIPTION = 'description'
 
 # Special Query Argument Keys
 QK_SITE = 'site'

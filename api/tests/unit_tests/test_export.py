@@ -145,8 +145,8 @@ class LimitPatientsTests(TestCase):
 
 
 class ExportOptionTests(TestCase):
-    def _create_metadata(self, site, cutoff, filters, limit=None, order_by=None, order_asc=None):
-        opts = export.ExportOptions(site, cutoff, filters, limit, order_by, order_asc)
+    def _create_metadata(self, site, cutoff, filters, limit=None, order_by=None, order_asc=None, **kwargs):
+        opts = export.ExportOptions(site, cutoff, filters, limit, order_by, order_asc, **kwargs)
         return opts.create_metadata()
 
     def test_empty_metadata(self):
@@ -223,6 +223,27 @@ class ExportOptionTests(TestCase):
         actual = self._create_metadata(None, None, None, 50, 'foo', True)
 
         self.assertEqual(actual, expected)
+
+    def test_metadata_with_label(self):
+        expected = {
+            C.FILTERS: None,
+            C.EXPORT_LABEL: 'foobar'
+        }
+
+        actual = self._create_metadata(None, None, None, label='foobar')
+
+        self.assertEqual(actual, expected)
+
+    def test_metadata_with_description(self):
+        expected = {
+            C.FILTERS: None,
+            C.EXPORT_DESCRIPTION: 'foobar'
+        }
+
+        actual = self._create_metadata(None, None, None, description='foobar')
+
+        self.assertEqual(actual, expected)
+
 
 
 class ExportDataTests(TestCase):
