@@ -1,5 +1,19 @@
 <template>
     <div class="snow-export-form">
+        <div class="form-group">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Label (Optional)"
+                   v-model="exportLabel">
+        </div>
+
+        <div class="form-group">
+            <textarea class="form-control"
+                      placeholder="Description (Optional)"
+                      rows="3"
+                      v-model="exportDescription"/>
+        </div>
+
         <div class="form-check">
             <input class="form-check-input"
                    type="radio"
@@ -65,6 +79,9 @@
 </style>
 
 <script>
+    import _ from 'lodash';
+
+
     export default {
         name: 'ExportForm',
         props: {
@@ -79,6 +96,8 @@
                 exportCount: 1000,
                 orderColumn: 'last_visit_date',
                 orderAscending: false,
+                exportLabel: '',
+                exportDescription: '',
             };
         },
         computed: {
@@ -87,16 +106,21 @@
             },
         },
         methods: {
-            getLimitArgs() {
+            getExportArgs() {
+                const exportArgs = {
+                    label: this.exportLabel,
+                    description: this.exportDescription,
+                };
+
                 if (!this.isSubsetSelected) {
-                    return {};
+                    return exportArgs;
                 }
 
-                return {
+                return _.defaults(exportArgs, {
                     limit: this.exportCount,
                     order_by: this.orderColumn,
                     order_asc: this.orderAscending,
-                };
+                });
             },
         },
     };

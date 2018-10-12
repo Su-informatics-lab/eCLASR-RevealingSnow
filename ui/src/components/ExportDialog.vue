@@ -96,14 +96,15 @@
                 this.$refs.exportDialog.close();
             },
             startDownload() {
-                const limit = this.$refs.exportForm.getLimitArgs();
+                const exportArgs = this.$refs.exportForm.getExportArgs();
 
-                window.location.href = this.$api.getDownloadUrl(this.$store.state.filters, limit);
+                window.location.href = this.$api.getDownloadUrl(
+                    this.$store.state.filters, exportArgs);
             },
             startExport() {
-                const limit = this.$refs.exportForm.getLimitArgs();
+                const exportArgs = this.$refs.exportForm.getExportArgs();
 
-                this.$api.exportToRemoteTrackingSystem(this.$store.state.filters, limit)
+                this.$api.exportToRemoteTrackingSystem(this.$store.state.filters, exportArgs)
                     .then(() => {
                         this.error = null;
                         this.closeDialog();
@@ -111,7 +112,7 @@
                         console.log(`Failed: ${error}`);
                         this.error = error;
                         this.errorReason = error.response.text;
-                    });
+                });
             },
         },
         computed: {

@@ -10,7 +10,7 @@ function buildMultipleYmcaSiteQuery(ymcaSites) {
     return { site, cutoff };
 }
 
-function buildDownloadAndExportRequest(r, filters, limit) {
+function buildDownloadAndExportRequest(r, filters, exportOptions) {
     let req = r;
     const { criteria, ymcaSites } = filters;
 
@@ -20,8 +20,8 @@ function buildDownloadAndExportRequest(r, filters, limit) {
     if (!_.isEmpty(ymcaSites)) {
         req = req.query(buildMultipleYmcaSiteQuery(ymcaSites));
     }
-    if (!_.isEmpty(limit)) {
-        req = req.query(limit);
+    if (!_.isEmpty(exportOptions)) {
+        req = req.query(exportOptions);
     }
 
     return req;
@@ -62,11 +62,11 @@ class Api {
         return this.get('/model');
     }
 
-    getDownloadUrl(filters, limit) {
+    getDownloadUrl(filters, exportOptions) {
         const url = `${this.endpoint}/download`;
         let req = request.get(url);
 
-        req = buildDownloadAndExportRequest(req, filters, limit);
+        req = buildDownloadAndExportRequest(req, filters, exportOptions);
 
         // Let SuperAgent do the heavy lifting of assembling the query URL
         // eslint-disable-next-line no-underscore-dangle
@@ -75,11 +75,11 @@ class Api {
         return req.url;
     }
 
-    exportToRemoteTrackingSystem(filters, limit) {
+    exportToRemoteTrackingSystem(filters, exportOptions) {
         const url = `${this.endpoint}/export`;
         let req = request.post(url);
 
-        req = buildDownloadAndExportRequest(req, filters, limit);
+        req = buildDownloadAndExportRequest(req, filters, exportOptions);
 
         return new Promise((resolve, reject) => {
             req.set('Accept', 'application/json')
