@@ -20,7 +20,7 @@ class ExportOptions(object):
     def __init__(self,
                  sites, cutoffs, filters,
                  limit, order_by, order_asc,
-                 label=None, description=None):
+                 label=None, description=None, userid=None):
         self.sites = sites
         self.cutoffs = cutoffs
         self.filters = filters
@@ -31,6 +31,7 @@ class ExportOptions(object):
 
         self.label = label
         self.description = description
+        self.userid = userid
 
     def create_metadata(self):
         metadata = {
@@ -58,6 +59,9 @@ class ExportOptions(object):
 
         if self.description is not None:
             metadata[C.EXPORT_DESCRIPTION] = self.description
+
+        if self.userid is not None:
+            metadata[C.EXPORT_USER] = self.userid
 
         return metadata
 
@@ -116,20 +120,25 @@ def parse_export_identifiers(args: dict):
     label = None
     description = None
 
+    # Just a placeholder for now
+    userid = C.EXPORT_USER
+
     if C.EXPORT_LABEL in args:
         label = args.pop(C.EXPORT_LABEL)
     if C.EXPORT_DESCRIPTION in args:
         description = args.pop(C.EXPORT_DESCRIPTION)
 
-    return label, description
+    return label, description, userid
 
 
 def parse_export_options(args: dict) -> ExportOptions:
     sites, cutoffs, args = parse_ymca_query_args(args, site_required=False)
     limit, order_by, order_asc = parse_export_limits(args)
-    label, description = parse_export_identifiers(args)
+    label, description, userid = parse_export_identifiers(args)
 
-    return ExportOptions(sites, cutoffs, args, limit, order_by, order_asc, label=label, description=description)
+    return ExportOptions(sites, cutoffs, args,
+                         limit, order_by, order_asc,
+                         label=label, description=description, userid=userid)
 
 
 def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):

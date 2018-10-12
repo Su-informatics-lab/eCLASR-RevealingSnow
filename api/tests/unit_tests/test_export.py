@@ -244,6 +244,16 @@ class ExportOptionTests(TestCase):
 
         self.assertEqual(actual, expected)
 
+    def test_user_in_metadata(self):
+        expected = {
+            C.FILTERS: None,
+            C.EXPORT_USER: 'foobar'
+        }
+
+        actual = self._create_metadata(None, None, None, userid='foobar')
+
+        self.assertEqual(actual, expected)
+
 
 
 class ExportDataTests(TestCase):

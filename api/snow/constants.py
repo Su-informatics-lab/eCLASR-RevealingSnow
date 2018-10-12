@@ -19,6 +19,7 @@ YMCA_SITES = 'ymca_sites'
 PATIENT_SUBSET = 'patient_subset'
 EXPORT_LABEL = 'label'
 EXPORT_DESCRIPTION = 'description'
+EXPORT_USER = 'userid'
 
 # Special Query Argument Keys
 QK_SITE = 'site'
