@@ -25,10 +25,13 @@ EXPORT_USER = 'userid'
 QK_SITE = 'site'
 QK_CUTOFF = 'cutoff'
 
+QK_LIMIT_LAST_VISIT_DATE = 'last_visit_date'
+QK_LIMIT_CLOSEST_YMCA = 'closest_ymca'
+
 QK_EXPORT_LIMIT = 'limit'
 QK_EXPORT_ORDER_BY = 'order_by'
 QK_EXPORT_ORDER_ASC = 'order_asc'
-QK_EXPORT_ORDER_VALUES = ['last_visit_date']
+QK_EXPORT_ORDER_VALUES = [QK_LIMIT_LAST_VISIT_DATE, QK_LIMIT_CLOSEST_YMCA]
 
 # Export
 EXPORT_FILENAME = 'patients.zip'

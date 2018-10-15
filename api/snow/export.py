@@ -141,12 +141,20 @@ def parse_export_options(args: dict) -> ExportOptions:
                          label=label, description=description, userid=userid)
 
 
-def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc):
+def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc, sites=None):
     if limit is None:
         return patients
 
     if not order_by:
         raise exc.RSError('order required when limit is specified')
+
+    # Closest YMCA is a synthetic column based on the YMCA sites included in the query
+    if order_by == C.QK_LIMIT_CLOSEST_YMCA:
+        if sites is None:
+            raise exc.RSError('at least one YMCA site must be selected when limiting by closest YMCA site')
+
+        closest_site = patients[sites].min(axis=1)
+        patients[C.QK_LIMIT_CLOSEST_YMCA] = closest_site
 
     if order_by not in patients.columns:
         raise exc.RSError("missing order column: '{}'".format(order_by))
@@ -166,7 +174,7 @@ def prepare_export_data():
         patients = ymca.filter_by_distance(patients, opts.sites, opts.cutoffs, mode=ymca.SiteMode.ANY)
 
     if opts.limit is not None:
-        patients = limit_patient_set(patients, opts.limit, opts.order_by, opts.order_asc)
+        patients = limit_patient_set(patients, opts.limit, opts.order_by, opts.order_asc, opts.sites)
 
     return ExportData(opts, patients)
 
