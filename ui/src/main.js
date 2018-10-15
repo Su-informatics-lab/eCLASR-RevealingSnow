@@ -5,6 +5,7 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Vue from 'vue';
+import VueClip from 'vue-clip';
 
 import store from './store';
 
@@ -14,6 +15,8 @@ import Api from './api';
 
 const endpoint = process.env.API_ENDPOINT || '';
 Vue.use(Api, { endpoint });
+
+Vue.use(VueClip);
 
 
 /* eslint-disable no-new */

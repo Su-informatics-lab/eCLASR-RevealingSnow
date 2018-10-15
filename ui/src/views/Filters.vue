@@ -1,5 +1,7 @@
 <template>
     <div class="snow-filter-panel">
+        <metadata-uploader ref="uploader"/>
+
         <div class="snow-condition-filters snow-filter-section">
             <div class="snow-filter-header">
                 <h5>
@@ -49,6 +51,12 @@
                     <li class="bulk-control">
                         <a tabindex="0"
                            @click="resetAll">Reset</a>
+                    </li>
+                    <li class="bulk-control">
+                        <a tabindex="0"
+                           @click="uploadMetadata">
+                            <font-awesome-icon icon="cloud-upload-alt"/>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -138,7 +146,7 @@
     .bulk-control + .bulk-control::before {
         display: inline-block;
         content: "|";
-        padding-right: 0.25em;
+        padding-right: 0.5em;
     }
 
     .snow-filter-legend {
@@ -180,6 +188,7 @@
     import ToggleFilter from '../components/filters/ToggleFilter';
     import DistanceFilter from '../components/filters/DistanceFilter';
     import SelectFilter from '../components/filters/SelectFilter';
+    import MetadataUploader from '../components/MetadataUploader';
 
 
     function flattenToDotNotation(filters) {
@@ -201,6 +210,7 @@
             DistanceFilter,
             FontAwesomeIcon,
             SelectFilter,
+            MetadataUploader,
         },
         data() {
             return {
@@ -228,6 +238,9 @@
             },
             clearYmcaSites() {
                 _.each(this.$refs['ymca-sites'], f => f.setSelected(false));
+            },
+            uploadMetadata() {
+                this.$refs.uploader.showDialog();
             },
             getFilterValue(filter) {
                 return _.get(filter, 'default_value', false);
