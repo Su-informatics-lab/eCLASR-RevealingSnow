@@ -105,7 +105,7 @@
                 state: null,
                 cutoff: null,
                 dateConfig: {
-                    dateFormat: 'Y-m',
+                    dateFormat: 'Y-m-d',
                     allowInput: true,
                 },
             };
