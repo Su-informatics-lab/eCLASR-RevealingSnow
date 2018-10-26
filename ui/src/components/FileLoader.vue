@@ -109,6 +109,9 @@
                 this.files[filename] = content;
                 this.$emit('file-added', filename);
             },
+            getFile(filename) {
+                return this.files[filename];
+            },
         },
     };
 </script>
