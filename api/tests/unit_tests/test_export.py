@@ -42,28 +42,28 @@ class ParseExportLimitTests(TestCase):
 
     def test_invalid_limit_field_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            self._parse_opts('foobar', 'last_visit_date')
+            self._parse_opts('foobar', C.QK_LIMIT_LAST_VISIT_DATE)
 
         self.assertIn('invalid export limit', str(e.exception))
 
     def test_export_limit_and_order_returned(self):
         limit, order_by, _ = export.parse_export_limits({
             C.QK_EXPORT_LIMIT: 50,
-            C.QK_EXPORT_ORDER_BY: 'last_visit_date',
+            C.QK_EXPORT_ORDER_BY: C.QK_LIMIT_LAST_VISIT_DATE,
             'foo': 'bar'
         })
 
         self.assertEqual(limit, 50)
-        self.assertEqual(order_by, 'last_visit_date')
+        self.assertEqual(order_by, C.QK_LIMIT_LAST_VISIT_DATE)
 
     def test_export_limit_and_order_removed_from_args(self):
-        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: 'last_visit_date', 'foo': 'bar'}
+        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: C.QK_LIMIT_LAST_VISIT_DATE, 'foo': 'bar'}
         export.parse_export_limits(args)
 
         self.assertEqual(args, {'foo': 'bar'})
 
     def test_order_asc_defaults_to_false(self):
-        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: 'last_visit_date'}
+        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: C.QK_LIMIT_LAST_VISIT_DATE}
         _, _, order_dir = export.parse_export_limits(args)
 
         self.assertFalse(order_dir)
@@ -80,7 +80,8 @@ class ParseExportLimitTests(TestCase):
         ('T', True)
     ])
     def test_order_asc_parsed_as_boolean(self, order_asc, expected):
-        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: 'last_visit_date', C.QK_EXPORT_ORDER_ASC: order_asc}
+        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: C.QK_LIMIT_LAST_VISIT_DATE,
+            C.QK_EXPORT_ORDER_ASC: order_asc}
         _, _, order_dir = export.parse_export_limits(args)
 
         self.assertEqual(order_dir, expected)
@@ -92,13 +93,15 @@ class LimitPatientsTests(TestCase):
 
         data = {
             'patient_num': [1, 2, 3],
-            'last_visit_date': ['2017-01-01', '2016-06-01', '2018-08-08'],
+            C.QK_LIMIT_LAST_VISIT_DATE: ['2017-01-01', '2016-06-01', '2018-08-08'],
+            'ymca_foo': [2, 3, 6],
+            'ymca_bar': [4, 1, 5]
         }
 
         self.data = pd.DataFrame(data=data)
 
-    def _get_subset_patient_nums(self, limit, order_by, order_asc=False):
-        result = export.limit_patient_set(self.data, limit, order_by, order_asc)
+    def _get_subset_patient_nums(self, limit, order_by, order_asc=False, sites=None):
+        result = export.limit_patient_set(self.data, limit, order_by, order_asc, sites)
         return set(result['patient_num'].values)
 
     def test_no_limit_returns_same_data(self):
@@ -112,11 +115,11 @@ class LimitPatientsTests(TestCase):
         self.assertIn('order required when limit is specified', str(e.exception))
 
     def test_limit_greater_than_length_returns_same_data(self):
-        pt_nums = self._get_subset_patient_nums(5, 'last_visit_date')
+        pt_nums = self._get_subset_patient_nums(5, C.QK_LIMIT_LAST_VISIT_DATE)
         self.assertEqual(pt_nums, {1, 2, 3})
 
     def test_limit_zero_returns_empty_data_frame(self):
-        result = export.limit_patient_set(self.data, 0, 'last_visit_date', False)
+        result = export.limit_patient_set(self.data, 0, C.QK_LIMIT_LAST_VISIT_DATE, False)
         self.assertEqual(result.size, 0)
 
     def test_order_by_missing_column_raises_exception(self):
@@ -130,8 +133,8 @@ class LimitPatientsTests(TestCase):
         (2, {1, 3}),
         (3, {1, 2, 3})
     ])
-    def test_limit_returns_patients_with_highest_values(self, limit, expected):
-        actual = self._get_subset_patient_nums(limit, 'last_visit_date')
+    def test_visit_date_limit_returns_patients_with_highest_values(self, limit, expected):
+        actual = self._get_subset_patient_nums(limit, C.QK_LIMIT_LAST_VISIT_DATE)
         self.assertEqual(actual, expected)
 
     @parameterized.expand([
@@ -139,8 +142,36 @@ class LimitPatientsTests(TestCase):
         (2, {1, 2}),
         (3, {1, 2, 3})
     ])
-    def test_limit_with_asc_true_returns_patients_with_lowest_values(self, limit, expected):
-        actual = self._get_subset_patient_nums(limit, 'last_visit_date', True)
+    def test_visit_date_limit_with_asc_true_returns_patients_with_lowest_values(self, limit, expected):
+        actual = self._get_subset_patient_nums(limit, C.QK_LIMIT_LAST_VISIT_DATE, True)
+        self.assertEqual(actual, expected)
+
+    def test_closest_ymca_without_sites_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            self._get_subset_patient_nums(5, C.QK_LIMIT_CLOSEST_YMCA)
+
+        self.assertIn('at least one YMCA site must be selected when limiting by closest YMCA site', str(e.exception))
+
+    def test_closest_ymca_limit_only_uses_requested_sites(self):
+        actual = self._get_subset_patient_nums(1, C.QK_LIMIT_CLOSEST_YMCA, order_asc=True, sites=['ymca_bar'])
+        self.assertEqual(actual, {2})
+
+    @parameterized.expand([
+        (1, {3}),
+        (2, {1, 3}),
+        (3, {1, 2, 3})
+    ])
+    def test_closest_ymca_limit_returns_patients_with_greatest_distance(self, limit, expected):
+        actual = self._get_subset_patient_nums(limit, C.QK_LIMIT_CLOSEST_YMCA, sites=['ymca_foo', 'ymca_bar'])
+        self.assertEqual(actual, expected)
+
+    @parameterized.expand([
+        (1, {2}),
+        (2, {1, 2}),
+        (3, {1, 2, 3})
+    ])
+    def test_closest_ymca_limit_with_asc_returns_patients_with_lowest_distance(self, limit, expected):
+        actual = self._get_subset_patient_nums(limit, C.QK_LIMIT_CLOSEST_YMCA, True, sites=['ymca_foo', 'ymca_bar'])
         self.assertEqual(actual, expected)
 
 

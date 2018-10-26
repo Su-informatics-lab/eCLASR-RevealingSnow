@@ -71,6 +71,11 @@
         return _.difference(oldKeys, newKeys);
     }
 
+    function getMaximumValue(newData) {
+        const values = _.flatMap(newData, d => _.values(_.mapValues(d, 'value')));
+        return _.max(values);
+    }
+
     export default {
         data() {
             return {
@@ -228,6 +233,10 @@
                 if (this.groupColors) {
                     this.chart.data.colors(this.groupColors);
                 }
+
+                // Update the y-axis range manually to work around a bug in Billboard.js
+                const maxValue = getMaximumValue(this.transformedData);
+                this.chart.axis.max({ y: maxValue });
             },
             setDataGroup(group, value) {
                 const categories = _.map(value, 'name');

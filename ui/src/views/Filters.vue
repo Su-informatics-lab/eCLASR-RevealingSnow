@@ -42,7 +42,7 @@
                 <ul class="snow-condition-filter-bulk-controls">
                     <li class="bulk-control">
                         <a tabindex="0"
-                           @click="selectAll">All</a>
+                           @click="resetAll">Reset</a>
                     </li>
                     <li class="bulk-control">
                         <a tabindex="0"
@@ -125,6 +125,7 @@
         list-style: none;
 
         font-size: smaller;
+        float: right;
     }
 
     .snow-condition-filter-bulk-controls a {

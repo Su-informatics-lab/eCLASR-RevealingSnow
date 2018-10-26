@@ -52,6 +52,7 @@
             <select v-model="orderColumn"
                     :disabled="!isSubsetSelected">
                 <option value="last_visit_date">Visit Date</option>
+                <option value="closest_ymca">Closest YMCA Site</option>
             </select>
 
             <select v-model="orderAscending"
