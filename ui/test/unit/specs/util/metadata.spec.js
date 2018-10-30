@@ -81,14 +81,15 @@ describe('createFiltersFromMetadata', () => {
             const metadata = {
                 filters: {
                     clot: { date: '2018-01-01', value: 1 },
-                    bmi: 1,
+                    bmi: 0,
                 },
             };
 
-            test('to match the input', () => {
+            test('to convert values to booleans', () => {
                 const { criteria } = createFiltersFromMetadata(model, metadata);
 
-                expect(_.isEqual(criteria, metadata.filters)).toBeTruthy();
+                expect(criteria.bmi).toEqual(false);
+                expect(criteria.clot.value).toEqual(true);
             });
         });
     });

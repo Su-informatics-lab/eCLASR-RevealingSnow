@@ -2,15 +2,22 @@ import _ from 'lodash';
 import { isDate } from './lang';
 
 
-function isValidCriteriaValue(value) {
+function criteriaValueToBoolean(value, key) {
     const valueAsString = _.toString(value);
 
-    // Must be 0 or 1
-    return valueAsString === '0' || valueAsString === '1';
+    if (valueAsString === '0') {
+        return false;
+    }
+
+    if (valueAsString === '1') {
+        return true;
+    }
+
+    throw new Error(`invalid filter value ('${value}') for filter: ${key}`);
 }
 
 function validateFilter(criteria, filter, key) {
-    let value;
+    let validatedFilter = filter;
 
     // Ensure that the filter is one in the model
     if (!_.has(criteria, key)) {
@@ -29,29 +36,24 @@ function validateFilter(criteria, filter, key) {
             throw new Error(`invalid date format ('${filter.date}') for filter: ${key}`);
         }
 
-        value = filter.value;
+        validatedFilter.value = criteriaValueToBoolean(filter.value, key);
     } else {
         // Verify that the filter isn't an object
         if (_.isObject(filter)) {
             throw new Error(`date supplied for non-date filter: ${key}`);
         }
 
-        value = filter;
+        validatedFilter = criteriaValueToBoolean(filter, key);
     }
 
-    // Verify that its value is valid
-    if (!isValidCriteriaValue(value)) {
-        throw new Error(`invalid filter value ('${value}') for filter: ${key}`);
-    }
+    return validatedFilter;
 }
 
 function getCriteriaFromMetadata(model, filters) {
     const modelCriteria = _.keyBy(model.criteria, 'key');
 
     return _.mapValues(filters, (filter, key) => {
-        validateFilter(modelCriteria, filter, key);
-
-        return filter;
+        return validateFilter(modelCriteria, filter, key);
     });
 }
 
