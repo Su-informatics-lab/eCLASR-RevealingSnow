@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { createFiltersFromMetadata } from '@/store/store-utils';
+import { createFiltersFromMetadata } from '@/util';
 
 // Only the fields of the model that are relevant for metadata
 // conversion are included.

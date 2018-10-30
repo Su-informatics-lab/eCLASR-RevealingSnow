@@ -1,23 +1,12 @@
 import _ from 'lodash';
-import moment from 'moment';
+import { isDate } from './lang';
 
-
-function isDate(value) {
-    return moment(value, 'YYYY-MM-DD', true).isValid();
-}
 
 function isValidCriteriaValue(value) {
     const valueAsString = _.toString(value);
 
     // Must be 0 or 1
     return valueAsString === '0' || valueAsString === '1';
-}
-
-function objectToArray(objdata) {
-    return _.map(_.keys(objdata), key => ({
-        name: key,
-        value: objdata[key],
-    }));
 }
 
 function validateFilter(criteria, filter, key) {
@@ -95,5 +84,5 @@ function createFiltersFromMetadata(model, metadata) {
 }
 
 
-export { objectToArray };
+// eslint-disable-next-line import/prefer-default-export
 export { createFiltersFromMetadata };
