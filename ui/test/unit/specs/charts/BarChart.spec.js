@@ -101,7 +101,7 @@ describe('BarChart.vue', () => {
             chart = new Constructor({ propsData: propsWithLegend }).$mount();
         });
 
-        test('setting data uses group legend to set categories', () => {
+        test('setting data uses group keys to set categories', () => {
             chart.setData({
                 foo: objectToArray({ a: 1, b: 2, c: 3 }),
                 bar: objectToArray({ a: 4, b: 5, c: 6 }),
@@ -110,10 +110,10 @@ describe('BarChart.vue', () => {
             const data = chart.chart.data();
             expect(data).toHaveLength(2);
 
-            expect(data[0].id).toEqual('Foo');
+            expect(data[0].id).toEqual('foo');
             expect(data[0].values).toHaveLength(3);
 
-            expect(data[1].id).toEqual('Bar');
+            expect(data[1].id).toEqual('bar');
             expect(data[1].values).toHaveLength(3);
         });
 
@@ -130,7 +130,7 @@ describe('BarChart.vue', () => {
             const data = chart.chart.data();
             expect(data).toHaveLength(1);
 
-            expect(data[0].id).toEqual('Foo');
+            expect(data[0].id).toEqual('foo');
             expect(data[0].values).toHaveLength(3);
         });
     });
