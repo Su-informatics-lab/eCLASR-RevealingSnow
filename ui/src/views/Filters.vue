@@ -123,7 +123,6 @@
         list-style: none;
 
         font-size: smaller;
-        float: right;
     }
 
     .snow-condition-filter-bulk-controls a {
