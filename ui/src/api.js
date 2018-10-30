@@ -2,6 +2,16 @@ import request from 'superagent';
 import _ from 'lodash';
 
 
+function flattenToDotNotation(filters) {
+    return _.merge(..._.map(filters, (value, key) => {
+        if (typeof value === 'object') {
+            return _.mapKeys(value, (subvalue, subkey) => `${key}.${subkey}`);
+        }
+
+        return _.fromPairs([[key, value]]);
+    }));
+}
+
 function buildMultipleYmcaSiteQuery(ymcaSites) {
     const sitesAndCutoffs = _.values(ymcaSites);
     const site = _.join(_.map(sitesAndCutoffs, 'site'), ',');
@@ -15,7 +25,7 @@ function buildDownloadAndExportRequest(r, filters, exportOptions) {
     const { criteria, ymcaSites } = filters;
 
     if (!_.isEmpty(criteria)) {
-        req = req.query(criteria);
+        req = req.query(flattenToDotNotation(criteria));
     }
     if (!_.isEmpty(ymcaSites)) {
         req = req.query(buildMultipleYmcaSiteQuery(ymcaSites));
@@ -49,12 +59,12 @@ class Api {
         this.endpoint = endpoint;
     }
 
-    getPatientStats(filters) {
-        return this.get('/stats', filters);
+    getPatientStats(criteria) {
+        return this.get('/stats', flattenToDotNotation(criteria));
     }
 
-    getYmcaStats(site, cutoff, filters) {
-        const query = _.merge({ site, cutoff }, filters);
+    getYmcaStats(site, cutoff, criteria) {
+        const query = _.merge({ site, cutoff }, flattenToDotNotation(criteria));
         return this.get('/ymca_stats', query);
     }
 

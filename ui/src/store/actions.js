@@ -1,13 +1,8 @@
 import _ from 'lodash';
+
+import { objectToArray } from '@/util';
+
 import * as types from './mutation-types';
-
-
-function objectToArray(objdata) {
-    return _.map(_.keys(objdata), key => ({
-        name: key,
-        value: objdata[key],
-    }));
-}
 
 
 export default {
@@ -25,9 +20,9 @@ export default {
             commit(types.LOAD_UNFILTERED_STATS, stats);
         });
     },
-    getFilteredStats({ commit }, filters) {
+    getFilteredStats({ commit }, criteria) {
         // eslint-disable-next-line no-underscore-dangle
-        this._vm.$api.getPatientStats(filters).then((result) => {
+        this._vm.$api.getPatientStats(criteria).then((result) => {
             const stats = _.mapValues(result, objectToArray);
             commit(types.LOAD_FILTERED_STATS, stats);
         });

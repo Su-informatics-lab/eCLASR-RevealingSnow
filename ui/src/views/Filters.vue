@@ -1,6 +1,7 @@
 <template>
     <div class="snow-filter-panel">
-        <metadata-uploader ref="uploader"/>
+        <metadata-uploader ref="uploader"
+                           @metadata-uploaded="updateControlsFromMetadata"/>
 
         <div class="snow-condition-filters snow-filter-section">
             <div class="snow-filter-header">
@@ -40,6 +41,7 @@
 
 
                 <ul class="snow-condition-filter-bulk-controls">
+                    <!-- TODO: Fix layout -->
                     <li class="bulk-control">
                         <a tabindex="0"
                            @click="resetAll">Reset</a>
@@ -47,10 +49,6 @@
                     <li class="bulk-control">
                         <a tabindex="0"
                            @click="deselectAll">None</a>
-                    </li>
-                    <li class="bulk-control">
-                        <a tabindex="0"
-                           @click="resetAll">Reset</a>
                     </li>
                     <li class="bulk-control">
                         <a tabindex="0"
@@ -192,16 +190,6 @@
     import MetadataUploader from '../components/MetadataUploader';
 
 
-    function flattenToDotNotation(filters) {
-        return _.merge(..._.map(filters, (value, key) => {
-            if (typeof value === 'object') {
-                return _.mapKeys(value, (subvalue, subkey) => `${key}.${subkey}`);
-            }
-
-            return _.fromPairs([[key, value]]);
-        }));
-    }
-
     const DEBOUNCE_DELAY = 500;
 
     export default {
@@ -222,12 +210,14 @@
         methods: {
             // eslint-disable-next-line func-names
             updateFilters: _.debounce(function () {
-                const criteria = flattenToDotNotation(this.filterValues);
-                this.$store.dispatch('setActiveFilters', { criteria, sites: this.ymcaSites });
+                this.$store.dispatch('setActiveFilters', { criteria: this.filterValues, sites: this.ymcaSites });
             }, DEBOUNCE_DELAY),
+
+            // eslint-disable-next-line func-names
             updateSites: _.debounce(function () {
                 this.$store.dispatch('setActiveSites', { sites: this.ymcaSites });
             }, DEBOUNCE_DELAY),
+
             selectAll() {
                 _.each(this.$refs['toggle-filters'], f => f.setSelected(false));
             },
@@ -242,6 +232,31 @@
             },
             uploadMetadata() {
                 this.$refs.uploader.showDialog();
+            },
+            updateControlsFromMetadata(filters) {
+                this.updateFiltersFromMetadata(filters.criteria);
+                this.updateSitesFromMetadata(filters.sites);
+            },
+            updateFiltersFromMetadata(criteria) {
+                _.each(this.$refs['toggle-filters'], (f) => {
+                    if (_.has(criteria, f.id)) {
+                        f.set(criteria[f.id]);
+                    } else {
+                        // If the criterion is missing, then it's excluded
+                        f.setSelected(null);
+                    }
+                });
+            },
+            updateSitesFromMetadata(sites) {
+                _.each(this.$refs['ymca-sites'], (f) => {
+                    if (_.has(sites, f.id)) {
+                        f.setSelected(true);
+                        f.setCutoff(sites[f.id].cutoff);
+                    } else {
+                        // If the criterion is missing, then it's excluded
+                        f.setSelected(false);
+                    }
+                });
             },
             getFilterValue(filter) {
                 return _.get(filter, 'default_value', false);

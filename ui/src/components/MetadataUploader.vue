@@ -2,39 +2,15 @@
     <div class="snow-metadata-uploader">
         <sweet-modal ref="uploadDialog"
                      title="Import Metadata">
-            <vue-clip :options="vcopts">
-                <template slot="clip-uploader-action">
-                    <div>
-                        <div class="dz-message">
-                            Drop file here or click to upload.
-                        </div>
-                    </div>
-                </template>
 
-                <template slot="clip-uploader-body"
-                          slot-scope="props">
-                    <div v-for="(file, i) in props.files"
-                         :key="file.id">
-                        File {{ i }}: `{{ file }}`
-                    </div>
-                </template>
-            </vue-clip>
+            <div class="snow-import-error alert alert-danger"
+                 v-if="error !== null">
+                Export Failed: {{ errorReason }}
+            </div>
 
-            <!--
-            <vue-transmit :options="uploadOptions"
-                          url="/"
-                          ref="uploader">
-                Drop file here or click to upload.
-
-                <template slot="files"
-                          slot-scope="props">
-                    <div v-for="(file, i) in props.files"
-                         :key="file.id">
-                        File {{ i }}: `{{ file }}`
-                    </div>
-                </template>
-            </vue-transmit>
-            -->
+            <file-loader ref="loader"
+                         @file-added="fileAdded"
+                         @file-error="fileErr"/>
         </sweet-modal>
     </div>
 </template>
@@ -43,47 +19,96 @@
     .snow-metadata-uploader {
 
     }
+
+    .snow-import-error {
+        padding: 1em;
+    }
 </style>
 
 <script>
-    import 'vue-transmit/dist/vue-transmit.css';
-
-    import { VueTransmit } from 'vue-transmit';
     import { SweetModal } from 'sweet-modal-vue';
+    import yaml from 'js-yaml';
+    import { createFiltersFromMetadata } from '@/util';
+    import { mapGetters } from 'vuex';
 
+    import FileLoader from './FileLoader';
+
+
+    function loadMetadataContent(content) {
+        const contentAsString = String.fromCharCode.apply(null, new Uint8Array(content));
+        return yaml.safeLoad(contentAsString);
+    }
+
+    function extractMetadataFromZip() {
+        // TODO
+        throw new Error('ZIP files not yet supported');
+    }
+
+    function getMetadataFromFile(filename, content) {
+        return new Promise((resolve, reject) => {
+            const lowerFile = filename.toLowerCase();
+            if (lowerFile.endsWith('.yml')) {
+                resolve(loadMetadataContent(content));
+            } else if (lowerFile.endsWith('.zip')) {
+                resolve(extractMetadataFromZip(content));
+            } else {
+                reject(new Error(`Unexpected file type ${filename}`));
+            }
+        });
+    }
 
     export default {
         name: 'MetadataUploader',
         components: {
-            VueTransmit,
+            FileLoader,
             SweetModal,
         },
         data() {
             return {
-                uploadOptions: {
-                    // TODO: Check on these
-                    acceptedFileTypes: ['text/yaml', 'application/zip'],
-                    adapterOptions: {
-                        url: '/',
-                        errUploadError: (xhr) => {
-                            console.log(`Got an error: ${xhr}`);
-                            return xhr.response.message;
-                        },
-                    },
-                },
-                vcopts: {},
-                fileContent: '',
+                error: null,
+                errorReason: null,
+                file: null,
             };
         },
         methods: {
             showDialog() {
-                this.error = null;
+                this.clearError();
                 this.$refs.uploadDialog.open();
             },
             closeDialog() {
-                this.error = null;
+                this.clearError();
                 this.$refs.uploadDialog.close();
             },
+            fileAdded(filename) {
+                this.clearError();
+                const fileContent = this.$refs.loader.getFile(filename);
+
+                getMetadataFromFile(filename, fileContent)
+                    .then(metadata => createFiltersFromMetadata(this.model, metadata))
+                    .then((filters) => {
+                        this.$emit('metadata-uploaded', filters);
+                    })
+                    .then(() => {
+                        this.closeDialog();
+                    })
+                    .catch((err) => {
+                        this.setError(err);
+                    });
+            },
+            fileErr(err) {
+                this.setError(err);
+            },
+            setError(err) {
+                this.error = err;
+                this.errorReason = err.message;
+            },
+            clearError() {
+                this.error = null;
+                this.errorReason = null;
+            },
+        },
+        computed: {
+            ...mapGetters(['model']),
         },
     };
 </script>

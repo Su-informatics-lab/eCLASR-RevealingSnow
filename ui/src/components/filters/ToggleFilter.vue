@@ -155,6 +155,17 @@
             setSelected(value) {
                 this.state = value;
             },
+            setCutoff(value) {
+                this.cutoff = value;
+            },
+            set(value) {
+                if (this.default_date === null) {
+                    this.setSelected(value);
+                } else {
+                    this.setSelected(value.value);
+                    this.setCutoff(value.date);
+                }
+            },
             resetToDefault() {
                 this.cutoff = stringToDate(this.default_date);
                 this.state = this.default_value;

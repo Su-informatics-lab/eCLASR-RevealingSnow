@@ -9,8 +9,10 @@ function countPatients(data) {
 const colors = d3.schemeCategory10;
 
 export default {
+    model: state => state.model,
     modelFilters: state => state.model.criteria,
     modelYmcaSites: state => state.model.ymcaSites,
+    enabledCriteria: state => state.filters.criteria,
     enabledYmcaSites: state => state.filters.ymcaSites,
     ymcaSiteByKey: state => key => _.find(state.model.ymcaSites, site => site.key === key),
     patientCountUnfiltered: state => countPatients(state.stats.unfiltered),

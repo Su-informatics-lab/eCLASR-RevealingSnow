@@ -94,6 +94,9 @@
             setSelected(value) {
                 this.enabled = value;
             },
+            setCutoff(value) {
+                this.maxValue = value;
+            },
         },
     };
 </script>
