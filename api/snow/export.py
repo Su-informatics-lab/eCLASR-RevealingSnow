@@ -16,6 +16,7 @@ from snow.util import make_zip_response, parse_boolean, to_yaml, make_json_respo
 
 logger = logging.getLogger(__name__)
 
+
 class ExportOptions(object):
     def __init__(self,
                  sites, cutoffs, filters,
@@ -72,13 +73,15 @@ class ExportData(object):
         self.patients = patients
         self.identifier = identifier or str(uuid.uuid4())
         self.timestamp = timestamp or str(time.time())
+        self.flags = C.EP_FLAG_VALUES
 
     def create_export_payload(self):
         return {
             C.EP_ID: self.identifier,
             C.EP_TS: self.timestamp,
             C.EP_SUBJECTS: self.patients[C.COL_PTNUM].tolist(),
-            C.EP_METADATA: self.options.create_metadata()
+            C.EP_METADATA: self.options.create_metadata(),
+            C.EP_FLAGS: self.flags
         }
 
     def create_download_payload(self):

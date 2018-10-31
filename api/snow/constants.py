@@ -55,3 +55,12 @@ EP_ID = 'id'
 EP_TS = 'timestamp'
 EP_SUBJECTS = 'subjects'
 EP_METADATA = 'metadata'
+EP_FLAGS = 'flags'
+
+# Static Export Flags (only change for manual API calls, outside of viz tool)
+EP_FLAG_VALUES = {
+    'source': 'EMR',
+    'mailing_type': 'EMR',
+    'research_project': False,
+    'site': 'TBD'
+}

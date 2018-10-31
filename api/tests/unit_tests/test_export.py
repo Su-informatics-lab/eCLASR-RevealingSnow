@@ -286,7 +286,6 @@ class ExportOptionTests(TestCase):
         self.assertEqual(actual, expected)
 
 
-
 class ExportDataTests(TestCase):
     def setUp(self):
         super(ExportDataTests, self).setUp()
@@ -319,6 +318,11 @@ class ExportDataTests(TestCase):
 
         self.assertEqual(data.timestamp, 'foobar')
 
+    def test_export_data_flags_have_expected_values(self):
+        data = self._create_export_data()
+
+        self.assertEqual(data.flags, C.EP_FLAG_VALUES)
+
     def test_export_payload_structured_as_expected(self):
         data = self._create_export_data()
         payload = data.create_export_payload()
@@ -329,8 +333,10 @@ class ExportDataTests(TestCase):
         self.assertIn(C.EP_TS, payload)
         self.assertIn(C.EP_SUBJECTS, payload)
         self.assertIn(C.EP_METADATA, payload)
+        self.assertIn(C.EP_FLAGS, payload)
 
         self.assertIsInstance(payload[C.EP_ID], str)
         self.assertIsInstance(payload[C.EP_TS], str)
         self.assertIsInstance(payload[C.EP_SUBJECTS], list)
         self.assertIsInstance(payload[C.EP_METADATA], dict)
+        self.assertIsInstance(payload[C.EP_FLAGS], dict)
