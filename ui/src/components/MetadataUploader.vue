@@ -9,6 +9,7 @@
             </div>
 
             <file-loader ref="loader"
+                         :accepted-file-types="['.zip', '.yml', '.yaml']"
                          @file-added="fileAdded"
                          @file-error="fileErr"/>
         </sweet-modal>
