@@ -7,6 +7,11 @@
                 Export Failed: {{ errorReason }}
             </div>
 
+            <div class="snow-export-success alert alert-success"
+                 v-if="exportComplete">
+                Export Succeeded. You may close this window now.
+            </div>
+
             <export-form ref="exportForm"
                          :max-export-count="maxExportCount"
             />
@@ -84,15 +89,18 @@
             return {
                 error: null,
                 errorReason: null,
+                exportComplete: false,
             };
         },
         methods: {
             showDialog() {
                 this.error = null;
+                this.exportComplete = false;
                 this.$refs.exportDialog.open();
             },
             closeDialog() {
                 this.error = null;
+                this.exportComplete = false;
                 this.$refs.exportDialog.close();
             },
             startDownload() {
@@ -107,11 +115,12 @@
                 this.$api.exportToRemoteTrackingSystem(this.$store.state.filters, exportArgs)
                     .then(() => {
                         this.error = null;
-                        this.closeDialog();
+                        this.exportComplete = true;
                     }, (error) => {
                         console.log(`Failed: ${error}`);
                         this.error = error;
                         this.errorReason = error.response.text;
+                        this.exportComplete = false;
                 });
             },
         },
