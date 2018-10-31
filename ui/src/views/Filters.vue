@@ -77,6 +77,10 @@
             <select-filter id="pt_status"
                            label="Recruitment Status"
                            :enabled="false"/>
+
+            <select-filter id="limit"
+                           label="Limit Results"
+                           :enabled="false"/>
         </div>
 
         <div class="snow-ymca-distance-filters snow-filter-section">
