@@ -70,6 +70,10 @@
                            :description="filter.description"
             />
 
+            <select-filter id="pt_age"
+                           label="Age"
+                           :enabled="false"/>
+
             <select-filter id="pt_status"
                            label="Recruitment Status"
                            :enabled="false"/>
