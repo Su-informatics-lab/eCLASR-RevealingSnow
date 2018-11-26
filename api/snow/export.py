@@ -8,9 +8,8 @@ from flask import request
 from snow import constants as  C
 from snow import exc
 from snow import ymca
-from snow.filters import validate_filters
 from snow.ptscreen import pscr
-from snow.query import parse_ymca_query_args
+from snow.request import parse_query, Query
 from snow.tracking import tracking
 from snow.util import make_zip_response, parse_boolean, to_yaml, make_json_response
 
@@ -18,42 +17,24 @@ logger = logging.getLogger(__name__)
 
 
 class ExportOptions(object):
-    def __init__(self,
-                 sites, cutoffs, filters,
-                 limit, order_by, order_asc,
-                 label=None, description=None, userid=None):
-        self.sites = sites
-        self.cutoffs = cutoffs
-        self.filters = filters
-
-        self.limit = limit
-        self.order_by = order_by
-        self.order_asc = order_asc
-
+    def __init__(self, query: Query, label=None, description=None, userid=None):
+        self.query = query
         self.label = label
         self.description = description
         self.userid = userid
 
     def create_metadata(self):
-        metadata = {
-            C.FILTERS: self.filters
-        }
+        metadata = dict()
 
-        if self.sites is not None and self.cutoffs is not None:
-            ymca._validate_ymca_sites_and_cutoffs(self.sites, self.cutoffs)
-            metadata[C.YMCA_SITES] = {
-                site: cutoff
-                for site, cutoff in zip(self.sites, self.cutoffs)
-            }
-        elif self.sites != self.cutoffs:
-            raise exc.RSError('sites and cutoffs must both be present or both be None')
+        if self.query is not None:
+            if self.query.filters is not None:
+                metadata[C.FILTERS] = self.query.filters.filters
 
-        if self.limit is not None:
-            metadata[C.PATIENT_SUBSET] = {
-                C.QK_EXPORT_LIMIT: self.limit,
-                C.QK_EXPORT_ORDER_BY: self.order_by,
-                C.QK_EXPORT_ORDER_ASC: self.order_asc
-            }
+            if self.query.sites is not None:
+                metadata.update(self._create_site_metadata(self.query.sites))
+
+            if self.query.limits is not None:
+                metadata.update(self._create_limit_metadata(self.query.limits))
 
         if self.label is not None:
             metadata[C.EXPORT_LABEL] = self.label
@@ -63,6 +44,32 @@ class ExportOptions(object):
 
         if self.userid is not None:
             metadata[C.EXPORT_USER] = self.userid
+
+        return metadata
+
+    def _create_site_metadata(self, sites):
+        metadata = dict()
+
+        if sites.sites is not None and sites.cutoffs is not None:
+            ymca._validate_ymca_sites_and_cutoffs(sites.sites, sites.cutoffs)
+            metadata[C.YMCA_SITES] = {
+                site: cutoff
+                for site, cutoff in zip(sites.sites, sites.cutoffs)
+            }
+        elif sites.sites != sites.cutoffs:
+            raise exc.RSError('sites and cutoffs must both be present or both be None')
+
+        return metadata
+
+    def _create_limit_metadata(self, limits):
+        metadata = dict()
+
+        if limits.limit is not None:
+            metadata[C.PATIENT_SUBSET] = {
+                C.QK_EXPORT_LIMIT: limits.limit,
+                C.QK_EXPORT_ORDER_BY: limits.order_by,
+                C.QK_EXPORT_ORDER_ASC: limits.order_asc
+            }
 
         return metadata
 
@@ -135,13 +142,10 @@ def parse_export_identifiers(args: dict):
 
 
 def parse_export_options(args: dict) -> ExportOptions:
-    sites, cutoffs, args = parse_ymca_query_args(args, site_required=False)
-    limit, order_by, order_asc = parse_export_limits(args)
-    label, description, userid = parse_export_identifiers(args)
+    query = parse_query(args, site_required=False)
+    label, description, userid = parse_export_identifiers(query.unused)
 
-    return ExportOptions(sites, cutoffs, args,
-                         limit, order_by, order_asc,
-                         label=label, description=description, userid=userid)
+    return ExportOptions(query, label=label, description=description, userid=userid)
 
 
 def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc, sites=None):
@@ -169,15 +173,18 @@ def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc, sites=
 def prepare_export_data():
     opts = parse_export_options(request.args)
 
-    validate_filters(opts.filters)
+    patients = pscr.filter_patients(opts.query.filters.filters)
 
-    patients = pscr.filter_patients(opts.filters)
+    if opts.query.sites is not None:
+        patients = ymca.filter_by_distance(patients, opts.query.sites.sites, opts.query.sites.cutoffs,
+                                           mode=ymca.SiteMode.ANY)
 
-    if opts.sites is not None:
-        patients = ymca.filter_by_distance(patients, opts.sites, opts.cutoffs, mode=ymca.SiteMode.ANY)
-
-    if opts.limit is not None:
-        patients = limit_patient_set(patients, opts.limit, opts.order_by, opts.order_asc, opts.sites)
+    if opts.query.limits is not None:
+        patients = limit_patient_set(
+            patients,
+            opts.query.limits.limit, opts.query.limits.order_by, opts.query.limits.order_asc,
+            opts.query.sites.sites
+        )
 
     return ExportData(opts, patients)
 

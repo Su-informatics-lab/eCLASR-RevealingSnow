@@ -4,87 +4,9 @@ from unittest import TestCase
 import pandas as pd
 from parameterized import parameterized
 
-from snow import constants as C
+from snow import constants as C, request
 from snow import export
 from snow.exc import RSError
-
-
-class ParseExportLimitTests(TestCase):
-    def _parse_opts(self, limit, order, **kwargs):
-        args = {
-            C.QK_EXPORT_LIMIT: limit,
-            C.QK_EXPORT_ORDER_BY: order,
-        }
-        args.update(kwargs)
-
-        return export.parse_export_limits(args)
-
-    def test_args_without_export_options_returns_none(self):
-        limit, order_by, _ = export.parse_export_limits({'foo': 'bar'})
-
-        self.assertIsNone(limit)
-        self.assertIsNone(order_by)
-
-    def test_export_limit_without_order_by_raises_exception(self):
-        with self.assertRaises(RSError) as e:
-            export.parse_export_limits({C.QK_EXPORT_LIMIT: '500'})
-
-        self.assertIn(
-            'export limit requires {} argument'.format(C.QK_EXPORT_ORDER_BY),
-            str(e.exception)
-        )
-
-    def test_invalid_order_field_raises_exception(self):
-        with self.assertRaises(RSError) as e:
-            self._parse_opts(50, 'foobar')
-
-        self.assertIn('invalid order field', str(e.exception))
-
-    def test_invalid_limit_field_raises_exception(self):
-        with self.assertRaises(RSError) as e:
-            self._parse_opts('foobar', C.QK_LIMIT_LAST_VISIT_DATE)
-
-        self.assertIn('invalid export limit', str(e.exception))
-
-    def test_export_limit_and_order_returned(self):
-        limit, order_by, _ = export.parse_export_limits({
-            C.QK_EXPORT_LIMIT: 50,
-            C.QK_EXPORT_ORDER_BY: C.QK_LIMIT_LAST_VISIT_DATE,
-            'foo': 'bar'
-        })
-
-        self.assertEqual(limit, 50)
-        self.assertEqual(order_by, C.QK_LIMIT_LAST_VISIT_DATE)
-
-    def test_export_limit_and_order_removed_from_args(self):
-        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: C.QK_LIMIT_LAST_VISIT_DATE, 'foo': 'bar'}
-        export.parse_export_limits(args)
-
-        self.assertEqual(args, {'foo': 'bar'})
-
-    def test_order_asc_defaults_to_false(self):
-        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: C.QK_LIMIT_LAST_VISIT_DATE}
-        _, _, order_dir = export.parse_export_limits(args)
-
-        self.assertFalse(order_dir)
-
-    @parameterized.expand([
-        (None, False),
-        (False, False),
-        ('0', False),
-        ('false', False),
-        ('1', True),
-        ('true', True),
-        ('True', True),
-        ('t', True),
-        ('T', True)
-    ])
-    def test_order_asc_parsed_as_boolean(self, order_asc, expected):
-        args = {C.QK_EXPORT_LIMIT: 50, C.QK_EXPORT_ORDER_BY: C.QK_LIMIT_LAST_VISIT_DATE,
-            C.QK_EXPORT_ORDER_ASC: order_asc}
-        _, _, order_dir = export.parse_export_limits(args)
-
-        self.assertEqual(order_dir, expected)
 
 
 class LimitPatientsTests(TestCase):
@@ -177,7 +99,14 @@ class LimitPatientsTests(TestCase):
 
 class ExportOptionTests(TestCase):
     def _create_metadata(self, site, cutoff, filters, limit=None, order_by=None, order_asc=None, **kwargs):
-        opts = export.ExportOptions(site, cutoff, filters, limit, order_by, order_asc, **kwargs)
+        query = request.Query(
+            request.FilterArguments(filters),
+            request.SiteArguments(site, cutoff),
+            request.LimitArguments(limit, order_by, order_asc)
+        )
+
+        opts = export.ExportOptions(query, **kwargs)
+
         return opts.create_metadata()
 
     def test_empty_metadata(self):
@@ -290,7 +219,7 @@ class ExportDataTests(TestCase):
     def setUp(self):
         super(ExportDataTests, self).setUp()
 
-        self.opts = export.ExportOptions(None, None, None, None, None, None)
+        self.opts = export.ExportOptions(None, None, None, None)
         self.subj = pd.DataFrame(data={'patient_num': [1, 2, 3]})
 
     def _create_export_data(self, **kwargs):
