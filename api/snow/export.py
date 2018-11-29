@@ -6,7 +6,6 @@ from flask import request
 
 from snow import constants as  C
 from snow import exc
-from snow import ymca
 from snow.ptscreen import pscr
 from snow.request import parse_query, Query
 from snow.tracking import tracking
@@ -50,7 +49,6 @@ class ExportOptions(object):
         metadata = dict()
 
         if sites.sites is not None and sites.cutoffs is not None:
-            ymca._validate_ymca_sites_and_cutoffs(sites.sites, sites.cutoffs)
             metadata[C.YMCA_SITES] = {
                 site: cutoff
                 for site, cutoff in zip(sites.sites, sites.cutoffs)

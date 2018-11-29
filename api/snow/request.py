@@ -3,7 +3,7 @@ import logging
 from typing import Optional
 
 from snow import constants as  C, model
-from snow import ymca, exc
+from snow import exc
 from snow.exc import RSError
 from snow.util import parse_boolean
 
@@ -37,6 +37,34 @@ class Query(object):
         self.sites = sites
         self.limits = limits
         self.unused = unused
+
+
+def _split_sites_and_cutoffs(site, cutoff):
+    if ',' in site:
+        site = site.split(',')
+    else:
+        site = [site]
+
+    if cutoff is not None:
+        if ',' in cutoff:
+            cutoff = [int(value) for value in cutoff.split(',')]
+        else:
+            cutoff = [int(cutoff)]
+
+    return site, cutoff
+
+
+def _validate_ymca_sites_and_cutoffs(sites, cutoffs):
+    if len(sites) != len(cutoffs):
+        raise RSError(
+            "number of YMCA sites ({}) must match number of cutoffs ({})".format(
+                len(sites), len(cutoffs)
+            )
+        )
+
+    for site in sites:
+        if site not in model.cdm.ymca_site_keys:
+            raise RSError("invalid YMCA site: '{}'".format(site))
 
 
 def _validate_filter_value(value):
@@ -119,23 +147,33 @@ def simplify_query_args(args: dict) -> dict:
     return args
 
 
-def parse_ymca_query_args(args: dict, site_required=True):
-    args = simplify_query_args(args)
-    if site_required or C.QK_SITE in args:
-        site, cutoff = ymca.parse_ymca_args(args)
+def parse_ymca_args(args: dict):
+    # Validate that the required 'site' argument is present
+    if C.QK_SITE in args:
+        site = args.pop(C.QK_SITE)
     else:
-        site, cutoff = None, None
+        raise RSError("missing required argument: '{}'".format(C.QK_SITE))
 
-    # Return a tuple of the site(s), the cutoff(s) (optionally None), and the remaining filters
-    return site, cutoff, args
+    # Pull out the 'cutoff' argument if present
+    if C.QK_CUTOFF in args:
+        cutoff = args.pop(C.QK_CUTOFF)
+    else:
+        raise RSError("missing required argument: '{}'".format(C.QK_CUTOFF))
+
+    site, cutoff = _split_sites_and_cutoffs(site, cutoff)
+    _validate_ymca_sites_and_cutoffs(site, cutoff)
+
+    return site, cutoff
 
 
 def parse_site_arguments(args, site_required=False) -> Optional[SiteArguments]:
     if site_required or C.QK_SITE in args:
-        site, cutoff = ymca.parse_ymca_args(args)
-        return SiteArguments(site, cutoff)
+        site, cutoff = parse_ymca_args(args)
+    else:
+        site = None
+        cutoff = None
 
-    return None
+    return SiteArguments(site, cutoff)
 
 
 def parse_limit_arguments(args: dict) -> LimitArguments:

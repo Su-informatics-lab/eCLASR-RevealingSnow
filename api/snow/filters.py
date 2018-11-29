@@ -50,6 +50,9 @@ def _expand_filter(key, value):
 
 def filter_patients_by_distance(data: pd.DataFrame, site_args: SiteArguments,
                                 mode: SiteMode = SiteMode.ALL) -> pd.DataFrame:
+    if site_args is None or site_args.sites is None:
+        return data
+
     criteria = mode.value.join([
         '{site} < {cutoff}'.format(site=site, cutoff=cutoff)
         for site, cutoff in zip(site_args.sites, site_args.cutoffs)
