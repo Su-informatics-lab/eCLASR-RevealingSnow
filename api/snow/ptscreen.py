@@ -7,6 +7,7 @@ import pandas as pd
 
 from snow import constants as C
 from snow.filters import filter_patients
+from snow.request import Query
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +42,8 @@ class PatientScreeningData(object):
             self.pscr = _pre_process(pd.read_csv(filename, low_memory=False))
             logger.debug('Loaded %d records', self.pscr.shape[0])
 
-    def filter_patients(self, filters: dict) -> pd.DataFrame:
-        return filter_patients(self.pscr, filters)
+    def filter_patients(self, query: Query) -> pd.DataFrame:
+        return filter_patients(self.pscr, query)
 
 
 pscr = PatientScreeningData()

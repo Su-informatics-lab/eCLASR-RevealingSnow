@@ -13,10 +13,7 @@ logger = logging.getLogger(__name__)
 def patient_stats():
     query = parse_query(request.args, site_required=False)
 
-    patients = pscr.filter_patients(query.filters.filters)
-    if query.sites is not None:
-        patients = ymca.filter_by_distance(patients, query.sites.sites, query.sites.cutoffs, mode=ymca.SiteMode.ANY)
-
+    patients = pscr.filter_patients(query)
     ptstats = stats.patient_counts_by_category(patients)
 
     return make_json_response(ptstats)
@@ -25,7 +22,7 @@ def patient_stats():
 def ymca_stats():
     query = parse_query(request.args)
 
-    patients = pscr.filter_patients(query.filters.filters)
+    patients = pscr.filter_patients(query)
     dist_stats = ymca.get_ymca_distance_stats(
         patients, query.sites.sites, query.sites.cutoffs, ymca.YMCA_DEMOGRAPHIC_CATEGORIES
     )

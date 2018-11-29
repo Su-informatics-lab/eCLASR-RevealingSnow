@@ -2,7 +2,6 @@ import logging
 import time
 import uuid
 
-import pandas as pd
 from flask import request
 
 from snow import constants as  C
@@ -11,7 +10,7 @@ from snow import ymca
 from snow.ptscreen import pscr
 from snow.request import parse_query, Query
 from snow.tracking import tracking
-from snow.util import make_zip_response, parse_boolean, to_yaml, make_json_response
+from snow.util import make_zip_response, to_yaml, make_json_response
 
 logger = logging.getLogger(__name__)
 
@@ -102,30 +101,6 @@ class ExportData(object):
         return make_zip_response(C.EXPORT_FILENAME, files)
 
 
-def parse_export_limits(args: dict):
-    limit = None
-    order_by = None
-    order_asc = False
-
-    if C.QK_EXPORT_LIMIT in args:
-        if C.QK_EXPORT_ORDER_BY not in args:
-            raise exc.RSError('export limit requires {} argument'.format(C.QK_EXPORT_ORDER_BY))
-
-        limit = args.pop(C.QK_EXPORT_LIMIT)
-        order_by = args.pop(C.QK_EXPORT_ORDER_BY)
-        order_asc = parse_boolean(args.pop(C.QK_EXPORT_ORDER_ASC, False))
-
-        try:
-            limit = int(limit)
-        except ValueError:
-            raise exc.RSError("invalid export limit '{}'".format(limit))
-
-        if order_by not in C.QK_EXPORT_ORDER_VALUES:
-            raise exc.RSError("invalid order field '{}'".format(order_by))
-
-    return limit, order_by, order_asc
-
-
 def parse_export_identifiers(args: dict):
     label = None
     description = None
@@ -148,43 +123,10 @@ def parse_export_options(args: dict) -> ExportOptions:
     return ExportOptions(query, label=label, description=description, userid=userid)
 
 
-def limit_patient_set(patients: pd.DataFrame, limit, order_by, order_asc, sites=None):
-    if limit is None:
-        return patients
-
-    if not order_by:
-        raise exc.RSError('order required when limit is specified')
-
-    # Closest YMCA is a synthetic column based on the YMCA sites included in the query
-    if order_by == C.QK_LIMIT_CLOSEST_YMCA:
-        if sites is None:
-            raise exc.RSError('at least one YMCA site must be selected when limiting by closest YMCA site')
-
-        closest_site = patients[sites].min(axis=1)
-        patients[C.QK_LIMIT_CLOSEST_YMCA] = closest_site
-
-    if order_by not in patients.columns:
-        raise exc.RSError("missing order column: '{}'".format(order_by))
-
-    patients = patients.sort_values(by=[order_by], ascending=order_asc)
-    return patients.head(limit)
-
-
 def prepare_export_data():
     opts = parse_export_options(request.args)
 
-    patients = pscr.filter_patients(opts.query.filters.filters)
-
-    if opts.query.sites is not None:
-        patients = ymca.filter_by_distance(patients, opts.query.sites.sites, opts.query.sites.cutoffs,
-                                           mode=ymca.SiteMode.ANY)
-
-    if opts.query.limits is not None:
-        patients = limit_patient_set(
-            patients,
-            opts.query.limits.limit, opts.query.limits.order_by, opts.query.limits.order_asc,
-            opts.query.sites.sites
-        )
+    patients = pscr.filter_patients(opts.query)
 
     return ExportData(opts, patients)
 

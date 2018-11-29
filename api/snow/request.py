@@ -5,10 +5,11 @@ from typing import Optional
 from snow import constants as  C, model
 from snow import ymca, exc
 from snow.exc import RSError
-from snow.filters import validate_filters
 from snow.util import parse_boolean
 
 logger = logging.getLogger(__name__)
+
+_VALID_FILTER_VALUES = {'0', '1'}
 
 
 class SiteArguments(object):
@@ -36,6 +37,33 @@ class Query(object):
         self.sites = sites
         self.limits = limits
         self.unused = unused
+
+
+def _validate_filter_value(value):
+    if value not in _VALID_FILTER_VALUES:
+        raise RSError("invalid filter value '{}'; must be one of [{}]".format(
+            value, ', '.join(_VALID_FILTER_VALUES)
+        ))
+
+
+def _validate_filter(value):
+    if not isinstance(value, dict):
+        _validate_filter_value(value)
+    else:
+        if 'value' not in value:
+            raise RSError("filter value structure must contain 'value' element")
+
+        _validate_filter_value(value['value'])
+
+
+def validate_filters(filters: dict):
+    valid_filter_keys = model.cdm.filter_keys
+
+    for key, value in filters.items():
+        if key not in valid_filter_keys:
+            raise RSError("invalid filter key '{}'".format(key))
+
+        _validate_filter(value)
 
 
 def _validate_nested_keys(keys):

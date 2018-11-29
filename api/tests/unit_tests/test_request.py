@@ -191,3 +191,17 @@ class ParseExportLimitTests(TestCase):
         limits = request.parse_limit_arguments(args)
 
         self.assertEqual(limits.order_asc, expected)
+
+
+class FilterValidationTests(TestCase):
+    def test_invalid_filter_key_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            request.validate_filters({'foo': '1'})
+
+        self.assertIn('invalid filter key', str(e.exception))
+
+    def test_invalid_filter_value_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            request.validate_filters({'cardio': 'bar'})
+
+        self.assertIn('invalid filter value', str(e.exception))
