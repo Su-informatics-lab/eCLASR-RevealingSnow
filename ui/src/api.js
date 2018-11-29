@@ -59,8 +59,8 @@ class Api {
         this.endpoint = endpoint;
     }
 
-    getPatientStats(criteria) {
-        return this.get('/stats', flattenToDotNotation(criteria));
+    getPatientStats(criteria, limits) {
+        return this.get('/stats', flattenToDotNotation(_.merge({}, criteria, limits)));
     }
 
     getYmcaStats(site, cutoff, criteria) {

@@ -23,6 +23,7 @@ const state = {
     filters: {
         criteria: [],
         ymcaSites: [],
+        limits: null,
     },
 };
 

@@ -3,7 +3,7 @@ from enum import Enum
 import pandas as pd
 
 import snow.constants as C
-from snow import exc
+from snow import exc, model
 from snow.request import Query, FilterArguments, SiteArguments, LimitArguments
 
 
@@ -84,9 +84,13 @@ def limit_patient_set(patients: pd.DataFrame, limit_args: LimitArguments, sites:
     # Closest YMCA is a synthetic column based on the YMCA sites included in the query
     if limit_args.order_by == C.QK_LIMIT_CLOSEST_YMCA:
         if sites is None or sites.sites is None:
-            raise exc.RSError('at least one YMCA site must be selected when limiting by closest YMCA site')
+            sites = list(model.cdm.ymca_site_keys)
+        else:
+            sites = sites.sites
 
-        closest_site = patients[sites.sites].min(axis=1)
+            # raise exc.RSError('at least one YMCA site must be selected when limiting by closest YMCA site')
+
+        closest_site = patients[sites].min(axis=1)
         patients[C.QK_LIMIT_CLOSEST_YMCA] = closest_site
 
     if limit_args.order_by not in patients.columns:

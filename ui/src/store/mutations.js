@@ -22,4 +22,7 @@ export default {
     [types.SET_ACTIVE_YMCA_SITES](state, { sites }) {
         state.filters.ymcaSites = sites;
     },
+    [types.SET_RESULT_LIMITS](state, { limits }) {
+        state.filters.limits = limits;
+    },
 };

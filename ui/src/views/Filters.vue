@@ -78,9 +78,10 @@
                            label="Recruitment Status"
                            :enabled="false"/>
 
-            <select-filter id="limit"
-                           label="Limit Results"
-                           :enabled="false"/>
+            <limit-filter ref="limit-filter"
+                          @updated="updateLimits"
+                          id="limit"
+                          label="Limit Results"/>
         </div>
 
         <div class="snow-ymca-distance-filters snow-filter-section">
@@ -194,6 +195,7 @@
     import ToggleFilter from '../components/filters/ToggleFilter';
     import DistanceFilter from '../components/filters/DistanceFilter';
     import SelectFilter from '../components/filters/SelectFilter';
+    import LimitFilter from '../components/filters/LimitFilter';
     import MetadataUploader from '../components/MetadataUploader';
 
 
@@ -206,6 +208,7 @@
             DistanceFilter,
             FontAwesomeIcon,
             SelectFilter,
+            LimitFilter,
             MetadataUploader,
         },
         data() {
@@ -223,6 +226,10 @@
             // eslint-disable-next-line func-names
             updateSites: _.debounce(function () {
                 this.$store.dispatch('setActiveSites', { sites: this.ymcaSites });
+            }, DEBOUNCE_DELAY),
+
+            updateLimits: _.debounce(function () {
+                this.$store.dispatch('setResultLimits', { limits: this.resultLimits });
             }, DEBOUNCE_DELAY),
 
             selectAll() {
@@ -281,6 +288,14 @@
             ymcaSites() {
                 const activeSites = _.keyBy(_.filter(this.$refs['ymca-sites'], f => f.enabled), 'id');
                 return _.mapValues(activeSites, f => f.value);
+            },
+            resultLimits() {
+                const limitFilter = this.$refs['limit-filter'];
+                if (!limitFilter.enabled) {
+                    return null;
+                }
+
+                return limitFilter.value;
             },
         },
         mounted() {
