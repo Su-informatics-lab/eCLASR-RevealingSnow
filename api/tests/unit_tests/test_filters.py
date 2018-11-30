@@ -16,8 +16,8 @@ class FilterByEmrCriteriaTests(TestCase):
 
         data = {
             'patient_num': [1, 2, 3],
-            'cardiac': [0, 0, 1],
-            'cardiac_date': [None, None, '2018-05-01'],
+            'cardio': [0, 0, 1],
+            'cardio_date': [None, None, '2018-05-01'],
             'neuro': [0, 1, 1],
             'neuro_date': [None, '2018-04-01', '2018-06-01']
         }
@@ -35,12 +35,12 @@ class FilterByEmrCriteriaTests(TestCase):
         ('0', {1, 2}),
         ('1', {3}),
     ])
-    def test_filter_value_subsets_dataset(self, cardiac_value, expected_patient_nums):
-        actual_patient_nums = self._get_filtered_patient_nums({'cardiac': cardiac_value})
+    def test_filter_value_subsets_dataset(self, cardio_value, expected_patient_nums):
+        actual_patient_nums = self._get_filtered_patient_nums({'cardio': cardio_value})
         self.assertEqual(actual_patient_nums, expected_patient_nums)
 
     def test_multiple_filters_treated_as_and(self):
-        patient_nums = self._get_filtered_patient_nums({'cardiac': '1', 'neuro': '1'})
+        patient_nums = self._get_filtered_patient_nums({'cardio': '1', 'neuro': '1'})
         self.assertEqual(patient_nums, {3})
 
     def test_exclusion_with_date_excludes_patients_with_condition_after_cutoff(self):

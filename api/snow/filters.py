@@ -12,42 +12,6 @@ class SiteMode(Enum):
     ANY = ' or '
 
 
-_CRITERION_DATE_CONJUNCTION = {
-    '0': 'or',
-    '1': 'and'
-}
-
-_CRITERION_DATE_COMPARISON = {
-    '0': '<',
-    '1': '>='
-}
-
-
-
-def _date_field(key):
-    return "{}_date".format(key)
-
-
-def _expand_filter(key, value):
-    if not isinstance(value, dict):
-        return '{} == {}'.format(key, value)
-
-    date_field = _date_field(key)
-    field_value = value['value']
-    date_value = value['date']
-    date_comp = _CRITERION_DATE_COMPARISON[field_value]
-    conjunction = _CRITERION_DATE_CONJUNCTION[field_value]
-
-    return '({field} == {value} {conj} {date_field} {date_comp} "{date_value}")'.format(
-        field=key,
-        value=field_value,
-        conj=conjunction,
-        date_field=date_field,
-        date_comp=date_comp,
-        date_value=date_value
-    )
-
-
 def filter_patients_by_distance(data: pd.DataFrame, site_args: SiteArguments,
                                 mode: SiteMode = SiteMode.ALL) -> pd.DataFrame:
     if site_args is None or site_args.sites is None:
@@ -66,9 +30,10 @@ def filter_patients_by_distance(data: pd.DataFrame, site_args: SiteArguments,
 def filter_patients_by_emr_criteria(data: pd.DataFrame, filter_args: FilterArguments) -> pd.DataFrame:
     if filter_args and filter_args.filters:
         condition = [
-            _expand_filter(key, value)
+            model.cdm.get_filter(key).expand_filter_expression(key, value)
             for key, value in filter_args.filters.items()
         ]
+
         data = data.query(' and '.join(condition))
 
     return data
@@ -87,8 +52,6 @@ def limit_patient_set(patients: pd.DataFrame, limit_args: LimitArguments, sites:
             sites = list(model.cdm.ymca_site_keys)
         else:
             sites = sites.sites
-
-            # raise exc.RSError('at least one YMCA site must be selected when limiting by closest YMCA site')
 
         closest_site = patients[sites].min(axis=1)
         patients[C.QK_LIMIT_CLOSEST_YMCA] = closest_site

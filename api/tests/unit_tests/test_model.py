@@ -95,3 +95,12 @@ class ToggleFilterTests(TestCase):
             self.filter.validate_filter_value(value)
 
         self.assertIn('invalid filter value', str(e.exception))
+
+    @parameterized.expand([
+        ('foo', '1', 'foo == 1'),
+        ('foo', {'value': '1', 'date': '2016-07-12'}, '(foo == 1 and foo_date >= "2016-07-12")'),
+        ('foo', {'value': '0', 'date': '2016-07-12'}, '(foo == 0 or foo_date < "2016-07-12")'),
+    ])
+    def test_expand_filter_expression(self, key, value, expected):
+        actual = self.filter.expand_filter_expression(key, value)
+        self.assertEqual(actual, expected)

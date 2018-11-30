@@ -8,6 +8,20 @@ from snow.util import make_json_response
 
 DEFAULT_MODEL_FILE = path.join(path.dirname(__file__), 'data', 'model.yml')
 
+_CRITERION_DATE_CONJUNCTION = {
+    '0': 'or',
+    '1': 'and'
+}
+
+_CRITERION_DATE_COMPARISON = {
+    '0': '<',
+    '1': '>='
+}
+
+
+def _date_field(key):
+    return "{}_date".format(key)
+
 
 class EmrFilter(metaclass=abc.ABCMeta):
     def __init__(self, key, attributes):
@@ -16,6 +30,10 @@ class EmrFilter(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def validate_filter_value(self, value):
+        pass
+
+    @abc.abstractmethod
+    def expand_filter_expression(self, key, value):
         pass
 
 
@@ -30,6 +48,25 @@ class ToggleFilter(EmrFilter):
                 raise exc.RSError("filter value structure must contain 'value' element")
 
             self._validate_filter_value(value['value'])
+
+    def expand_filter_expression(self, key, value):
+        if not isinstance(value, dict):
+            return '{} == {}'.format(key, value)
+
+        date_field = _date_field(key)
+        field_value = value['value']
+        date_value = value['date']
+        date_comp = _CRITERION_DATE_COMPARISON[field_value]
+        conjunction = _CRITERION_DATE_CONJUNCTION[field_value]
+
+        return '({field} == {value} {conj} {date_field} {date_comp} "{date_value}")'.format(
+            field=key,
+            value=field_value,
+            conj=conjunction,
+            date_field=date_field,
+            date_comp=date_comp,
+            date_value=date_value
+        )
 
     def _validate_filter_value(self, value):
         if value not in self._VALID_FILTER_VALUES:
