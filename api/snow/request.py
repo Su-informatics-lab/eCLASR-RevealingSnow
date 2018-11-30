@@ -9,7 +9,6 @@ from snow.util import parse_boolean
 
 logger = logging.getLogger(__name__)
 
-_VALID_FILTER_VALUES = {'0', '1'}
 
 
 class SiteArguments(object):
@@ -67,23 +66,6 @@ def _validate_ymca_sites_and_cutoffs(sites, cutoffs):
             raise RSError("invalid YMCA site: '{}'".format(site))
 
 
-def _validate_filter_value(value):
-    if value not in _VALID_FILTER_VALUES:
-        raise RSError("invalid filter value '{}'; must be one of [{}]".format(
-            value, ', '.join(_VALID_FILTER_VALUES)
-        ))
-
-
-def _validate_filter(value):
-    if not isinstance(value, dict):
-        _validate_filter_value(value)
-    else:
-        if 'value' not in value:
-            raise RSError("filter value structure must contain 'value' element")
-
-        _validate_filter_value(value['value'])
-
-
 def validate_filters(filters: dict):
     valid_filter_keys = model.cdm.filter_keys
 
@@ -91,7 +73,8 @@ def validate_filters(filters: dict):
         if key not in valid_filter_keys:
             raise RSError("invalid filter key '{}'".format(key))
 
-        _validate_filter(value)
+        filter = model.cdm.get_filter(key)
+        filter.validate_filter_value(value)
 
 
 def _validate_nested_keys(keys):

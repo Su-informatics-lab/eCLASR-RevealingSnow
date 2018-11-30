@@ -1,3 +1,4 @@
+import abc
 from os import path
 
 import yaml
@@ -8,14 +9,33 @@ from snow.util import make_json_response
 DEFAULT_MODEL_FILE = path.join(path.dirname(__file__), 'data', 'model.yml')
 
 
-class EmrFilter(object):
+class EmrFilter(metaclass=abc.ABCMeta):
     def __init__(self, key, attributes):
         self.key = key
         self.attributes = attributes
 
+    @abc.abstractmethod
+    def validate_filter_value(self, value):
+        pass
+
 
 class ToggleFilter(EmrFilter):
-    pass
+    _VALID_FILTER_VALUES = {'0', '1'}
+
+    def validate_filter_value(self, value):
+        if not isinstance(value, dict):
+            self._validate_filter_value(value)
+        else:
+            if 'value' not in value:
+                raise exc.RSError("filter value structure must contain 'value' element")
+
+            self._validate_filter_value(value['value'])
+
+    def _validate_filter_value(self, value):
+        if value not in self._VALID_FILTER_VALUES:
+            raise exc.RSError("invalid filter value '{}'; must be one of [{}]".format(
+                value, ', '.join(self._VALID_FILTER_VALUES)
+            ))
 
 
 _FILTER_TYPES = {

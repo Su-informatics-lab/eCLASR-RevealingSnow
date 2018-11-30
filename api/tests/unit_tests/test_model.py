@@ -4,6 +4,7 @@ from parameterized import parameterized
 
 from snow import constants as C, exc
 from snow import model
+from snow.exc import RSError
 
 
 class CriteriaDataModelTests(TestCase):
@@ -79,3 +80,18 @@ class ModelHelperFunctionTests(TestCase):
 
         self.assertIsInstance(filters['clot'], model.ToggleFilter)
         self.assertIsInstance(filters['neuro'], model.ToggleFilter)
+
+
+class ToggleFilterTests(TestCase):
+    def setUp(self):
+        self.filter = model.ToggleFilter('foo', None)
+
+    @parameterized.expand([
+        ('bar',),
+        ({'value': 'bar'}),
+    ])
+    def test_invalid_filter_value_raises_exception(self, value):
+        with self.assertRaises(RSError) as e:
+            self.filter.validate_filter_value(value)
+
+        self.assertIn('invalid filter value', str(e.exception))
