@@ -12,7 +12,6 @@ TRACKING_API_TIMEOUT = 'TRACKING_API_TIMEOUT'
 DEFAULT_ENVIRONMENT_FILE = '.config.env'
 RSENV_FILE = 'RSENV_FILE'
 
-
 # Criteria Data Model & Metadata Keys
 FILTERS = 'filters'
 YMCA_SITES = 'ymca_sites'
@@ -20,6 +19,13 @@ PATIENT_SUBSET = 'patient_subset'
 EXPORT_LABEL = 'label'
 EXPORT_DESCRIPTION = 'description'
 EXPORT_USER = 'userid'
+
+# Filter Keys
+FLK_KEY = 'key'
+FLK_TYPE = 'type'
+
+# Filter Types
+FLT_TOGGLE = 'toggle'
 
 # Special Query Argument Keys
 QK_SITE = 'site'
