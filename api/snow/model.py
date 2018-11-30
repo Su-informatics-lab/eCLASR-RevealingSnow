@@ -75,8 +75,52 @@ class ToggleFilter(EmrFilter):
             ))
 
 
+class RangeFilter(EmrFilter):
+    def validate_filter_value(self, value):
+        if not isinstance(value, dict):
+            raise exc.RSError('invalid filter value: structure must contain min and/or max')
+
+        minval = self._get_boundary_value(value, 'min')
+        maxval = self._get_boundary_value(value, 'max')
+
+        if (minval is not None) and (maxval is not None):
+            if minval > maxval:
+                raise exc.RSError(
+                    'invalid filter value: min cannot be greater than max: {} > {}'.format(minval, maxval)
+                )
+        elif minval is None and maxval is None:
+            raise exc.RSError('invalid filter value: structure must contain min and/or max')
+
+    def expand_filter_expression(self, key, value):
+        minval = self._get_boundary_value(value, 'min')
+        maxval = self._get_boundary_value(value, 'max')
+
+        if minval is not None:
+            minval = '{} >= {}'.format(key, minval)
+
+        if maxval is not None:
+            maxval = '{} <= {}'.format(key, maxval)
+
+        if (minval is not None) and (maxval is not None):
+            expr = '({} and {})'.format(minval, maxval)
+        else:
+            expr = minval or maxval
+
+        return expr
+
+    def _get_boundary_value(self, value, key):
+        if key not in value:
+            return None
+
+        try:
+            return int(value[key])
+        except ValueError:
+            raise exc.RSError("invalid filter value: {} must be an integer: '{}'".format(key, value))
+
+
 _FILTER_TYPES = {
-    C.FLT_TOGGLE: ToggleFilter
+    C.FLT_TOGGLE: ToggleFilter,
+    C.FLT_RANGE: RangeFilter
 }
 
 

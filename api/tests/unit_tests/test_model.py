@@ -81,9 +81,19 @@ class ModelHelperFunctionTests(TestCase):
         self.assertIsInstance(filters['clot'], model.ToggleFilter)
         self.assertIsInstance(filters['neuro'], model.ToggleFilter)
 
+    @parameterized.expand([
+        ('toggle', model.ToggleFilter),
+        ('range', model.RangeFilter),
+    ])
+    def test_construct_filter_creates_filter_of_correct_type(self, filter_type, expected_type):
+        filter = model._construct_filter('key', filter_type, None)
+        self.assertIsInstance(filter, expected_type)
+
 
 class ToggleFilterTests(TestCase):
     def setUp(self):
+        super(ToggleFilterTests, self).setUp()
+
         self.filter = model.ToggleFilter('foo', None)
 
     @parameterized.expand([
@@ -97,10 +107,38 @@ class ToggleFilterTests(TestCase):
         self.assertIn('invalid filter value', str(e.exception))
 
     @parameterized.expand([
-        ('foo', '1', 'foo == 1'),
-        ('foo', {'value': '1', 'date': '2016-07-12'}, '(foo == 1 and foo_date >= "2016-07-12")'),
-        ('foo', {'value': '0', 'date': '2016-07-12'}, '(foo == 0 or foo_date < "2016-07-12")'),
+        ('1', 'foo == 1'),
+        ({'value': '1', 'date': '2016-07-12'}, '(foo == 1 and foo_date >= "2016-07-12")'),
+        ({'value': '0', 'date': '2016-07-12'}, '(foo == 0 or foo_date < "2016-07-12")'),
     ])
-    def test_expand_filter_expression(self, key, value, expected):
-        actual = self.filter.expand_filter_expression(key, value)
+    def test_expand_filter_expression(self, value, expected):
+        actual = self.filter.expand_filter_expression('foo', value)
+        self.assertEqual(actual, expected)
+
+
+class RangeFilterTests(TestCase):
+    def setUp(self):
+        super(RangeFilterTests, self).setUp()
+
+        self.filter = model.RangeFilter('foo', None)
+
+    @parameterized.expand([
+        ('bar',),
+        ('1',),
+        ({'value': '1'},),
+        ({'min': '10', 'max': '1'},)
+    ])
+    def test_invalid_filter_value_raises_exception(self, value):
+        with self.assertRaises(RSError) as e:
+            self.filter.validate_filter_value(value)
+
+        self.assertIn('invalid filter value', str(e.exception))
+
+    @parameterized.expand([
+        ({'min': '1'}, 'foo >= 1'),
+        ({'max': '10'}, 'foo <= 10'),
+        ({'min': '1', 'max': '10'}, '(foo >= 1 and foo <= 10)'),
+    ])
+    def test_expand_filter_expression(self, value, expected):
+        actual = self.filter.expand_filter_expression('foo', value)
         self.assertEqual(actual, expected)

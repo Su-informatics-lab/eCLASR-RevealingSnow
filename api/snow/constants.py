@@ -26,6 +26,7 @@ FLK_TYPE = 'type'
 
 # Filter Types
 FLT_TOGGLE = 'toggle'
+FLT_RANGE = 'range'
 
 # Special Query Argument Keys
 QK_SITE = 'site'
