@@ -121,6 +121,9 @@
             filters() {
                 return this.$store.state.filters.criteria;
             },
+            limits() {
+                return this.$store.state.filters.limits;
+            },
             label() {
                 return this.$store.getters.ymcaSiteByKey(this.id).label;
             },
@@ -142,6 +145,9 @@
             },
             filters() {
                 this.loadFiltered();
+            },
+            limits() {
+                this.reloadData();
             },
         },
         mounted() {

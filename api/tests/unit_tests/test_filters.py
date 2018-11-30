@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 import pandas as pd
+from mock import patch
 from parameterized import parameterized
 
 from snow import constants as C
@@ -113,11 +114,14 @@ class LimitPatientsTests(TestCase):
         actual = self._get_subset_patient_nums(limit, C.QK_LIMIT_LAST_VISIT_DATE, True)
         self.assertEqual(actual, expected)
 
-    def test_closest_ymca_without_sites_raises_exception(self):
-        with self.assertRaises(RSError) as e:
-            self._get_subset_patient_nums(5, C.QK_LIMIT_CLOSEST_YMCA)
+    @patch('snow.filters.model.cdm')
+    def test_closest_ymca_without_sites_uses_all_sites(self, mock):
+        # Mock the full CDM site keys to be the list of sites in the data set
+        mock.ymca_site_keys = {'ymca_foo', 'ymca_bar'}
 
-        self.assertIn('at least one YMCA site must be selected when limiting by closest YMCA site', str(e.exception))
+        actual = self._get_subset_patient_nums(2, C.QK_LIMIT_CLOSEST_YMCA, order_asc=True)
+
+        self.assertEqual(actual, {2, 1})
 
     def test_closest_ymca_limit_only_uses_requested_sites(self):
         actual = self._get_subset_patient_nums(1, C.QK_LIMIT_CLOSEST_YMCA, order_asc=True, sites=['ymca_bar'])

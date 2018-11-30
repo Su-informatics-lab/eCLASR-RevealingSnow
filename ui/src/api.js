@@ -12,6 +12,12 @@ function flattenToDotNotation(filters) {
     }));
 }
 
+function buildQuery(criteria, limits) {
+    const query = _.merge({}, criteria, limits);
+
+    return flattenToDotNotation(query);
+}
+
 function buildMultipleYmcaSiteQuery(ymcaSites) {
     const sitesAndCutoffs = _.values(ymcaSites);
     const site = _.join(_.map(sitesAndCutoffs, 'site'), ',');
@@ -57,14 +63,21 @@ class Api {
 
     constructor(endpoint) {
         this.endpoint = endpoint;
+        this.limits = null;
     }
 
-    getPatientStats(criteria, limits) {
-        return this.get('/stats', flattenToDotNotation(_.merge({}, criteria, limits)));
+    setResultLimits(limits) {
+        // Not sure it really makes sense for this to be something the API keeps track of...
+        this.limits = limits;
+    }
+
+    getPatientStats(criteria) {
+        const query = buildQuery(criteria, this.limits);
+        return this.get('/stats', query);
     }
 
     getYmcaStats(site, cutoff, criteria) {
-        const query = _.merge({ site, cutoff }, flattenToDotNotation(criteria));
+        const query = _.merge({ site, cutoff }, buildQuery(criteria, this.limits));
         return this.get('/ymca_stats', query);
     }
 
