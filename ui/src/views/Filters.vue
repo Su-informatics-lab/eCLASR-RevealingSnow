@@ -70,13 +70,20 @@
                            :description="filter.description"
             />
 
-            <select-filter id="pt_age"
-                           label="Age"
-                           :enabled="false"/>
-
             <select-filter id="pt_status"
                            label="Recruitment Status"
                            :enabled="false"/>
+
+            <range-filter ref="range-filters"
+                          @updated="updateFilters"
+                          v-for="filter in rangeFilters"
+                          :key="filter.key"
+                          :id="filter.key"
+                          :label="filter.label"
+                          :description="filter.description"
+                          :min-value="filter.minimum_value"
+                          :max-value="filter.maximum_value"
+            />
 
             <limit-filter ref="limit-filter"
                           @updated="updateLimits"
@@ -196,6 +203,7 @@
     import DistanceFilter from '../components/filters/DistanceFilter';
     import SelectFilter from '../components/filters/SelectFilter';
     import LimitFilter from '../components/filters/LimitFilter';
+    import RangeFilter from '../components/filters/RangeFilter';
     import MetadataUploader from '../components/MetadataUploader';
 
 
@@ -209,6 +217,7 @@
             FontAwesomeIcon,
             SelectFilter,
             LimitFilter,
+            RangeFilter,
             MetadataUploader,
         },
         data() {
@@ -240,6 +249,7 @@
             },
             resetAll() {
                 _.each(this.$refs['toggle-filters'], f => f.resetToDefault());
+                _.each(this.$refs['range-filters'], f => f.resetToDefault());
             },
             clearYmcaSites() {
                 _.each(this.$refs['ymca-sites'], f => f.setSelected(false));
@@ -294,7 +304,17 @@
             toggleFilters() {
                 return _.filter(this.modelFilters, o => o.type === 'toggle');
             },
+            rangeFilters() {
+                return _.filter(this.modelFilters, o => o.type === 'range');
+            },
             filterValues() {
+                return _.merge({}, this.rangeFilterValues, this.toggleFilterValues);
+            },
+            rangeFilterValues() {
+                const activeFilters = _.keyBy(_.filter(this.$refs['range-filters'], f => f.enabled), 'id');
+                return _.mapValues(activeFilters, f => f.value);
+            },
+            toggleFilterValues() {
                 const activeFilters = _.keyBy(_.filter(this.$refs['toggle-filters'], f => f.checked), 'id');
                 return _.mapValues(activeFilters, f => f.value);
             },

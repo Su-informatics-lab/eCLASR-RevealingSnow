@@ -157,7 +157,8 @@ filters:
     type: range
     description: >
       Age of the patient as of 2018-01-01
-    default_date:
+    minimum_value: 5
+    maximum_value: 120
 #  - key: drugs_ad
 #    label: "Drugs: AD"
 #    long_name: Drugs for Alzheimer's-Related Diseases

@@ -39,7 +39,7 @@
     }
 
     .snow-limit-filter-controls {
-        padding-left: 1em;
+        padding-left: 1.5em;
     }
 
 </style>
