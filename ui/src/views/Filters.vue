@@ -250,6 +250,7 @@
             updateControlsFromMetadata(filters) {
                 this.updateFiltersFromMetadata(filters.criteria);
                 this.updateSitesFromMetadata(filters.sites);
+                this.updateLimitsFromMetadata(filters.limits);
             },
             updateFiltersFromMetadata(criteria) {
                 _.each(this.$refs['toggle-filters'], (f) => {
@@ -271,6 +272,18 @@
                         f.setSelected(false);
                     }
                 });
+            },
+            updateLimitsFromMetadata(limits) {
+                const filter = this.$refs['limit-filter'];
+
+                if (limits) {
+                    filter.setEnabled(true);
+                    filter.setLimit(limits.limit);
+                    filter.setOrderColumn(limits.order_by);
+                    filter.setOrderAscending(limits.order_asc);
+                } else {
+                    filter.setEnabled(false);
+                }
             },
             getFilterValue(filter) {
                 return _.get(filter, 'default_value', false);

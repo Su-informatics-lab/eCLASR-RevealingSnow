@@ -129,4 +129,68 @@ describe('createFiltersFromMetadata', () => {
             });
         });
     });
+
+    describe('parsing result limits', () => {
+        describe('with incorrect attributes', () => {
+            const metadata = {
+                patient_subset: { foobar: 15 },
+            };
+
+            test('an error should be produced', () => {
+                expect(() => createFiltersFromMetadata(model, metadata)).toThrow();
+            });
+        });
+
+        describe('missing limit attribute', () => {
+            const metadata = {
+                patient_subset: { order_by: 'last_visit_date', order_asc: true },
+            };
+
+            test('an error should be produced', () => {
+                expect(() => createFiltersFromMetadata(model, metadata)).toThrow();
+            });
+        });
+
+        describe('missing order_by attribute', () => {
+            const metadata = {
+                patient_subset: { limit: 100, order_asc: true },
+            };
+
+            test('an error should be produced', () => {
+                expect(() => createFiltersFromMetadata(model, metadata)).toThrow();
+            });
+        });
+
+        describe('missing order_asc attribute', () => {
+            const metadata = {
+                patient_subset: { limit: 100, order_by: 'last_visit_date' },
+            };
+
+            test('an error should be produced', () => {
+                expect(() => createFiltersFromMetadata(model, metadata)).toThrow();
+            });
+        });
+
+        describe('with invalid limit', () => {
+            const metadata = {
+                patient_subset: { limit: 'foobar', order_by: 'last_visit_date', order_asc: true },
+            };
+
+            test('an error should be produced', () => {
+                expect(() => createFiltersFromMetadata(model, metadata)).toThrow();
+            });
+        });
+
+        describe('with valid data', () => {
+            const metadata = {
+                patient_subset: { limit: 100, order_by: 'last_visit_date', order_asc: true },
+            };
+
+            test('the patient_subset is returned', () => {
+                const { limits } = createFiltersFromMetadata(model, metadata);
+
+                expect(limits).toEqual(metadata.patient_subset);
+            });
+        });
+    });
 });

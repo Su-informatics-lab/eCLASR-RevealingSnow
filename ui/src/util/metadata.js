@@ -78,11 +78,28 @@ function getYmcaSitesFromMetadata(model, ymcaSites) {
     });
 }
 
+function getLimitsFromMetadata(model, limits) {
+    const requiredKeys = ['limit', 'order_asc', 'order_by'];
+    const missingKeys = _.reject(requiredKeys, _.partial(_.has, limits));
+
+    if (missingKeys.length > 0) {
+        throw new Error(`missing keys for limit: ${_.join(missingKeys, ', ')}`);
+    }
+
+    // Verify the limit value is numeric
+    if (!_.isNumber(limits.limit)) {
+        throw new Error(`limit value expected to be a number, was: ${limits.limit}`);
+    }
+
+    return limits;
+}
+
 function createFiltersFromMetadata(model, metadata) {
     const criteria = getCriteriaFromMetadata(model, _.get(metadata, 'filters', {}));
     const sites = getYmcaSitesFromMetadata(model, _.get(metadata, 'ymca_sites', {}));
+    const limits = getLimitsFromMetadata(model, _.get(metadata, 'patient_subset', {}));
 
-    return { criteria, sites };
+    return { criteria, sites, limits };
 }
 
 

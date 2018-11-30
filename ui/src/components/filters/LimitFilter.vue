@@ -96,5 +96,19 @@
                 this.$emit('updated');
             },
         },
+        methods: {
+            setEnabled(value) {
+                this.enabled = value;
+            },
+            setLimit(value) {
+                this.limitCount = value;
+            },
+            setOrderColumn(value) {
+                this.orderColumn = value;
+            },
+            setOrderAscending(value) {
+                this.orderAscending = value;
+            },
+        },
     };
 </script>
