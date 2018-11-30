@@ -151,6 +151,13 @@ filters:
       Date of most recent encounter in the EMR database.
     default_date: 2010-01-01
     default_value: True
+  - key: age
+    label: Age
+    long_name: Patient Age
+    type: range
+    description: >
+      Age of the patient as of 2018-01-01
+    default_date:
 #  - key: drugs_ad
 #    label: "Drugs: AD"
 #    long_name: Drugs for Alzheimer's-Related Diseases
