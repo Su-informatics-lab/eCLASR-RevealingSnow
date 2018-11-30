@@ -16,13 +16,8 @@ function criteriaValueToBoolean(value, key) {
     throw new Error(`invalid filter value ('${value}') for filter: ${key}`);
 }
 
-function validateFilter(criteria, filter, key) {
+function validateToggleFilter(criteria, filter, key) {
     let validatedFilter = filter;
-
-    // Ensure that the filter is one in the model
-    if (!_.has(criteria, key)) {
-        throw new Error(`invalid filter key: ${key}`);
-    }
 
     // Check if the model defines this criterion as being dated
     if (!_.isNull(criteria[key].default_date)) {
@@ -49,12 +44,23 @@ function validateFilter(criteria, filter, key) {
     return validatedFilter;
 }
 
+function validateFilter(criteria, filter, key) {
+    // Ensure that the filter is one in the model
+    if (!_.has(criteria, key)) {
+        throw new Error(`invalid filter key: ${key}`);
+    }
+
+    if (criteria[key].type === 'toggle') {
+        return validateToggleFilter(criteria, filter, key);
+    }
+
+    return filter;
+}
+
 function getCriteriaFromMetadata(model, filters) {
     const modelCriteria = _.keyBy(model.criteria, 'key');
 
-    return _.mapValues(filters, (filter, key) => {
-        return validateFilter(modelCriteria, filter, key);
-    });
+    return _.mapValues(filters, (filter, key) => validateFilter(modelCriteria, filter, key));
 }
 
 function getYmcaSitesFromMetadata(model, ymcaSites) {
@@ -79,6 +85,10 @@ function getYmcaSitesFromMetadata(model, ymcaSites) {
 }
 
 function getLimitsFromMetadata(model, limits) {
+    if (_.isEmpty(limits)) {
+        return null;
+    }
+
     const requiredKeys = ['limit', 'order_asc', 'order_by'];
     const missingKeys = _.reject(requiredKeys, _.partial(_.has, limits));
 

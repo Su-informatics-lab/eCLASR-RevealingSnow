@@ -6,8 +6,9 @@ import { createFiltersFromMetadata } from '@/util';
 // conversion are included.
 const model = {
     criteria: [
-        { key: 'clot', default_date: '2017-07-01' },
-        { key: 'bmi', default_date: null },
+        { key: 'clot', type: 'toggle', default_date: '2017-07-01' },
+        { key: 'bmi', type: 'toggle', default_date: null },
+        { key: 'age', type: 'range' },
     ],
     ymcaSites: [
         { key: 'ymca_administrative' },
@@ -77,7 +78,7 @@ describe('createFiltersFromMetadata', () => {
             });
         });
 
-        describe('with valid filters', () => {
+        describe('with valid toggle filters', () => {
             const metadata = {
                 filters: {
                     clot: { date: '2018-01-01', value: 1 },
@@ -90,6 +91,20 @@ describe('createFiltersFromMetadata', () => {
 
                 expect(criteria.bmi).toEqual(false);
                 expect(criteria.clot.value).toEqual(true);
+            });
+        });
+
+        describe('with valid range filters', () => {
+            const metadata = {
+                filters: {
+                    age: { min: '10', max: '25' },
+                },
+            };
+
+            test('the filter is returned', () => {
+                const { criteria } = createFiltersFromMetadata(model, metadata);
+
+                expect(criteria.age).toEqual(metadata.filters.age);
             });
         });
     });

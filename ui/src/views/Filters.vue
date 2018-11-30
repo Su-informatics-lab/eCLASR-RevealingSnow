@@ -263,12 +263,26 @@
                 this.updateLimitsFromMetadata(filters.limits);
             },
             updateFiltersFromMetadata(criteria) {
+                this.updateToggleFiltersFromMetadata(criteria);
+                this.updateRangeFiltersFromMetadata(criteria);
+            },
+            updateToggleFiltersFromMetadata(criteria) {
                 _.each(this.$refs['toggle-filters'], (f) => {
                     if (_.has(criteria, f.id)) {
                         f.set(criteria[f.id]);
                     } else {
                         // If the criterion is missing, then it's excluded
                         f.setSelected(null);
+                    }
+                });
+            },
+            updateRangeFiltersFromMetadata(criteria) {
+                _.each(this.$refs['range-filters'], (f) => {
+                    if (_.has(criteria, f.id)) {
+                        f.set(criteria[f.id]);
+                    } else {
+                        // If the criterion is missing, then it's excluded
+                        f.setEnabled(false);
                     }
                 });
             },

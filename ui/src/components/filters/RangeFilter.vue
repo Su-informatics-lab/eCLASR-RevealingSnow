@@ -101,6 +101,15 @@
             },
         },
         methods: {
+            setEnabled(value) {
+                this.enabled = value;
+            },
+            setMinimumValue(value) {
+                this.selectedMinimum = value;
+            },
+            setMaximumValue(value) {
+                this.selectedMaximum = value;
+            },
             resetToDefault() {
                 this.enabled = false;
                 this.selectedMinimum = null;
@@ -112,6 +121,11 @@
                 }
 
                 return _.toInteger(value);
+            },
+            set(value) {
+                this.setEnabled(true);
+                this.setMinimumValue(_.get(value, 'min', null));
+                this.setMaximumValue(_.get(value, 'max', null));
             },
         },
     };
