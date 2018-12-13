@@ -34,9 +34,13 @@
     import _ from 'lodash';
 
 
-    function alignData(data) {
+    function getAllXValues(data) {
         // Get the list of x-values present across all categories
-        const keys = _.uniq(_.flatMap(_.mapValues(data, x => _.map(x, 'name'))));
+        return _.uniq(_.flatMap(_.mapValues(data, x => _.map(x, 'name'))));
+    }
+
+    function alignData(data) {
+        const keys = getAllXValues(data);
 
         // Rebuild the dataset, ensuring that each category has the same set of 'x' values.
         return _.mapValues(data, (category) => {
@@ -60,6 +64,14 @@
         });
     }
 
+    function combineDataCategories(data) {
+        const dataValues = _.mapValues(data, x => _.map(x, 'value'));
+        const pairedKeyValues = _.toPairs(dataValues);
+        const groupedArrays = _.map(pairedKeyValues, _.flatten);
+
+        return groupedArrays;
+    }
+
     function getMissingKeys(oldData, newData) {
         if (!oldData) {
             return [];
@@ -69,11 +81,6 @@
         const newKeys = _.keys(newData);
 
         return _.difference(oldKeys, newKeys);
-    }
-
-    function getMaximumValue(newData) {
-        const values = _.flatMap(newData, d => _.values(_.mapValues(d, 'value')));
-        return _.max(values);
     }
 
     export default {
@@ -216,7 +223,6 @@
 
                 // Identify any data groups that should be removed
                 const missingKeys = getMissingKeys(this.alignedData, aligned);
-                this.unsetDataGroups(missingKeys);
 
                 this.alignedData = aligned;
                 this.transformedData = transformData(
@@ -224,7 +230,10 @@
                     this.orderFunction, this.transformFunction,
                 );
 
-                _.forIn(this.transformedData, (values, key) => this.setDataGroup(key, values));
+                const keys = getAllXValues(this.transformedData);
+                const combined = combineDataCategories(this.transformedData);
+
+                this.setAllData(keys, combined, missingKeys);
 
                 if (this.groupLegend) {
                     this.chart.data.names(this.groupLegend);
@@ -233,28 +242,17 @@
                 if (this.groupColors) {
                     this.chart.data.colors(this.groupColors);
                 }
-
-                // Update the y-axis range manually to work around a bug in Billboard.js
-                const maxValue = getMaximumValue(this.transformedData);
-                this.chart.axis.max({ y: maxValue });
             },
-            setDataGroup(group, value) {
-                const categories = _.map(value, 'name');
-                const values = _.map(value, 'value');
+            setAllData(keys, combined, missing) {
+                const dataToLoad = [
+                    _.flatten([['x'], keys]),
+                    ...combined,
+                ];
 
                 this.chart.load({
-                    columns: [
-                        _.flatten([['x'], categories]),
-                        _.flatten([[group], values]),
-                    ],
+                    columns: dataToLoad,
+                    unload: missing,
                 });
-            },
-            unsetDataGroups(groups) {
-                if (!_.isEmpty(groups)) {
-                    this.chart.unload({
-                        ids: groups,
-                    });
-                }
             },
             getTooltipTitle(index) {
                 const key = this.chart.categories()[index];

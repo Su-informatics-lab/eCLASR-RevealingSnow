@@ -57,31 +57,13 @@ describe('BarChart.vue', () => {
             });
 
             chart.setData({
-                foo: objectToArray({ a: 1, b: 2 }),
+                foo: objectToArray({ a: 4, b: 8 }),
             });
 
             const data = chart.chart.data();
             expect(data).toHaveLength(1);
 
             expect(data[0].id).toEqual('foo');
-            expect(data[0].values).toHaveLength(2);
-        });
-
-        test('setting new data with missing category removes absent category', () => {
-            chart.setData({
-                foo: objectToArray({ a: 1, b: 2, c: 3 }),
-                bar: objectToArray({ a: 4, b: 5, c: 6 }),
-            });
-
-            chart.setData({
-                foo: objectToArray({ a: 1, b: 2 }),
-            });
-
-            const data = chart.chart.data();
-            expect(data).toHaveLength(1);
-
-            expect(data[0].id).toEqual('foo');
-            expect(data[0].values).toHaveLength(2);
         });
     });
 
