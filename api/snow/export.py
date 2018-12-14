@@ -102,14 +102,14 @@ class ExportData(object):
 def parse_export_identifiers(args: dict):
     label = None
     description = None
-
-    # Just a placeholder for now
-    userid = C.EXPORT_USER
+    userid = None
 
     if C.EXPORT_LABEL in args:
         label = args.pop(C.EXPORT_LABEL)
     if C.EXPORT_DESCRIPTION in args:
         description = args.pop(C.EXPORT_DESCRIPTION)
+    if C.EXPORT_USER in args:
+        userid = args.pop(C.EXPORT_USER)
 
     return label, description, userid
 

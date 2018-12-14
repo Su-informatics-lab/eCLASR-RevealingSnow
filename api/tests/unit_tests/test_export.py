@@ -180,3 +180,29 @@ class ExportDataTests(TestCase):
         self.assertIsInstance(payload[C.EP_SUBJECTS], list)
         self.assertIsInstance(payload[C.EP_METADATA], dict)
         self.assertIsInstance(payload[C.EP_FLAGS], dict)
+
+
+class ParseExportQueryTests(TestCase):
+    def setUp(self):
+        pass
+
+    def test_export_label(self):
+        label, description, user = export.parse_export_identifiers({C.EXPORT_LABEL: 'foo'})
+
+        self.assertEqual(label, 'foo')
+        self.assertIsNone(description)
+        self.assertIsNone(user)
+
+    def test_export_description(self):
+        label, description, user = export.parse_export_identifiers({C.EXPORT_DESCRIPTION: 'foo'})
+
+        self.assertIsNone(label)
+        self.assertEqual(description, 'foo')
+        self.assertIsNone(user)
+
+    def test_export_userid(self):
+        label, description, user = export.parse_export_identifiers({C.EXPORT_USER: 'foo'})
+
+        self.assertIsNone(label)
+        self.assertIsNone(description)
+        self.assertEqual(user, 'foo')
