@@ -48,6 +48,7 @@ def create_app(configuration=None):
     model.cdm.init_app(app)
     tracking.init_app(app)
 
+    app.add_url_rule('/', view_func=lambda: app.send_static_file('index.html'))
     app.add_url_rule('/stats', 'stats', query.patient_stats)
     app.add_url_rule('/download', 'download', export.download_patients)
     app.add_url_rule('/export', 'export', export.export_patients, methods=['POST'])
