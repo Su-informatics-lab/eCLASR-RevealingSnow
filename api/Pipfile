@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Flask = "*"
+Flask-Env = "*"
+pandas = "*"
+PyYAML = "*"
+requests = "*"
+responses = "*"
+
+[dev-packages]
+nose = "*"
+mock = "*"
+parameterized = "*"
+briefcase = "*"
+waitress = "*"
