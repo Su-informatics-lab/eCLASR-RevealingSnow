@@ -24,7 +24,7 @@ setup(
     license='GPL',
     packages=['snow'],
     package_data={
-        'snow': ['data/*.yml', 'logging.yaml']
+        'snow': ['data/*.yml', 'logging.yaml', 'static/*', '.config.env']
     },
     include_package_data=True,
     entry_points={
