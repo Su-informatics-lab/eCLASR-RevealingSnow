@@ -10,10 +10,9 @@ pandas = "*"
 PyYAML = "*"
 requests = "*"
 responses = "*"
+tornado = "*"
 
 [dev-packages]
 nose = "*"
 mock = "*"
 parameterized = "*"
-briefcase = "*"
-waitress = "*"

@@ -1,1 +1,2 @@
-__version__ = '2018.6.0'
+# Version number split into two-digit parts to satisfy requirements on Windows
+__version__ = '20.18.6'

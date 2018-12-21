@@ -2,7 +2,7 @@
 import io
 import re
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 with io.open('./snow/__init__.py', encoding='utf8') as version_file:
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file.read(), re.M)
@@ -22,14 +22,16 @@ setup(
     author='Ryan Barnard',
     author_email='rybarnar@wakehealth.edu',
     license='GPL',
-    packages=find_packages(
-        exclude=[
-            'docs', 'tests',
-            'windows', 'macOS', 'linux',
-            'iOS', 'android',
-            'django'
-        ]
-    ),
+    packages=['snow'],
+    package_data={
+        'snow': ['data/*.yml', 'logging.yaml']
+    },
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'start = snow.app:main',
+        ],
+    },
     install_requires=[
         'Flask',
         'Flask-Env',

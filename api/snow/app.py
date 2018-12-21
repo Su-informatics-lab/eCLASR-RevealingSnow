@@ -56,3 +56,22 @@ def create_app(configuration=None):
     app.add_url_rule('/model', 'model', model.get_criteria_data_model)
 
     return app
+
+
+def main():
+    create_app().run('0.0.0.0', 5000)
+
+
+def runtornado():
+    import webbrowser
+    from snow import wsgi
+    from tornado import wsgi as twsgi
+    from tornado import httpserver
+    from tornado import ioloop
+
+    container = twsgi.WSGIContainer(wsgi.app)
+    http_server = httpserver.HTTPServer(container)
+    http_server.listen(5123)
+
+    webbrowser.open('http://localhost:5123/', new=2)
+    ioloop.IOLoop.current().start()
