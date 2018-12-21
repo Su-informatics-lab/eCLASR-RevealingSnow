@@ -39,7 +39,7 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'start = snow.app:main',
+            'Start Visualization = snow.app:runtornado',
         ],
     },
     install_requires=[
