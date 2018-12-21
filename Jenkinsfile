@@ -7,21 +7,35 @@ node('windows') {
 
         wrap([$class: 'AnsiColorBuildWrapper']) {
             stage('Build UI') {
-                bat ''' cd ui
-                        npm install
-                        npm run build'''
+                dir('ui') {
+                    bat 'npm install'
+                    bat 'npm run build'
 
-                // Stash the built artifacts so they can be included
-                stash includes: 'ui/dist/**', name: 'static_ui'
+                    // Stash the built artifacts so they can be included
+                    stash includes: 'dist/**', name: 'static_ui'
+                }
             }
 
             stage('Build API') {
-                unstash 'static_ui'
+                dir('api') {
+                    unstash 'static_ui'
 
-                bat ''' cd api
-                        python setup.py windows --template Python-Windows-template -b'''
+                    cleanFolder('static')
+                    cleanFolder('snow\\static')
 
-                archiveArtifacts artifacts: 'api/windows/*.msi', onlyIfSuccessful: true
+                    bat 'rename dist static'
+                    bat 'move static snow\\'
+
+                    writeFile file: 'snow/.config.env', text: '''TRACKING_API_URL_BASE=http://localhost:8123/rest/ehrselection
+TRACKING_API_EXPORT_PATH=upload
+TRACKING_API_AUTH_USER=foo
+TRACKING_API_AUTH_PASS=bar
+TRACKING_API_TIMEOUT=5.0'''
+
+                    bat 'python setup.py windows --template Python-Windows-template -b'
+
+                    archiveArtifacts artifacts: 'windows/*.msi', onlyIfSuccessful: true
+                }
             }
         }
     }
@@ -34,6 +48,11 @@ node('windows') {
     }
 }
 
+def cleanFolder(String path) {
+    if (fileExists(path)) {
+        bat "rmdir /s /q ${path}"
+    }
+}
 
 def sendNotification() {
     def buildSucceeded = 'SUCCESS'.equals(currentBuild.currentResult)
