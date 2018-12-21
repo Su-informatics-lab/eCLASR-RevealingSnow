@@ -10,6 +10,18 @@ node('windows') {
                 bat ''' cd ui
                         npm install
                         npm run build'''
+
+                // Stash the built artifacts so they can be included
+                stash includes: 'ui/dist/**', name: 'static_ui'
+            }
+
+            stage('Build API') {
+                unstash 'static_ui'
+
+                bat ''' cd api
+                        python setup.py windows --template Python-Windows-template -b'''
+
+                archiveArtifacts artifacts: 'api/windows/*.msi', onlyIfSuccessful: true
             }
         }
     }
