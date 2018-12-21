@@ -24,14 +24,14 @@ node('windows') {
 
                     cleanFolder('static')
                     cleanFolder('snow\\static')
-                    cleanFolder('windows')
+                    cleanFolder('windows\\content')
 
                     bat 'move dist\\static snow\\'
                     bat 'move dist\\index.html snow\\static\\'
 
-                    configFileProvider([configFile(fileId: 'rs-config-environment', replaceTokens: true, targetLocation: 'snow/.config.env')])
-
-                    bat 'python setup.py windows --template Python-Windows-template -b'
+                    configFileProvider([configFile(fileId: 'rs-config-environment', replaceTokens: true, targetLocation: 'snow/.config.env')]) {
+                        bat 'python setup.py windows --template Python-Windows-template -b'
+                    }
 
                     archiveArtifacts artifacts: 'windows/*.msi', onlyIfSuccessful: true
                 }
