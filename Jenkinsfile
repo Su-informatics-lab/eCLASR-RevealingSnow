@@ -8,6 +8,8 @@ node('windows') {
         wrap([$class: 'AnsiColorBuildWrapper']) {
             stage('Build UI') {
                 dir('ui') {
+                    cleanFolder('dist')
+
                     bat 'npm install'
                     bat 'npm run build'
 
@@ -24,14 +26,10 @@ node('windows') {
                     cleanFolder('snow\\static')
                     cleanFolder('windows')
 
-                    bat 'rename dist static'
-                    bat 'move static snow\\'
+                    bat 'move dist\\static snow\\'
+                    bat 'move dist\\index.html snow\\static\\'
 
-                    writeFile file: 'snow/.config.env', text: '''TRACKING_API_URL_BASE=http://localhost:8123/rest/ehrselection
-TRACKING_API_EXPORT_PATH=upload
-TRACKING_API_AUTH_USER=foo
-TRACKING_API_AUTH_PASS=bar
-TRACKING_API_TIMEOUT=5.0'''
+                    configFileProvider([configFile(fileId: 'rs-config-environment', replaceTokens: true, targetLocation: 'snow/.config.env')])
 
                     bat 'python setup.py windows --template Python-Windows-template -b'
 

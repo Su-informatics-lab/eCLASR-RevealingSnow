@@ -48,7 +48,8 @@ setup(
         'pandas',
         'PyYAML',
         'requests',
-        'responses'
+        'responses',
+        'tornado'
     ],
     options={
         'app': {
