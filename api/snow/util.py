@@ -3,10 +3,15 @@ import json
 import time
 import zipfile
 from io import BytesIO
+from os import path
 
 import pandas as pd
 import yaml
 from flask import Response, send_file
+
+
+def file_in_package(filename):
+    return path.join(path.dirname(__file__), filename)
 
 
 # Adapted from https://stackoverflow.com/a/22238613/228591

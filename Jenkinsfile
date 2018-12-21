@@ -22,6 +22,7 @@ node('windows') {
 
                     cleanFolder('static')
                     cleanFolder('snow\\static')
+                    cleanFolder('windows')
 
                     bat 'rename dist static'
                     bat 'move static snow\\'

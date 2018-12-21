@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import io
+import os
 import re
 
 from setuptools import setup
@@ -10,6 +11,15 @@ with io.open('./snow/__init__.py', encoding='utf8') as version_file:
         version = version_match.group(1)
     else:
         raise RuntimeError("Unable to find version string.")
+
+
+def package_files(directory):
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            paths.append(os.path.join('..', path, filename))
+    return paths
+
 
 with io.open('README.rst', encoding='utf8') as readme:
     long_description = readme.read()
@@ -24,7 +34,7 @@ setup(
     license='GPL',
     packages=['snow'],
     package_data={
-        'snow': ['data/*.yml', 'logging.yaml', 'static/*', '.config.env']
+        'snow': ['data/*.yml', 'logging.yaml', '.config.env'] + package_files('snow/static')
     },
     include_package_data=True,
     entry_points={
