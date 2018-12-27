@@ -42,4 +42,10 @@ export default {
             commit(types.LOAD_CRITERIA_DATA_MODEL, result);
         });
     },
+    getFeatureFlags({ commit }) {
+        // eslint-disable-next-line no-underscore-dangle
+        this._vm.$api.getFeatureFlags().then((result) => {
+            commit(types.LOAD_FEATURE_FLAGS, result);
+        });
+    },
 };

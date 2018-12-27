@@ -19,6 +19,7 @@
             <button slot="button"
                     type="button"
                     class="btn btn-secondary"
+                    v-if="exportEnabled"
                     @click="startExport">
                 Export to Tracking System
             </button>
@@ -117,7 +118,6 @@
                         this.error = null;
                         this.exportComplete = true;
                     }, (error) => {
-                        console.log(`Failed: ${error}`);
                         this.error = error;
                         this.errorReason = error.response.text;
                         this.exportComplete = false;
@@ -130,6 +130,9 @@
             },
             maxExportCount() {
                 return this.$store.getters.patientCountFiltered;
+            },
+            exportEnabled() {
+                return this.$store.getters.getFeature('TRACKING_API_ENABLED');
             },
         },
     };

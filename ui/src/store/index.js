@@ -25,6 +25,7 @@ const state = {
         ymcaSites: [],
         limits: null,
     },
+    featureFlags: {},
 };
 
 export default new Vuex.Store({

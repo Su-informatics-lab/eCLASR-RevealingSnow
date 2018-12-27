@@ -33,4 +33,5 @@ export default {
         const legend = state.model.legend[key];
         return _.zipObject(_.map(legend, 'key'), colors);
     },
+    getFeature: state => key => _.get(state.featureFlags, key, false),
 };

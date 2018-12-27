@@ -85,6 +85,10 @@ class Api {
         return this.get('/model');
     }
 
+    getFeatureFlags() {
+        return this.get('/features');
+    }
+
     getDownloadUrl(filters, exportOptions) {
         const url = `${this.endpoint}/download`;
         let req = request.get(url);

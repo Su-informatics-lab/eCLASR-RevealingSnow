@@ -32,6 +32,7 @@
             Masthead,
         },
         mounted() {
+            this.$store.dispatch('getFeatureFlags');
             this.$store.dispatch('loadUnfilteredStats');
         },
     };

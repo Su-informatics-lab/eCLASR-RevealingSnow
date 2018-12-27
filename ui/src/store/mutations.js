@@ -25,4 +25,7 @@ export default {
     [types.SET_RESULT_LIMITS](state, { limits }) {
         state.filters.limits = limits;
     },
+    [types.LOAD_FEATURE_FLAGS](state, flags) {
+        state.featureFlags = flags;
+    },
 };
