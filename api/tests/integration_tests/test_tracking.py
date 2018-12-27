@@ -1,5 +1,6 @@
 import responses
 
+from snow import constants as C
 from snow import tracking, exc
 from tests.integration_tests import TestBase, TestConfig
 
@@ -27,6 +28,18 @@ class TrackingSystemTests(TestBase):
             tracking.TrackingSystem(app)
 
         self.assertIn('missing required configuration value for tracking system integration', str(e.exception))
+
+    def test_initializing_tracking_system_with_disabled_raises_exception_upon_export_request(self):
+        class DisabledConfig(TestConfig):
+            TRACKING_API_ENABLED = False
+
+        app = self.create_app(DisabledConfig)
+        track = tracking.TrackingSystem(app)
+
+        with self.assertRaises(exc.RSConfigError) as e:
+            track.export_data(None)
+
+        self.assertIn('export_data cannot be used when {} is False'.format(C.TRACKING_API_ENABLED), str(e.exception))
 
     def _prepare_valid_response(self):
         responses.add(responses.POST, 'http://localhost/ehr/export', json='')

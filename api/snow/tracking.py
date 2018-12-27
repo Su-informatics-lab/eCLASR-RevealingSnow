@@ -27,14 +27,17 @@ class TrackingSystem(object):
 
     # noinspection PyAttributeOutsideInit
     def init_app(self, app):
-        self.url_base = _get_required_value(app, C.TRACKING_API_URL_BASE)
-        self.export_path = _get_required_value(app, C.TRACKING_API_EXPORT_PATH)
-        self.auth_user = _get_required_value(app, C.TRACKING_API_AUTH_USER)
-        self.auth_pass = _get_required_value(app, C.TRACKING_API_AUTH_PASS)
-        self.timeout = _get_required_value(app, C.TRACKING_API_TIMEOUT)
+        self.enabled = _get_required_value(app, C.TRACKING_API_ENABLED)
 
-        self._export_url = '/'.join([self.url_base, self.export_path])
-        self._auth = auth.HTTPBasicAuth(self.auth_user, self.auth_pass)
+        if self.enabled:
+            self.url_base = _get_required_value(app, C.TRACKING_API_URL_BASE)
+            self.export_path = _get_required_value(app, C.TRACKING_API_EXPORT_PATH)
+            self.auth_user = _get_required_value(app, C.TRACKING_API_AUTH_USER)
+            self.auth_pass = _get_required_value(app, C.TRACKING_API_AUTH_PASS)
+            self.timeout = _get_required_value(app, C.TRACKING_API_TIMEOUT)
+
+            self._export_url = '/'.join([self.url_base, self.export_path])
+            self._auth = auth.HTTPBasicAuth(self.auth_user, self.auth_pass)
 
     def _post(self, url, payload):
         headers = {
@@ -45,6 +48,9 @@ class TrackingSystem(object):
         return requests.post(url, json=payload, headers=headers, auth=self._auth, timeout=self.timeout)
 
     def export_data(self, payload):
+        if not self.enabled:
+            raise exc.RSConfigError('export_data cannot be used when {} is False'.format(C.TRACKING_API_ENABLED))
+
         response = self._post(self._export_url, payload)
 
         if response.status_code != 200:

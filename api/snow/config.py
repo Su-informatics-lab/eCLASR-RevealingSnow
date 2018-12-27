@@ -33,6 +33,7 @@ class Configuration(metaclass=MetaFlaskEnv):
     LOGGING_CONFIG_FILE = util.file_in_package('logging.yaml')
     SCREENING_DATA_FILE = util.file_in_package("screening.csv")
 
+    TRACKING_API_ENABLED = False
     TRACKING_API_URL_BASE = None
     TRACKING_API_EXPORT_PATH = None
     TRACKING_API_AUTH_USER = None
