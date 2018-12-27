@@ -34,6 +34,7 @@ def create_app(configuration=None):
     from snow import query
     from snow import model
     from snow import export
+    from snow import features
 
     from snow.tracking import tracking
     from snow.ptscreen import pscr
@@ -54,6 +55,7 @@ def create_app(configuration=None):
     app.add_url_rule('/export', 'export', export.export_patients, methods=['POST'])
     app.add_url_rule('/ymca_stats', 'ymca_stats', query.ymca_stats)
     app.add_url_rule('/model', 'model', model.get_criteria_data_model)
+    app.add_url_rule('/features', 'features', features.get_feature_flags)
 
     return app
 
