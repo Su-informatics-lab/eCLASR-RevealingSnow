@@ -65,15 +65,17 @@ def main():
 
 
 def runtornado():
-    import webbrowser
-    from snow import wsgi
+    from snow import wsgi, util
     from tornado import wsgi as twsgi
     from tornado import httpserver
     from tornado import ioloop
+    from tornado import netutil
 
     container = twsgi.WSGIContainer(wsgi.app)
-    http_server = httpserver.HTTPServer(container)
-    http_server.listen(5123)
+    sockets = netutil.bind_sockets(0, '')
 
-    webbrowser.open('http://localhost:5123/', new=2)
+    http_server = httpserver.HTTPServer(container)
+    http_server.add_sockets(sockets)
+
+    util.open_browser(sockets)
     ioloop.IOLoop.current().start()

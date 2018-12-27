@@ -1,13 +1,16 @@
 import datetime
 import json
-import time
+import logging
 import zipfile
 from io import BytesIO
 from os import path
 
 import pandas as pd
+import time
 import yaml
 from flask import Response, send_file
+
+logger = logging.getLogger(__name__)
 
 
 def file_in_package(filename):
@@ -86,3 +89,29 @@ def parse_boolean(value):
 
     # Otherwise, safer to assume False
     return False
+
+
+def get_ipv4_ports(sockets):
+    import socket
+
+    # Extract only the IPv4 sockets
+    sockets = filter(lambda s: s.family == socket.AF_INET, sockets)
+
+    # Get the ports
+    ports = map(lambda s: s.getsockname()[1], sockets)
+
+    return set(ports)
+
+
+def open_browser(sockets):
+    import webbrowser
+
+    ports = get_ipv4_ports(sockets)
+
+    # There shouldn't be multiple ports that we're listening on, but get the first one since it's a set
+    port = next(iter(ports))
+
+    url = 'http://localhost:{port}/'.format(port=port)
+    logger.info("Now running at %s", url)
+
+    webbrowser.open(url, new=2)
