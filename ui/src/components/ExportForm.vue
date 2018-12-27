@@ -3,6 +3,13 @@
         <div class="form-group">
             <input type="text"
                    class="form-control"
+                   placeholder="Your Name (Optional)"
+                   v-model="exportUsername">
+        </div>
+
+        <div class="form-group">
+            <input type="text"
+                   class="form-control"
                    placeholder="Label (Optional)"
                    v-model="exportLabel">
         </div>
@@ -97,6 +104,7 @@
                 exportCount: 1000,
                 orderColumn: 'last_visit_date',
                 orderAscending: false,
+                exportUsername: '',
                 exportLabel: '',
                 exportDescription: '',
             };
@@ -109,6 +117,7 @@
         methods: {
             getExportArgs() {
                 const exportArgs = {
+                    userid: this.exportUsername,
                     label: this.exportLabel,
                     description: this.exportDescription,
                 };
