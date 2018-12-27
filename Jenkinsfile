@@ -24,8 +24,7 @@ node('windows') {
 
                     cleanFolder('static')
                     cleanFolder('snow\\static')
-                    cleanFolder('windows\\content')
-                    cleanFiles('windows\\*.msi')
+                    cleanFolder('windows')
 
                     bat 'move dist\\static snow\\'
                     bat 'move dist\\index.html snow\\static\\'
@@ -51,13 +50,6 @@ node('windows') {
 def cleanFolder(String path) {
     if (fileExists(path)) {
         bat "rmdir /s /q ${path}"
-    }
-}
-
-def cleanFiles(String glob) {
-    files = findFiles(glob: glob)
-    for (file in files) {
-        bat "del /q \"${file.path}\""
     }
 }
 

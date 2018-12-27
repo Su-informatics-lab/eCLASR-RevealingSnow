@@ -54,7 +54,8 @@ setup(
     options={
         'app': {
             'formal_name': 'Revealing Snow',
-            'bundle': 'edu.wakehealth'
+            'bundle': 'edu.wakehealth',
+            'guid': 'c72bfaa6-d639-4895-9d1a-21e621267d0a'
         },
 
         # Desktop/laptop deployments
