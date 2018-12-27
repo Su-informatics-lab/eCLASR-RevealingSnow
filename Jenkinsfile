@@ -25,12 +25,13 @@ node('windows') {
                     cleanFolder('static')
                     cleanFolder('snow\\static')
                     cleanFolder('windows\\content')
+                    cleanFiles('windows\\*.msi')
 
                     bat 'move dist\\static snow\\'
                     bat 'move dist\\index.html snow\\static\\'
 
                     configFileProvider([configFile(fileId: 'rs-config-environment', replaceTokens: true, targetLocation: 'snow/.config.env')]) {
-                        bat 'python setup.py windows --template Python-Windows-template -b'
+                        bat 'python setup.py windows --template Python-Windows-template --icon snow -b'
                     }
 
                     archiveArtifacts artifacts: 'windows/*.msi', onlyIfSuccessful: true
@@ -50,6 +51,13 @@ node('windows') {
 def cleanFolder(String path) {
     if (fileExists(path)) {
         bat "rmdir /s /q ${path}"
+    }
+}
+
+def cleanFiles(String glob) {
+    files = findFiles(glob: glob)
+    for (file in files) {
+        bat "del /q \"${file.path}\""
     }
 }
 
