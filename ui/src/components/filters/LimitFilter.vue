@@ -58,7 +58,7 @@
             },
             maxLimitCount: {
                 type: Number,
-                default: 1000,
+                default: null,
             },
         },
         data() {
