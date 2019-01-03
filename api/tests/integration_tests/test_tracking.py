@@ -6,6 +6,7 @@ from tests.integration_tests import TestBase, TestConfig
 
 
 class TrackingConfig(TestConfig):
+    TRACKING_API_ENABLED = True
     TRACKING_API_URL_BASE = 'http://localhost/ehr'
     TRACKING_API_EXPORT_PATH = 'export'
     TRACKING_API_AUTH_USER = 'foo'
@@ -21,7 +22,7 @@ class TrackingSystemTests(TestBase):
 
     def test_initializing_tracking_system_with_invalid_config_raises_exception(self):
         class BadConfig(TestConfig):
-            pass
+            TRACKING_API_ENABLED = True
 
         with self.assertRaises(exc.RSConfigError) as e:
             app = self.create_app(BadConfig)
