@@ -203,6 +203,6 @@ class FilterValidationTests(TestCase):
 
     def test_invalid_filter_value_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            request.validate_filters({'cardio': 'bar'})
+            request.validate_filters({'cardio2': 'bar'})
 
         self.assertIn('invalid filter value', str(e.exception))
