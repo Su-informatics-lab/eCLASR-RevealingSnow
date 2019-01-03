@@ -188,6 +188,10 @@ class CriteriaDataModel(object):
             for site in self.model[C.YMCA_SITES]
         }
 
+    @property
+    def data_version(self):
+        return self.model.get(C.DATA_VERSION)
+
     def get_filter(self, filter_key):
         return self.filters[filter_key]
 

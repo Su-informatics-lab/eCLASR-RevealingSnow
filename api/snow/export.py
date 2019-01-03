@@ -5,7 +5,7 @@ import uuid
 from flask import request
 
 from snow import constants as  C
-from snow import exc
+from snow import exc, model
 from snow.ptscreen import pscr
 from snow.request import parse_query, Query
 from snow.tracking import tracking
@@ -15,11 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class ExportOptions(object):
-    def __init__(self, query: Query, label=None, description=None, userid=None):
+    def __init__(self, query: Query, label=None, description=None, userid=None, data_version=None):
         self.query = query
         self.label = label
         self.description = description
         self.userid = userid
+        self.data_version = data_version
 
     def create_metadata(self):
         metadata = dict()
@@ -42,6 +43,9 @@ class ExportOptions(object):
 
         if self.userid is not None:
             metadata[C.EXPORT_USER] = self.userid
+
+        if self.data_version is not None:
+            metadata[C.DATA_VERSION] = self.data_version
 
         return metadata
 
@@ -117,8 +121,9 @@ def parse_export_identifiers(args: dict):
 def parse_export_options(args: dict) -> ExportOptions:
     query = parse_query(args, site_required=False)
     label, description, userid = parse_export_identifiers(query.unused)
+    data_version = model.cdm.data_version
 
-    return ExportOptions(query, label=label, description=description, userid=userid)
+    return ExportOptions(query, label=label, description=description, userid=userid, data_version=data_version)
 
 
 def prepare_export_data():

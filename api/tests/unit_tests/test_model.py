@@ -7,12 +7,18 @@ from snow import model
 from snow.exc import RSError
 
 
+def create_model(props):
+    m = model.CriteriaDataModel()
+    m._model = props
+
+    return m
+
+
 class CriteriaDataModelTests(TestCase):
     def setUp(self):
         super(CriteriaDataModelTests, self).setUp()
 
-        self.model = model.CriteriaDataModel()
-        self.model._model = {
+        self.model = create_model({
             C.FILTERS: [
                 {
                     'key': 'clot',
@@ -35,13 +41,23 @@ class CriteriaDataModelTests(TestCase):
                     'label': 'Gateway',
                 },
             ],
-        }
+        })
 
     def test_filter_keys_returns_keys_for_all_filters(self):
         self.assertEqual(self.model.filter_keys, {'clot', 'neuro'})
 
     def test_site_keys_returns_keys_for_all_sites(self):
         self.assertEqual(self.model.ymca_site_keys, {'ymca_fulton', 'ymca_gateway'})
+
+    def test_data_version_is_none_when_undefined(self):
+        self.assertIsNone(self.model.data_version)
+
+    def test_data_version(self):
+        props = dict(self.model._model)
+        props[C.DATA_VERSION] = '12345'
+        model = create_model(props)
+
+        self.assertEqual(model.data_version, '12345')
 
     @parameterized.expand([
         ('clot', model.ToggleFilter),

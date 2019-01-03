@@ -7,6 +7,8 @@ from snow import constants as C, request
 from snow import export
 from snow.exc import RSError
 
+TEST_DATA_VERSION = '12345'
+
 
 class ExportOptionTests(TestCase):
     def _create_metadata(self, site, cutoff, filters, limit=None, order_by=None, order_asc=None, **kwargs):
@@ -23,6 +25,10 @@ class ExportOptionTests(TestCase):
     def test_empty_metadata(self):
         actual = self._create_metadata(None, None, None)
         self.assertEqual(actual, {C.FILTERS: None})
+
+    def test_metadata_includes_data_version_when_defined(self):
+        actual = self._create_metadata(None, None, None, data_version=TEST_DATA_VERSION)
+        self.assertEqual(actual, {C.FILTERS: None, C.DATA_VERSION: TEST_DATA_VERSION})
 
     def test_metadata_from_sites_only_raises_exception(self):
         with self.assertRaises(RSError) as e:

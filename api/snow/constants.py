@@ -20,6 +20,7 @@ PATIENT_SUBSET = 'patient_subset'
 EXPORT_LABEL = 'label'
 EXPORT_DESCRIPTION = 'description'
 EXPORT_USER = 'userid'
+DATA_VERSION = 'data_version'
 
 # Filter Keys
 FLK_KEY = 'key'
