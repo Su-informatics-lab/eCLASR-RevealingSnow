@@ -18,7 +18,7 @@ def filter_patients_by_distance(data: pd.DataFrame, site_args: SiteArguments,
         return data
 
     criteria = mode.value.join([
-        '{site} < {cutoff}'.format(site=site, cutoff=cutoff)
+        '{site} <= {cutoff}'.format(site=site, cutoff=cutoff)
         for site, cutoff in zip(site_args.sites, site_args.cutoffs)
     ])
 

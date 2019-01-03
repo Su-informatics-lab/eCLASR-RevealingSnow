@@ -163,7 +163,7 @@ class YmcaFilterTests(TestCase):
     def test_filter_multiple_sites_with_all_mode(self):
         actual = filters.filter_patients_by_distance(
             self.pscr,
-            SiteArguments(['ymca_fulton', 'ymca_hanes'], [4, 4]),
+            SiteArguments(['ymca_fulton', 'ymca_hanes'], [3, 3]),
             mode=filters.SiteMode.ALL
         )
 
@@ -172,7 +172,7 @@ class YmcaFilterTests(TestCase):
     def test_filter_multiple_sites_with_any_mode(self):
         actual = filters.filter_patients_by_distance(
             self.pscr,
-            SiteArguments(['ymca_fulton', 'ymca_hanes'], [4, 4]),
+            SiteArguments(['ymca_fulton', 'ymca_hanes'], [3, 3]),
             mode=filters.SiteMode.ANY
         )
 
