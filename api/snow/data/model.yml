@@ -142,7 +142,7 @@ filters:
     type: toggle
     description: >
       For women: currently pregnant, pregnant within the past 6 months, or planning to become pregnant within the next 6 months
-    default_date:
+    default_date: 2017-07-01
   - key: t2d_insulin2
     label: Insulin Use
     long_name: "Patient has Type 2 diabetes and uses insulin"
@@ -186,7 +186,7 @@ filters:
       medications with significant central anticholinergic activity; in the absence of major depression,
       stable dose use of selective serotonin reuptake inhibitors or serotonin and norepinephrine reuptake
       inhibitors are allowed.
-    default_date:
+    default_date: 2017-10-01
 ymca_sites:
   - key: ymca_administrative
     label: Administrative
