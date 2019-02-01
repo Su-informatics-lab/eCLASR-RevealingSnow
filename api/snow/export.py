@@ -52,13 +52,13 @@ class ExportOptions(object):
     def _create_site_metadata(self, sites):
         metadata = dict()
 
-        if sites.sites is not None and sites.cutoffs is not None:
+        if sites.sites is not None and sites.maxdists is not None:
             metadata[C.YMCA_SITES] = {
-                site: cutoff
-                for site, cutoff in zip(sites.sites, sites.cutoffs)
+                site: maxdist
+                for site, maxdist in zip(sites.sites, sites.maxdists)
             }
-        elif sites.sites != sites.cutoffs:
-            raise exc.RSError('sites and cutoffs must both be present or both be None')
+        elif sites.sites != sites.maxdists:
+            raise exc.RSError('sites and maxdists must both be present or both be None')
 
         return metadata
 

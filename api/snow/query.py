@@ -24,7 +24,7 @@ def ymca_stats():
 
     patients = pscr.filter_patients(query)
     dist_stats = ymca.get_ymca_distance_stats(
-        patients, query.sites.sites, query.sites.cutoffs, ymca.YMCA_DEMOGRAPHIC_CATEGORIES
+        patients, query.sites.sites, query.sites.maxdists, ymca.YMCA_DEMOGRAPHIC_CATEGORIES
     )
 
     return make_json_response(dist_stats)

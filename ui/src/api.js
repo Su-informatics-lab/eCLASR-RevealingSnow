@@ -19,11 +19,11 @@ function buildQuery(criteria, limits) {
 }
 
 function buildMultipleYmcaSiteQuery(ymcaSites) {
-    const sitesAndCutoffs = _.values(ymcaSites);
-    const site = _.join(_.map(sitesAndCutoffs, 'site'), ',');
-    const cutoff = _.join(_.map(sitesAndCutoffs, 'cutoff'), ',');
+    const sitesAndMaxdists = _.values(ymcaSites);
+    const site = _.join(_.map(sitesAndMaxdists, 'site'), ',');
+    const maxdist = _.join(_.map(sitesAndMaxdists, 'maxdist'), ',');
 
-    return { site, cutoff };
+    return { site, maxdist };
 }
 
 function buildDownloadAndExportRequest(r, filters, exportOptions) {
@@ -76,8 +76,8 @@ class Api {
         return this.get('/stats', query);
     }
 
-    getYmcaStats(site, cutoff, criteria) {
-        const query = _.merge({ site, cutoff }, buildQuery(criteria, this.limits));
+    getYmcaStats(site, maxdist, criteria) {
+        const query = _.merge({ site, maxdist }, buildQuery(criteria, this.limits));
         return this.get('/ymca_stats', query);
     }
 

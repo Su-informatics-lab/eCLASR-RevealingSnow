@@ -24,7 +24,7 @@ class YmcaDistanceTests(TestCase):
 
     def test_get_ymca_distance_stats_with_multiple_sites_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            ymca.get_ymca_distance_stats(self.pscr, ['ymca_fulton', 'ymca_hanes'], cutoffs=[1, 2])
+            ymca.get_ymca_distance_stats(self.pscr, ['ymca_fulton', 'ymca_hanes'], maxdists=[1, 2])
 
         self.assertIn('get_ymca_distance_stats does not support multiple sites', str(e.exception))
 
@@ -32,7 +32,7 @@ class YmcaDistanceTests(TestCase):
         ('ymca_fulton', {2: 1, 3: 1, 4: 2}),
         ('ymca_hanes', {2: 1, 3: 1, 5: 1, 8: 1}),
     ])
-    def test_site_distance_without_cutoff(self, site, expected):
+    def test_site_distance_without_maxdist(self, site, expected):
         actual = ymca._get_distance_counts(self.pscr, site)
         self.assertEqual(actual, {site: expected})
 

@@ -48,7 +48,7 @@ class YmcaQueryArgParserTests(TestCase):
     def _parse_ymca_args(self, args, site_required=False):
         site_args = request.parse_site_arguments(args, site_required)
 
-        return site_args.sites, site_args.cutoffs
+        return site_args.sites, site_args.maxdists
 
     def test_query_without_site_argument_raises_exception(self):
         with self.assertRaises(RSError) as e:
@@ -58,7 +58,7 @@ class YmcaQueryArgParserTests(TestCase):
 
     def test_query_with_invalid_site_argument_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            self._parse_ymca_args({'site': 'foobar', 'cutoff': '5'})
+            self._parse_ymca_args({'site': 'foobar', 'maxdist': '5'})
 
         self.assertIn("invalid YMCA site: 'foobar'", str(e.exception))
 
@@ -66,54 +66,54 @@ class YmcaQueryArgParserTests(TestCase):
         with self.assertRaises(RSError) as e:
             self._parse_ymca_args({'site': 'ymca_fulton'})
 
-        self.assertIn("missing required argument: 'cutoff'", str(e.exception))
+        self.assertIn("missing required argument: 'maxdist'", str(e.exception))
 
-    def test_query_with_cutoff(self):
-        site, cutoff = self._parse_ymca_args({'site': 'ymca_fulton', 'cutoff': '5'})
+    def test_query_with_maxdist(self):
+        site, maxdist = self._parse_ymca_args({'site': 'ymca_fulton', 'maxdist': '5'})
         self.assertEqual(site, ['ymca_fulton'])
-        self.assertEqual(cutoff, [5])
+        self.assertEqual(maxdist, [5])
 
-    def test_query_with_cutoff_and_filters(self):
-        site, cutoff = self._parse_ymca_args({
+    def test_query_with_maxdist_and_filters(self):
+        site, maxdist = self._parse_ymca_args({
             'site': 'ymca_fulton',
-            'cutoff': '5'
+            'maxdist': '5'
         })
 
         self.assertEqual(site, ['ymca_fulton'])
-        self.assertEqual(cutoff, [5])
+        self.assertEqual(maxdist, [5])
 
     def test_query_with_multiple_sites(self):
         with self.assertRaises(RSError) as e:
             self._parse_ymca_args({'site': 'ymca_fulton,ymca_davie'})
 
-        self.assertIn("missing required argument: 'cutoff'", str(e.exception))
+        self.assertIn("missing required argument: 'maxdist'", str(e.exception))
 
-    def test_query_with_multiple_sites_and_single_cutoff_raises_exception(self):
+    def test_query_with_multiple_sites_and_single_maxdist_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            self._parse_ymca_args({'site': 'ymca_fulton,ymca_davie', 'cutoff': '5'})
+            self._parse_ymca_args({'site': 'ymca_fulton,ymca_davie', 'maxdist': '5'})
 
         self.assertIn(
-            'number of YMCA sites (2) must match number of cutoffs (1)',
+            'number of YMCA sites (2) must match number of maxdists (1)',
             str(e.exception)
         )
 
-    def test_query_with_single_site_and_multiple_cutoffs_raises_exception(self):
+    def test_query_with_single_site_and_multiple_maxdists_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            self._parse_ymca_args({'site': 'ymca_fulton', 'cutoff': '5,10'})
+            self._parse_ymca_args({'site': 'ymca_fulton', 'maxdist': '5,10'})
 
         self.assertIn(
-            'number of YMCA sites (1) must match number of cutoffs (2)',
+            'number of YMCA sites (1) must match number of maxdists (2)',
             str(e.exception)
         )
 
-    def test_query_with_multiple_sites_and_cutoffs(self):
-        site, cutoff = self._parse_ymca_args({
+    def test_query_with_multiple_sites_and_maxdists(self):
+        site, maxdist = self._parse_ymca_args({
             'site': 'ymca_fulton,ymca_davie',
-            'cutoff': '5,10'
+            'maxdist': '5,10'
         })
 
         self.assertEqual(site, ['ymca_fulton', 'ymca_davie'])
-        self.assertEqual(cutoff, [5, 10])
+        self.assertEqual(maxdist, [5, 10])
 
 
 class ParseExportLimitTests(TestCase):

@@ -66,20 +66,20 @@ function getCriteriaFromMetadata(model, filters) {
 function getYmcaSitesFromMetadata(model, ymcaSites) {
     const modelSites = _.keyBy(model.ymcaSites, 'key');
 
-    return _.mapValues(ymcaSites, (cutoff, key) => {
+    return _.mapValues(ymcaSites, (maxdist, key) => {
         // Ensure that the site is in the model
         if (!_.has(modelSites, key)) {
             throw new Error(`invalid site key: ${key}`);
         }
 
-        // The cutoff must be numeric
-        if (!_.isNumber(cutoff)) {
-            throw new Error(`invalid cutoff (${cutoff}) for site: ${key}`);
+        // The maxdist must be numeric
+        if (!_.isNumber(maxdist)) {
+            throw new Error(`invalid maxdist (${maxdist}) for site: ${key}`);
         }
 
         return {
             site: key,
-            cutoff,
+            maxdist,
         };
     });
 }

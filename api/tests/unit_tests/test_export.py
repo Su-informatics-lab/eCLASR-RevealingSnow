@@ -11,10 +11,10 @@ TEST_DATA_VERSION = '12345'
 
 
 class ExportOptionTests(TestCase):
-    def _create_metadata(self, site, cutoff, filters, limit=None, order_by=None, order_asc=None, **kwargs):
+    def _create_metadata(self, site, maxdist, filters, limit=None, order_by=None, order_asc=None, **kwargs):
         query = request.Query(
             request.FilterArguments(filters),
-            request.SiteArguments(site, cutoff),
+            request.SiteArguments(site, maxdist),
             request.LimitArguments(limit, order_by, order_asc)
         )
 
@@ -34,15 +34,15 @@ class ExportOptionTests(TestCase):
         with self.assertRaises(RSError) as e:
             self._create_metadata(['ymca_hanes'], None, None)
 
-        self.assertIn('sites and cutoffs must both be present or both be None', str(e.exception))
+        self.assertIn('sites and maxdists must both be present or both be None', str(e.exception))
 
-    def test_metadata_from_cutoffs_only_raises_exception(self):
+    def test_metadata_from_maxdists_only_raises_exception(self):
         with self.assertRaises(RSError) as e:
             self._create_metadata(None, [5], None)
 
-        self.assertIn('sites and cutoffs must both be present or both be None', str(e.exception))
+        self.assertIn('sites and maxdists must both be present or both be None', str(e.exception))
 
-    def test_metadata_from_sites_and_cutoffs(self):
+    def test_metadata_from_sites_and_maxdists(self):
         expected = {
             C.YMCA_SITES: {
                 'ymca_fulton': 5,
@@ -69,7 +69,7 @@ class ExportOptionTests(TestCase):
 
         self.assertEqual(actual, expected)
 
-    def test_metadata_from_sites_cutoffs_and_filters(self):
+    def test_metadata_from_sites_maxdists_and_filters(self):
         filters = {'hospice': '0', 'bariatric': {
             'value': '1',
             'date': '2018-01-01'

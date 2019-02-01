@@ -115,8 +115,8 @@
             };
         },
         computed: {
-            cutoff() {
-                return this.$store.state.filters.ymcaSites[this.id].cutoff;
+            maxdist() {
+                return this.$store.state.filters.ymcaSites[this.id].maxdist;
             },
             filters() {
                 return this.$store.state.filters.criteria;
@@ -140,7 +140,7 @@
             },
         },
         watch: {
-            cutoff() {
+            maxdist() {
                 this.reloadData();
             },
             filters() {
@@ -162,12 +162,12 @@
                 }
             },
             loadUnfiltered() {
-                this.$api.getYmcaStats(this.id, this.cutoff).then((result) => {
+                this.$api.getYmcaStats(this.id, this.maxdist).then((result) => {
                     this.unfiltered = _.pick(result[this.id], 'total').total;
                 });
             },
             loadFiltered() {
-                this.$api.getYmcaStats(this.id, this.cutoff, this.filters).then((result) => {
+                this.$api.getYmcaStats(this.id, this.maxdist, this.filters).then((result) => {
                     this.filtered = _.pick(result[this.id], 'total').total;
 
                     this.demographics = _.mapValues(

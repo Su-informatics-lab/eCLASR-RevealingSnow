@@ -78,7 +78,7 @@
 
                 return {
                     site: this.id,
-                    cutoff: this.maxValue,
+                    maxdist: this.maxValue,
                 };
             },
         },
@@ -94,7 +94,7 @@
             setSelected(value) {
                 this.enabled = value;
             },
-            setCutoff(value) {
+            setMaxdist(value) {
                 this.maxValue = value;
             },
         },

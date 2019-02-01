@@ -36,7 +36,7 @@ def _get_distance_counts(data: pd.DataFrame, site: str, categories: List[str] = 
     }
 
 
-def get_ymca_distance_stats(pscr: pd.DataFrame, sites: List[str], cutoffs: List[int],
+def get_ymca_distance_stats(pscr: pd.DataFrame, sites: List[str], maxdists: List[int],
                             categories: List[str] = None) -> dict:
     """
     :param categories: A list of demographic categories to summarize in addition to overall distances.

@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class SiteArguments(object):
-    def __init__(self, sites, cutoffs):
+    def __init__(self, sites, maxdist):
         self.sites = sites
-        self.cutoffs = cutoffs
+        self.maxdists = maxdist
 
 
 class LimitArguments(object):
@@ -38,26 +38,26 @@ class Query(object):
         self.unused = unused
 
 
-def _split_sites_and_cutoffs(site, cutoff):
+def _split_sites_and_dists(site, maxdist):
     if ',' in site:
         site = site.split(',')
     else:
         site = [site]
 
-    if cutoff is not None:
-        if ',' in cutoff:
-            cutoff = [int(value) for value in cutoff.split(',')]
+    if maxdist is not None:
+        if ',' in maxdist:
+            maxdist = [int(value) for value in maxdist.split(',')]
         else:
-            cutoff = [int(cutoff)]
+            maxdist = [int(maxdist)]
 
-    return site, cutoff
+    return site, maxdist
 
 
-def _validate_ymca_sites_and_cutoffs(sites, cutoffs):
-    if len(sites) != len(cutoffs):
+def _validate_ymca_sites_and_dists(sites, maxdists):
+    if len(sites) != len(maxdists):
         raise RSError(
-            "number of YMCA sites ({}) must match number of cutoffs ({})".format(
-                len(sites), len(cutoffs)
+            "number of YMCA sites ({}) must match number of maxdists ({})".format(
+                len(sites), len(maxdists)
             )
         )
 
@@ -137,26 +137,26 @@ def parse_ymca_args(args: dict):
     else:
         raise RSError("missing required argument: '{}'".format(C.QK_SITE))
 
-    # Pull out the 'cutoff' argument if present
+    # Pull out the 'maxdist' argument if present
     if C.QK_CUTOFF in args:
-        cutoff = args.pop(C.QK_CUTOFF)
+        maxdist = args.pop(C.QK_CUTOFF)
     else:
         raise RSError("missing required argument: '{}'".format(C.QK_CUTOFF))
 
-    site, cutoff = _split_sites_and_cutoffs(site, cutoff)
-    _validate_ymca_sites_and_cutoffs(site, cutoff)
+    site, maxdist = _split_sites_and_dists(site, maxdist)
+    _validate_ymca_sites_and_dists(site, maxdist)
 
-    return site, cutoff
+    return site, maxdist
 
 
 def parse_site_arguments(args, site_required=False) -> Optional[SiteArguments]:
     if site_required or C.QK_SITE in args:
-        site, cutoff = parse_ymca_args(args)
+        site, maxdist = parse_ymca_args(args)
     else:
         site = None
-        cutoff = None
+        maxdist = None
 
-    return SiteArguments(site, cutoff)
+    return SiteArguments(site, maxdist)
 
 
 def parse_limit_arguments(args: dict) -> LimitArguments:

@@ -290,7 +290,7 @@
                 _.each(this.$refs['ymca-sites'], (f) => {
                     if (_.has(sites, f.id)) {
                         f.setSelected(true);
-                        f.setCutoff(sites[f.id].cutoff);
+                        f.setMaxdist(sites[f.id].maxdist);
                     } else {
                         // If the criterion is missing, then it's excluded
                         f.setSelected(false);

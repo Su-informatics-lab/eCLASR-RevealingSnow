@@ -120,7 +120,7 @@ describe('createFiltersFromMetadata', () => {
             });
         });
 
-        describe('with invalid cutoff', () => {
+        describe('with invalid maxdist', () => {
             const metadata = {
                 ymca_sites: { ymca_administrative: 'foobar' },
             };
@@ -140,7 +140,7 @@ describe('createFiltersFromMetadata', () => {
 
                 expect(_.isObject(sites.ymca_administrative)).toBeTruthy();
                 expect(sites.ymca_administrative.site).toEqual('ymca_administrative');
-                expect(sites.ymca_administrative.cutoff).toEqual(15);
+                expect(sites.ymca_administrative.maxdist).toEqual(15);
             });
         });
     });
