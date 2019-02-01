@@ -23,7 +23,10 @@ function buildMultipleYmcaSiteQuery(ymcaSites) {
     const site = _.join(_.map(sitesAndMaxdists, 'site'), ',');
     const maxdist = _.join(_.map(sitesAndMaxdists, 'maxdist'), ',');
 
-    return { site, maxdist };
+    // Placeholder value
+    const mindist = _.join(_.map(sitesAndMaxdists, () => 0), ',');
+
+    return { site, maxdist, mindist };
 }
 
 function buildDownloadAndExportRequest(r, filters, exportOptions) {
@@ -77,7 +80,7 @@ class Api {
     }
 
     getYmcaStats(site, maxdist, criteria) {
-        const query = _.merge({ site, maxdist }, buildQuery(criteria, this.limits));
+        const query = _.merge({ site, maxdist, mindist: 0 }, buildQuery(criteria, this.limits));
         return this.get('/ymca_stats', query);
     }
 
