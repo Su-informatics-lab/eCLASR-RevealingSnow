@@ -160,6 +160,14 @@ class YmcaFilterTests(TestCase):
         }
         self.pscr = pd.DataFrame(data=pscr)
 
+    def test_filter_single_site_with_distance_range(self):
+        actual = filters.filter_patients_by_distance(
+            self.pscr,
+            SiteArguments(['ymca_hanes'], [6], [2.5])
+        )
+
+        self.assertEqual(set(actual.patient_num), {2, 4})
+
     def test_filter_multiple_sites_with_all_mode(self):
         actual = filters.filter_patients_by_distance(
             self.pscr,
