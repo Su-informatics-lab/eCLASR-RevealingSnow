@@ -138,10 +138,10 @@ def parse_ymca_args(args: dict):
         raise RSError("missing required argument: '{}'".format(C.QK_SITE))
 
     # Pull out the 'maxdist' argument if present
-    if C.QK_CUTOFF in args:
-        maxdist = args.pop(C.QK_CUTOFF)
+    if C.QK_SITE_MAXDIST in args:
+        maxdist = args.pop(C.QK_SITE_MAXDIST)
     else:
-        raise RSError("missing required argument: '{}'".format(C.QK_CUTOFF))
+        raise RSError("missing required argument: '{}'".format(C.QK_SITE_MAXDIST))
 
     site, maxdist = _split_sites_and_dists(site, maxdist)
     _validate_ymca_sites_and_dists(site, maxdist)

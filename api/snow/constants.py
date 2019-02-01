@@ -32,7 +32,7 @@ FLT_RANGE = 'range'
 
 # Special Query Argument Keys
 QK_SITE = 'site'
-QK_CUTOFF = 'maxdist'
+QK_SITE_MAXDIST = 'maxdist'
 
 QK_LIMIT_LAST_VISIT_DATE = 'last_visit_date'
 QK_LIMIT_CLOSEST_YMCA = 'closest_ymca'
