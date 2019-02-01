@@ -48,7 +48,7 @@ class YmcaQueryArgParserTests(TestCase):
     def _parse_ymca_args(self, args, site_required=False):
         site_args = request.parse_site_arguments(args, site_required)
 
-        return site_args.sites, site_args.maxdists
+        return site_args.sites, site_args.maxdists, site_args.mindists
 
     def test_query_without_site_argument_raises_exception(self):
         with self.assertRaises(RSError) as e:
@@ -58,7 +58,7 @@ class YmcaQueryArgParserTests(TestCase):
 
     def test_query_with_invalid_site_argument_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            self._parse_ymca_args({'site': 'foobar', 'maxdist': '5'})
+            self._parse_ymca_args({'site': 'foobar', 'maxdist': '5', 'mindist': '0'})
 
         self.assertIn("invalid YMCA site: 'foobar'", str(e.exception))
 
@@ -68,19 +68,17 @@ class YmcaQueryArgParserTests(TestCase):
 
         self.assertIn("missing required argument: 'maxdist'", str(e.exception))
 
-    def test_query_with_maxdist(self):
-        site, maxdist = self._parse_ymca_args({'site': 'ymca_fulton', 'maxdist': '5'})
+    def test_query_without_mindist(self):
+        with self.assertRaises(RSError) as e:
+            self._parse_ymca_args({'site': 'ymca_fulton', 'maxdist': '5'})
+
+        self.assertIn("missing required argument: 'mindist'", str(e.exception))
+
+    def test_query_with_maxdist_and_mindist(self):
+        site, maxdist, mindist = self._parse_ymca_args({'site': 'ymca_fulton', 'maxdist': '5', 'mindist': '0'})
         self.assertEqual(site, ['ymca_fulton'])
         self.assertEqual(maxdist, [5])
-
-    def test_query_with_maxdist_and_filters(self):
-        site, maxdist = self._parse_ymca_args({
-            'site': 'ymca_fulton',
-            'maxdist': '5'
-        })
-
-        self.assertEqual(site, ['ymca_fulton'])
-        self.assertEqual(maxdist, [5])
+        self.assertEqual(mindist, [0])
 
     def test_query_with_multiple_sites(self):
         with self.assertRaises(RSError) as e:
@@ -90,16 +88,25 @@ class YmcaQueryArgParserTests(TestCase):
 
     def test_query_with_multiple_sites_and_single_maxdist_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            self._parse_ymca_args({'site': 'ymca_fulton,ymca_davie', 'maxdist': '5'})
+            self._parse_ymca_args({'site': 'ymca_fulton,ymca_davie', 'maxdist': '5', 'mindist': '1,2'})
 
         self.assertIn(
             'number of YMCA sites (2) must match number of maxdists (1)',
             str(e.exception)
         )
 
+    def test_query_with_multiple_sites_and_single_mindist_raises_exception(self):
+        with self.assertRaises(RSError) as e:
+            self._parse_ymca_args({'site': 'ymca_fulton,ymca_davie', 'maxdist': '5,6', 'mindist': '1'})
+
+        self.assertIn(
+            'number of YMCA sites (2) must match number of mindists (1)',
+            str(e.exception)
+        )
+
     def test_query_with_single_site_and_multiple_maxdists_raises_exception(self):
         with self.assertRaises(RSError) as e:
-            self._parse_ymca_args({'site': 'ymca_fulton', 'maxdist': '5,10'})
+            self._parse_ymca_args({'site': 'ymca_fulton', 'maxdist': '5,10', 'mindist': '1,2'})
 
         self.assertIn(
             'number of YMCA sites (1) must match number of maxdists (2)',
@@ -107,13 +114,15 @@ class YmcaQueryArgParserTests(TestCase):
         )
 
     def test_query_with_multiple_sites_and_maxdists(self):
-        site, maxdist = self._parse_ymca_args({
+        site, maxdist, mindist = self._parse_ymca_args({
             'site': 'ymca_fulton,ymca_davie',
-            'maxdist': '5,10'
+            'maxdist': '5,10',
+            'mindist': '1,2',
         })
 
         self.assertEqual(site, ['ymca_fulton', 'ymca_davie'])
         self.assertEqual(maxdist, [5, 10])
+        self.assertEqual(mindist, [1, 2])
 
 
 class ParseExportLimitTests(TestCase):

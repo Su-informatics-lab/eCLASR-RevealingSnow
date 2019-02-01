@@ -14,7 +14,7 @@ class ExportOptionTests(TestCase):
     def _create_metadata(self, site, maxdist, filters, limit=None, order_by=None, order_asc=None, **kwargs):
         query = request.Query(
             request.FilterArguments(filters),
-            request.SiteArguments(site, maxdist),
+            request.SiteArguments(site, maxdist, 0),
             request.LimitArguments(limit, order_by, order_asc)
         )
 

@@ -67,7 +67,7 @@ class LimitPatientsTests(TestCase):
 
     def _get_subset_patient_nums(self, limit, order_by, order_asc=False, sites=None):
         limit_args = LimitArguments(limit, order_by, order_asc)
-        site_args = SiteArguments(sites, None)
+        site_args = SiteArguments(sites, None, 0)
 
         result = filters.limit_patient_set(self.data, limit_args, site_args)
         return set(result['patient_num'].values)
@@ -163,7 +163,7 @@ class YmcaFilterTests(TestCase):
     def test_filter_multiple_sites_with_all_mode(self):
         actual = filters.filter_patients_by_distance(
             self.pscr,
-            SiteArguments(['ymca_fulton', 'ymca_hanes'], [3, 3]),
+            SiteArguments(['ymca_fulton', 'ymca_hanes'], [3, 3], [0, 0]),
             mode=filters.SiteMode.ALL
         )
 
@@ -172,7 +172,7 @@ class YmcaFilterTests(TestCase):
     def test_filter_multiple_sites_with_any_mode(self):
         actual = filters.filter_patients_by_distance(
             self.pscr,
-            SiteArguments(['ymca_fulton', 'ymca_hanes'], [3, 3]),
+            SiteArguments(['ymca_fulton', 'ymca_hanes'], [3, 3], [0, 0]),
             mode=filters.SiteMode.ANY
         )
 

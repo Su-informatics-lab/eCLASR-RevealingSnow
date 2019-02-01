@@ -10,11 +10,11 @@ from snow.util import parse_boolean
 logger = logging.getLogger(__name__)
 
 
-
 class SiteArguments(object):
-    def __init__(self, sites, maxdist):
+    def __init__(self, sites, maxdist, mindist):
         self.sites = sites
         self.maxdists = maxdist
+        self.mindists = mindist
 
 
 class LimitArguments(object):
@@ -38,26 +38,39 @@ class Query(object):
         self.unused = unused
 
 
-def _split_sites_and_dists(site, maxdist):
+def _split_sites_and_dists(site, maxdist, mindist):
+    def split_distance(dist):
+        if dist is not None:
+            if ',' in dist:
+                dist = [int(value) for value in dist.split(',')]
+            else:
+                dist = [int(dist)]
+
+        return dist
+
     if ',' in site:
         site = site.split(',')
     else:
         site = [site]
 
-    if maxdist is not None:
-        if ',' in maxdist:
-            maxdist = [int(value) for value in maxdist.split(',')]
-        else:
-            maxdist = [int(maxdist)]
+    maxdist = split_distance(maxdist)
+    mindist = split_distance(mindist)
 
-    return site, maxdist
+    return site, maxdist, mindist
 
 
-def _validate_ymca_sites_and_dists(sites, maxdists):
+def _validate_ymca_sites_and_dists(sites, maxdists, mindists):
     if len(sites) != len(maxdists):
         raise RSError(
             "number of YMCA sites ({}) must match number of maxdists ({})".format(
                 len(sites), len(maxdists)
+            )
+        )
+
+    if len(sites) != len(mindists):
+        raise RSError(
+            "number of YMCA sites ({}) must match number of mindists ({})".format(
+                len(sites), len(mindists)
             )
         )
 
@@ -143,20 +156,27 @@ def parse_ymca_args(args: dict):
     else:
         raise RSError("missing required argument: '{}'".format(C.QK_SITE_MAXDIST))
 
-    site, maxdist = _split_sites_and_dists(site, maxdist)
-    _validate_ymca_sites_and_dists(site, maxdist)
+    # Pull out the 'mindist' argument if present
+    if C.QK_SITE_MINDIST in args:
+        mindist = args.pop(C.QK_SITE_MINDIST)
+    else:
+        raise RSError("missing required argument: '{}'".format(C.QK_SITE_MINDIST))
 
-    return site, maxdist
+    site, maxdist, mindist = _split_sites_and_dists(site, maxdist, mindist)
+    _validate_ymca_sites_and_dists(site, maxdist, mindist)
+
+    return site, maxdist, mindist
 
 
 def parse_site_arguments(args, site_required=False) -> Optional[SiteArguments]:
     if site_required or C.QK_SITE in args:
-        site, maxdist = parse_ymca_args(args)
+        site, maxdist, mindist = parse_ymca_args(args)
     else:
         site = None
         maxdist = None
+        mindist = None
 
-    return SiteArguments(site, maxdist)
+    return SiteArguments(site, maxdist, mindist)
 
 
 def parse_limit_arguments(args: dict) -> LimitArguments:
