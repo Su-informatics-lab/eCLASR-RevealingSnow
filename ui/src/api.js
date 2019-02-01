@@ -79,8 +79,8 @@ class Api {
         return this.get('/stats', query);
     }
 
-    getYmcaStats(site, maxdist, criteria) {
-        const query = _.merge({ site, maxdist, mindist: 0 }, buildQuery(criteria, this.limits));
+    getYmcaStats(site, maxdist, mindist, criteria) {
+        const query = _.merge({ site, maxdist, mindist }, buildQuery(criteria, this.limits));
         return this.get('/ymca_stats', query);
     }
 

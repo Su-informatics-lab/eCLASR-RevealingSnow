@@ -35,6 +35,10 @@
 
 
     function getAllXValues(data) {
+        if (!data) {
+            return [];
+        }
+
         // Get the list of x-values present across all categories
         return _.uniq(_.flatMap(_.mapValues(data, x => _.map(x, 'name'))));
     }
@@ -67,9 +71,8 @@
     function combineDataCategories(data) {
         const dataValues = _.mapValues(data, x => _.map(x, 'value'));
         const pairedKeyValues = _.toPairs(dataValues);
-        const groupedArrays = _.map(pairedKeyValues, _.flatten);
 
-        return groupedArrays;
+        return _.map(pairedKeyValues, _.flatten);
     }
 
     function getMissingKeys(oldData, newData) {
@@ -252,6 +255,7 @@
                 this.chart.load({
                     columns: dataToLoad,
                     unload: missing,
+                    categories: keys,
                 });
             },
             getTooltipTitle(index) {

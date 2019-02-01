@@ -118,6 +118,9 @@
             maxdist() {
                 return this.$store.state.filters.ymcaSites[this.id].maxdist;
             },
+            mindist() {
+                return this.$store.state.filters.ymcaSites[this.id].mindist;
+            },
             filters() {
                 return this.$store.state.filters.criteria;
             },
@@ -143,6 +146,9 @@
             maxdist() {
                 this.reloadData();
             },
+            mindist() {
+                this.reloadData();
+            },
             filters() {
                 this.loadFiltered();
             },
@@ -162,12 +168,13 @@
                 }
             },
             loadUnfiltered() {
-                this.$api.getYmcaStats(this.id, this.maxdist).then((result) => {
+                this.$api.getYmcaStats(this.id, this.maxdist, this.mindist).then((result) => {
                     this.unfiltered = _.pick(result[this.id], 'total').total;
                 });
             },
             loadFiltered() {
-                this.$api.getYmcaStats(this.id, this.maxdist, this.filters).then((result) => {
+                const { id, mindist, maxdist, filters } = this;
+                this.$api.getYmcaStats(id, maxdist, mindist, filters).then((result) => {
                     this.filtered = _.pick(result[this.id], 'total').total;
 
                     this.demographics = _.mapValues(

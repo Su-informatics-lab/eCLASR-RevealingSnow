@@ -291,6 +291,7 @@
                     if (_.has(sites, f.id)) {
                         f.setSelected(true);
                         f.setMaxdist(sites[f.id].maxdist);
+                        f.setMindist(sites[f.id].mindist);
                     } else {
                         // If the criterion is missing, then it's excluded
                         f.setSelected(false);

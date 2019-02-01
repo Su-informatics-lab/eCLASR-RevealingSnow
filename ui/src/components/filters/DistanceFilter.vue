@@ -13,18 +13,21 @@
              v-if="enabled">
             <div class="form-row">
                 <div class="col">
-                    <input title="Maximum Distance Slider"
-                           type="range"
-                           v-model="maxValue"
+                    <input title="Minimum Distance Input"
+                           type="number"
+                           v-model="minValue"
                            :min="minDistance"
-                           :max="maxDistance"
-                           class="snow-distance-filter-slider-input">
+                           :max="maxValue"
+                           class="snow-distance-filter-text-input">
+                </div>
+                <div class="col-2">
+                    to
                 </div>
                 <div class="col">
                     <input title="Maximum Distance Input"
                            type="number"
                            v-model="maxValue"
-                           :min="minDistance"
+                           :min="minValue"
                            :max="maxDistance"
                            class="snow-distance-filter-text-input">
                 </div>
@@ -39,7 +42,7 @@
     }
 
     .snow-distance-filter-text-input {
-        width: 3em;
+        width: 100%;
     }
 </style>
 
@@ -67,6 +70,7 @@
         data() {
             return {
                 enabled: false,
+                minValue: 0,
                 maxValue: 15,
             };
         },
@@ -79,6 +83,7 @@
                 return {
                     site: this.id,
                     maxdist: this.maxValue,
+                    mindist: this.minValue,
                 };
             },
         },
@@ -89,6 +94,9 @@
             maxValue() {
                 this.$emit('updated');
             },
+            minValue() {
+                this.$emit('updated');
+            },
         },
         methods: {
             setSelected(value) {
@@ -96,6 +104,9 @@
             },
             setMaxdist(value) {
                 this.maxValue = value;
+            },
+            setMindist(value) {
+                this.minValue = value;
             },
         },
     };
