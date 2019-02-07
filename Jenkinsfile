@@ -25,6 +25,7 @@ node('windows') {
 
             stage('Test API') {
                 dir('api') {
+                    bat 'pipenv install --dev'
                     bat 'pipenv run nosetests --with-xunit --with-coverage --cover-package=snow --cover-html tests'
 
                     junit 'nosetests.xml'
