@@ -57,6 +57,21 @@ function validateFilter(criteria, filter, key) {
     return filter;
 }
 
+function getValidatedDistance(distances, key) {
+    if (!_.has(distances, key)) {
+        throw new Error(`missing distance attribute: ${key}`);
+    }
+
+    const value = distances[key];
+
+    // The distances must be numeric
+    if (!_.isNumber(value)) {
+        throw new Error(`invalid ${key} (${value})`);
+    }
+
+    return value;
+}
+
 function getCriteriaFromMetadata(model, filters) {
     const modelCriteria = _.keyBy(model.criteria, 'key');
 
@@ -66,21 +81,24 @@ function getCriteriaFromMetadata(model, filters) {
 function getYmcaSitesFromMetadata(model, ymcaSites) {
     const modelSites = _.keyBy(model.ymcaSites, 'key');
 
-    return _.mapValues(ymcaSites, (maxdist, key) => {
+    return _.mapValues(ymcaSites, (distances, key) => {
         // Ensure that the site is in the model
         if (!_.has(modelSites, key)) {
             throw new Error(`invalid site key: ${key}`);
         }
 
-        // The maxdist must be numeric
-        if (!_.isNumber(maxdist)) {
-            throw new Error(`invalid maxdist (${maxdist}) for site: ${key}`);
-        }
+        try {
+            const mindist = getValidatedDistance(distances, 'mindist');
+            const maxdist = getValidatedDistance(distances, 'maxdist');
 
-        return {
-            site: key,
-            maxdist,
-        };
+            return {
+                site: key,
+                mindist,
+                maxdist,
+            };
+        } catch (e) {
+            throw new Error(`error parsing distance data for site ${key}: ${e}`);
+        }
     });
 }
 

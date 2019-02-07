@@ -120,9 +120,39 @@ describe('createFiltersFromMetadata', () => {
             });
         });
 
+        describe('with missing mindist', () => {
+            const metadata = {
+                ymca_sites: { ymca_administrative: { maxdist: 15 } },
+            };
+
+            test('an error should be produced', () => {
+                expect(() => createFiltersFromMetadata(model, metadata)).toThrow();
+            });
+        });
+
+        describe('with missing maxdist', () => {
+            const metadata = {
+                ymca_sites: { ymca_administrative: { mindist: 5 } },
+            };
+
+            test('an error should be produced', () => {
+                expect(() => createFiltersFromMetadata(model, metadata)).toThrow();
+            });
+        });
+
         describe('with invalid maxdist', () => {
             const metadata = {
-                ymca_sites: { ymca_administrative: 'foobar' },
+                ymca_sites: { ymca_administrative: { mindist: 0, maxdist: 'foobar' } },
+            };
+
+            test('an error should be produced', () => {
+                expect(() => createFiltersFromMetadata(model, metadata)).toThrow();
+            });
+        });
+
+        describe('with invalid mindist', () => {
+            const metadata = {
+                ymca_sites: { ymca_administrative: { mindist: 'foobar', maxdist: 10 } },
             };
 
             test('an error should be produced', () => {
@@ -132,7 +162,7 @@ describe('createFiltersFromMetadata', () => {
 
         describe('with valid sites', () => {
             const metadata = {
-                ymca_sites: { ymca_administrative: 15 },
+                ymca_sites: { ymca_administrative: { mindist: 7, maxdist: 15 } },
             };
 
             test('the site is converted to an object with site and value', () => {
@@ -140,6 +170,7 @@ describe('createFiltersFromMetadata', () => {
 
                 expect(_.isObject(sites.ymca_administrative)).toBeTruthy();
                 expect(sites.ymca_administrative.site).toEqual('ymca_administrative');
+                expect(sites.ymca_administrative.mindist).toEqual(7);
                 expect(sites.ymca_administrative.maxdist).toEqual(15);
             });
         });
