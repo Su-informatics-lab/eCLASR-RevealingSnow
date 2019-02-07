@@ -8,6 +8,7 @@ node('windows') {
         wrap([$class: 'AnsiColorBuildWrapper']) {
             stage('Test UI') {
                 dir('ui') {
+                    bat 'npm install'
                     bat 'npm run test:jenkins'
 
                     junit 'report.xml'
