@@ -22,9 +22,7 @@ function buildMultipleYmcaSiteQuery(ymcaSites) {
     const sitesAndMaxdists = _.values(ymcaSites);
     const site = _.join(_.map(sitesAndMaxdists, 'site'), ',');
     const maxdist = _.join(_.map(sitesAndMaxdists, 'maxdist'), ',');
-
-    // Placeholder value
-    const mindist = _.join(_.map(sitesAndMaxdists, () => 0), ',');
+    const mindist = _.join(_.map(sitesAndMaxdists, 'mindist'), ',');
 
     return { site, maxdist, mindist };
 }
