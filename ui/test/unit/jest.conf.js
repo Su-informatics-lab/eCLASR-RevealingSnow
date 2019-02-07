@@ -16,6 +16,7 @@ module.exports = {
         '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest',
     },
     snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
+    testResultsProcessor: 'jest-jenkins-reporter',
     setupFiles: ['<rootDir>/test/unit/setup'],
     coverageDirectory: '<rootDir>/test/unit/coverage',
     collectCoverageFrom: [

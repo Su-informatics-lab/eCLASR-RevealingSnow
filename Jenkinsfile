@@ -6,6 +6,38 @@ node('windows') {
         }
 
         wrap([$class: 'AnsiColorBuildWrapper']) {
+            stage('Test UI') {
+                dir('ui') {
+                    bat 'npm run test:jenkins'
+
+                    junit 'report.xml'
+                    publishHTML([
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll: true,
+                            reportDir: 'test/unit/coverage/lcov-report',
+                            reportFiles: 'index.html',
+                            reportName: 'UI Code Coverage'
+                    ])
+                }
+            }
+
+            stage('Test API') {
+                dir('api') {
+                    bat 'pipenv run nosetests --with-xunit --with-coverage --cover-package=snow --cover-html tests'
+
+                    junit 'nosetests.xml'
+                    publishHTML([
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll: true,
+                            reportDir: 'cover',
+                            reportFiles: 'index.html',
+                            reportName: 'API Code Coverage'
+                    ])
+                }
+            }
+
             stage('Build UI') {
                 dir('ui') {
                     cleanFolder('dist')
