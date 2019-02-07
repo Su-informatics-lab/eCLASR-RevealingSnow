@@ -12,9 +12,11 @@ TEST_DATA_VERSION = '12345'
 
 class ExportOptionTests(TestCase):
     def _create_metadata(self, site, maxdist, filters, limit=None, order_by=None, order_asc=None, **kwargs):
+        mindist = kwargs.pop('mindist') if 'mindist' in kwargs else [0]
+
         query = request.Query(
             request.FilterArguments(filters),
-            request.SiteArguments(site, maxdist, 0),
+            request.SiteArguments(site, maxdist, mindist),
             request.LimitArguments(limit, order_by, order_asc)
         )
 
@@ -42,16 +44,22 @@ class ExportOptionTests(TestCase):
 
         self.assertIn('sites and maxdists must both be present or both be None', str(e.exception))
 
-    def test_metadata_from_sites_and_maxdists(self):
+    def test_metadata_from_sites_and_dists(self):
         expected = {
             C.YMCA_SITES: {
-                'ymca_fulton': 5,
-                'ymca_davie': 10
+                'ymca_fulton': {
+                    C.QK_SITE_MINDIST: 0,
+                    C.QK_SITE_MAXDIST: 5
+                },
+                'ymca_davie': {
+                    C.QK_SITE_MINDIST: 5,
+                    C.QK_SITE_MAXDIST: 10
+                }
             },
             C.FILTERS: None
         }
 
-        actual = self._create_metadata(['ymca_fulton', 'ymca_davie'], [5, 10], None)
+        actual = self._create_metadata(['ymca_fulton', 'ymca_davie'], [5, 10], None, mindist=[0, 5])
 
         self.assertEqual(actual, expected)
 
@@ -69,7 +77,7 @@ class ExportOptionTests(TestCase):
 
         self.assertEqual(actual, expected)
 
-    def test_metadata_from_sites_maxdists_and_filters(self):
+    def test_metadata_from_sites_dists_and_filters(self):
         filters = {'hospice': '0', 'bariatric': {
             'value': '1',
             'date': '2018-01-01'
@@ -77,13 +85,19 @@ class ExportOptionTests(TestCase):
 
         expected = {
             C.YMCA_SITES: {
-                'ymca_fulton': 5,
-                'ymca_davie': 10
+                'ymca_fulton': {
+                    C.QK_SITE_MINDIST: 0,
+                    C.QK_SITE_MAXDIST: 5
+                },
+                'ymca_davie': {
+                    C.QK_SITE_MINDIST: 0,
+                    C.QK_SITE_MAXDIST: 10
+                }
             },
             C.FILTERS: filters
         }
 
-        actual = self._create_metadata(['ymca_fulton', 'ymca_davie'], [5, 10], filters)
+        actual = self._create_metadata(['ymca_fulton', 'ymca_davie'], [5, 10], filters, mindist=[0, 0])
 
         self.assertEqual(actual, expected)
 

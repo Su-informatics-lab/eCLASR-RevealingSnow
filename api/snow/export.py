@@ -54,8 +54,11 @@ class ExportOptions(object):
 
         if sites.sites is not None and sites.maxdists is not None:
             metadata[C.YMCA_SITES] = {
-                site: maxdist
-                for site, maxdist in zip(sites.sites, sites.maxdists)
+                site: {
+                    C.QK_SITE_MINDIST: mindist,
+                    C.QK_SITE_MAXDIST: maxdist
+                }
+                for site, maxdist, mindist in zip(sites.sites, sites.maxdists, sites.mindists)
             }
         elif sites.sites != sites.maxdists:
             raise exc.RSError('sites and maxdists must both be present or both be None')
