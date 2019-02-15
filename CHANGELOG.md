@@ -1,5 +1,11 @@
 # Revealing Snow Change Log
 
+## [2019.1.0] - 2019-02-15
+
+### Added
+
+* The YMCA site distance filters now support specifying a minimum distance.
+
 ## [2018.6.2] - 2019-01-03
 
 ### Added
