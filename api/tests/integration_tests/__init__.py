@@ -5,12 +5,26 @@ import tempfile
 from os import path
 from unittest import TestCase
 
+from flask_env import MetaFlaskEnv
+
 from snow.app import create_app
 from snow.config import Configuration
 
 
-class TestConfig(Configuration):
-    pass
+# Override the environment variable loading metaclass for tests
+class NoEnvMeta(MetaFlaskEnv):
+    def __init__(self, *args, **kwargs):
+        # Bypass MetaFlaskEnv's constructor and call its superclass' constructor
+        super(MetaFlaskEnv, self).__init__(*args, **kwargs)
+
+
+class TestConfig(Configuration, metaclass=NoEnvMeta):
+    TRACKING_API_ENABLED = False
+    TRACKING_API_URL_BASE = None
+    TRACKING_API_EXPORT_PATH = None
+    TRACKING_API_AUTH_USER = None
+    TRACKING_API_AUTH_PASS = None
+    TRACKING_API_TIMEOUT = 5
 
 
 class TestBase(TestCase):
