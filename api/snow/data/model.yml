@@ -7,7 +7,7 @@ filters:
     description: >
       Myocardial infarction, major heart surgery (i.e., valve replacement or bypass surgery),
       deep vein thrombosis or pulmonary embolus in the past 6 months.
-    default_date: 2018-07-01
+    default_date: 2018-10-01
   - key: neuro
     label: Neurology
     long_name: Significant Neurological Diseases
@@ -17,14 +17,14 @@ filters:
       Parkinson’s disease, Huntington’s disease, normal pressure hydrocephalus, brain tumor, progressive
       supranuclear palsy, seizure disorder, ubdural hematoma, multiple sclerosis, or history of significant
       head trauma with persistent neurologic sequelae or known structural brain abnormalities.
-    default_date: 2019-01-01
+    default_date:
   - key: dep
     label: Depression
     long_name: Depression
     type: toggle
     description: >
       History of major depression within the last 12 months
-    default_date: 2018-01-01
+    default_date: 2018-04-01
   - key: bpd
     label: Bipolar
     long_name: Bipolar Disorder
@@ -53,7 +53,7 @@ filters:
     type: toggle
     description: >
       History of alcohol or substance abuse or dependence within the past 2 years, as per DSM V criteria
-    default_date: 2017-01-01
+    default_date: 2017-04-01
   - key: cardio
     label: Significant CVD
     long_name: Significant Cardiovascular Disease
@@ -61,7 +61,7 @@ filters:
     description: >
       Significant cardiovascular disease (including NYHA Class III or IV congestive heart failure, clinically
       significant aortic stenosis, history of cardiac arrest, use of a cardiac defibrillator or uncontrolled angina).
-    default_date: 2019-01-01
+    default_date:
   - key: heart
     label: Heart
     long_name: Heart Problems
@@ -70,13 +70,13 @@ filters:
       Serious conduction disorder (e.g., 3rd degree heart block), uncontrolled arrhythmia, or new Q waves or
       ST-segment depressions (>3 mm) on ECG (treated atrial fibrillation for more than 1 year or occasional
       premature ventricular contractions on ECG are not exclusions).
-    default_date: 2018-01-01
+    default_date: 2018-04-01
   - key: stroke_large
     label: "Stroke: Large"
     long_name: Large Vessel Stroke
     type: toggle
     description: Large vessel stroke in the past 2 years
-    default_date: 2017-01-01
+    default_date: 2017-04-01
   - key: tia
     label: "Stroke: Small"
     long_name: Transient Ischemic Attack or Small Vessel Stroke
@@ -84,7 +84,7 @@ filters:
     description: >
       History of TIA or small vessel stroke in the last 6 months; TIA occurring longer than 6 months with
       residual effects
-    default_date: 2018-07-01
+    default_date: 2018-10-01
   - key: lung
     label: Lung Disease
     long_name: Lung Disease
@@ -109,14 +109,14 @@ filters:
       excluding non-melanoma skin cancers, resected cutaneous squamous cell carcinoma in situ, basal cell
       carcinoma, cervical carcinoma in situ, or in situ prostate cancer with normal prostate-specific antigen
       posttreatment
-    default_date: 2014-01-01
+    default_date: 2014-04-01
   - key: bone
     label: Bone Fracture or Joint Replacement
     long_name: Hip Fracture, Joint Replacement, or Spinal Surgery
     type: toggle
     description: >
       History of hip fracture, joint replacement, or spinal surgery in the last 6 months
-    default_date: 2018-07-01
+    default_date: 2018-10-01
   - key: pt
     label: Therapies
     long_name: Physical Therapy or Cardiopulmonary Rehabilitation
@@ -147,7 +147,7 @@ filters:
     description: >
       History of a malabsorptive bariatric procedure (gastric bypass, biliopancreatic diversion); other bariatric
       procedures involving restriction (i.e., sleeve, band) are not exclusionary
-    default_date: 2019-01-01
+    default_date:
   - key: nursing_home
     label: Nursing Home
     long_name: Resides in a Nursing Home
@@ -228,7 +228,7 @@ filters:
     type: toggle
     description: >
       For women: currently pregnant, pregnant within the past 6 months, or planning to become pregnant within the next 6 months
-    default_date: 2018-07-01
+    default_date: 2018-10-01
   - key: t2d_insulin
     label: Insulin Use
     long_name: "Patient has Type 2 diabetes and uses insulin"
@@ -249,7 +249,7 @@ filters:
     long_name: Patient Age
     type: range
     description: >
-      Age of the patient as of 2018-01-01
+      Age of the patient as of 2018-04-01
     minimum_value: 5
     maximum_value: 120
   - key: drugs_ad
@@ -273,7 +273,7 @@ filters:
       medications with significant central anticholinergic activity; in the absence of major depression,
       stable dose use of selective serotonin reuptake inhibitors or serotonin and norepinephrine reuptake
       inhibitors are allowed.
-    default_date: 2018-10-01
+    default_date: 2019-01-01
     default_value:
 ymca_sites:
   - key: ymca_administrative
