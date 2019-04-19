@@ -1,6 +1,6 @@
 ---
 filters:
-  - key: clot2
+  - key: clot
     label: CVD
     long_name: Cardiovascular Diseases
     type: toggle
@@ -8,7 +8,7 @@ filters:
       Myocardial infarction, major heart surgery (i.e., valve replacement or bypass surgery),
       deep vein thrombosis or pulmonary embolus in the past 6 months.
     default_date: 2018-07-01
-  - key: neuro2
+  - key: neuro
     label: Neurology
     long_name: Significant Neurological Diseases
     type: toggle
@@ -18,28 +18,43 @@ filters:
       supranuclear palsy, seizure disorder, ubdural hematoma, multiple sclerosis, or history of significant
       head trauma with persistent neurologic sequelae or known structural brain abnormalities.
     default_date: 2019-01-01
-  - key: dep_bpd2
-    label: Depression/Bipolar
-    long_name: Depression or Bipolar Disorder
+  - key: dep
+    label: Depression
+    long_name: Depression
     type: toggle
     description: >
-      History of major depression or bipolar disorder (DSM V criteria) within the last 12 months
+      History of major depression within the last 12 months
     default_date: 2018-01-01
-  - key: schizo2
+  - key: bpd
+    label: Bipolar
+    long_name: Bipolar Disorder
+    type: toggle
+    description: >
+      History of bipolar disorder as per DSM V criteria
+    default_date:
+  - key: schizo
     label: Schizophrenia
     long_name: Schizophrenia
     type: toggle
     description: >
       History of schizophrenia as per DSM V criteria
-    default_date: 2019-01-01
-  - key: sub_abuse2
+    default_date:
+  - key: memory
+    label: Memory-Related Diagnoses
+    long_name: Memory-Related Diagnoses
+    type: toggle
+    description: >
+      Memory-Related Diagnoses
+    default_date:
+    default_value: False
+  - key: sub_abuse
     label: Substance Abuse
     long_name: Alcohol or Substance Abuse or Dependence
     type: toggle
     description: >
       History of alcohol or substance abuse or dependence within the past 2 years, as per DSM V criteria
     default_date: 2017-01-01
-  - key: cardio2
+  - key: cardio
     label: Significant CVD
     long_name: Significant Cardiovascular Disease
     type: toggle
@@ -47,7 +62,7 @@ filters:
       Significant cardiovascular disease (including NYHA Class III or IV congestive heart failure, clinically
       significant aortic stenosis, history of cardiac arrest, use of a cardiac defibrillator or uncontrolled angina).
     default_date: 2019-01-01
-  - key: heart2
+  - key: heart
     label: Heart
     long_name: Heart Problems
     type: toggle
@@ -56,13 +71,13 @@ filters:
       ST-segment depressions (>3 mm) on ECG (treated atrial fibrillation for more than 1 year or occasional
       premature ventricular contractions on ECG are not exclusions).
     default_date: 2018-01-01
-  - key: stroke_large2
+  - key: stroke_large
     label: "Stroke: Large"
     long_name: Large Vessel Stroke
     type: toggle
     description: Large vessel stroke in the past 2 years
     default_date: 2017-01-01
-  - key: tia2
+  - key: tia
     label: "Stroke: Small"
     long_name: Transient Ischemic Attack or Small Vessel Stroke
     type: toggle
@@ -70,14 +85,22 @@ filters:
       History of TIA or small vessel stroke in the last 6 months; TIA occurring longer than 6 months with
       residual effects
     default_date: 2018-07-01
-  - key: lung2
+  - key: lung
     label: Lung Disease
+    long_name: Lung Disease
+    type: toggle
+    description: >
+      Lung disease requiring either regular use of corticosteroids or the use of supplemental oxygen
+      (inhaled steroids for asthma is permissible)
+    default_date:
+  - key: renal
+    label: Renal Disease
     long_name: Renal Disease Requiring Dialysis
     type: toggle
     description: >
       Renal disease requiring dialysis
-    default_date: 2019-01-01
-  - key: cancer2
+    default_date:
+  - key: cancer
     label: Cancer
     long_name: Primary or Recurrent Cancer
     type: toggle
@@ -87,21 +110,37 @@ filters:
       carcinoma, cervical carcinoma in situ, or in situ prostate cancer with normal prostate-specific antigen
       posttreatment
     default_date: 2014-01-01
-  - key: bone2
+  - key: bone
     label: Bone Fracture or Joint Replacement
     long_name: Hip Fracture, Joint Replacement, or Spinal Surgery
     type: toggle
     description: >
       History of hip fracture, joint replacement, or spinal surgery in the last 6 months
     default_date: 2018-07-01
-  - key: pt2
+  - key: pt
     label: Therapies
     long_name: Physical Therapy or Cardiopulmonary Rehabilitation
     type: toggle
     description: >
       Currently receiving physical therapy or cardiopulmonary rehabilitation
     default_date: 2019-01-01
-  - key: bariatric2
+  - key: phys_disability
+    label: Physical Disabilities
+    long_name: Physical Disabilities
+    type: toggle
+    description: >
+      Physical Disabilities
+    default_date:
+    default_value: False
+  - key: frailty_status
+    label: "eFI: Healthy"
+    long_name: "e-Frailty Index: Healthy"
+    type: toggle
+    description: >
+      e-Frailty Index: Healthy
+    default_date:
+    default_value:
+  - key: bariatric
     label: Bariatric
     long_name: Malabsorptive Bariatric Procedure
     type: toggle
@@ -109,41 +148,88 @@ filters:
       History of a malabsorptive bariatric procedure (gastric bypass, biliopancreatic diversion); other bariatric
       procedures involving restriction (i.e., sleeve, band) are not exclusionary
     default_date: 2019-01-01
-  - key: nursing_home2
+  - key: nursing_home
     label: Nursing Home
     long_name: Resides in a Nursing Home
     type: toggle
     description: >
       Resides in a nursing home
     default_date: 2019-01-01
-  - key: hospice2
+  - key: hospice
     label: Hospice
     long_name: Receives Hospice Care
     type: toggle
     description: >
       Receives hospice care
     default_date:
-  - key: bmi
-    label: BMI
+  - key: bmi_1yr
+    label: BMI (1 Year)
     long_name: BMI >= 40
     type: toggle
-    description: BMI >= 40
+    description: BMI >= 40 during the previous year
     default_date:
-  - key: vit_exc2
-    label: Vital Signs
+    default_value:
+  - key: bmi_2yr
+    label: BMI (2 Year)
+    long_name: BMI >= 40
+    type: toggle
+    description: BMI >= 40 during the previous 2 years
+    default_date:
+    default_value:
+  - key: bmi_5yr
+    label: BMI (5 Years)
+    long_name: BMI >= 40
+    type: toggle
+    description: BMI >= 40 during the previous 5 years
+    default_date:
+    default_value: False
+  - key: bmi_10yr
+    label: BMI (10 Years)
+    long_name: BMI >= 40
+    type: toggle
+    description: BMI >= 40 during the previous 10 years
+    default_date:
+    default_value:
+  - key: vit_1yr
+    label: Vital Signs (1 Year)
     long_name: "SBP < 130mmHG, HbA1c < 6.0%, and LDL < 130 mg/dL"
     type: toggle
     description: >
-      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines for age
+      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines for age during the past year
     default_date:
-  - key: pregnant2
+    default_value:
+  - key: vit_2yr
+    label: Vital Signs (2 Year)
+    long_name: "SBP < 130mmHG, HbA1c < 6.0%, and LDL < 130 mg/dL"
+    type: toggle
+    description: >
+      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines for age during the past 2 years
+    default_date:
+    default_value: False
+  - key: vit_5yr
+    label: Vital Signs (5 Year)
+    long_name: "SBP < 130mmHG, HbA1c < 6.0%, and LDL < 130 mg/dL"
+    type: toggle
+    description: >
+      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines for age during the past 5 years
+    default_date:
+    default_value:
+  - key: vit_10yr
+    label: Vital Signs (10 Year)
+    long_name: "SBP < 130mmHG, HbA1c < 6.0%, and LDL < 130 mg/dL"
+    type: toggle
+    description: >
+      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines for age during the past 10 years
+    default_date:
+    default_value:
+  - key: pregnant
     label: Pregnancy
     long_name: "Pregnancy, childbirth, and the puerperium"
     type: toggle
     description: >
       For women: currently pregnant, pregnant within the past 6 months, or planning to become pregnant within the next 6 months
     default_date: 2018-07-01
-  - key: t2d_insulin2
+  - key: t2d_insulin
     label: Insulin Use
     long_name: "Patient has Type 2 diabetes and uses insulin"
     type: toggle
@@ -166,7 +252,7 @@ filters:
       Age of the patient as of 2018-01-01
     minimum_value: 5
     maximum_value: 120
-  - key: drugs_ad2
+  - key: drugs_ad
     label: "Drugs: AD"
     long_name: Drugs for Alzheimer's-Related Diseases
     type: toggle
@@ -174,7 +260,8 @@ filters:
       Current or past use of medications for memory impairment or AD (e.g.
       cholinesterase inhibitors, memantine = an NMDA receptor antagonist)
     default_date:
-  - key: drugs_psychoactive2
+    default_value:
+  - key: drugs_psychoactive
     label: "Drugs: Psychoactive"
     long_name: Use of Psychoactive Medications
     type: toggle
@@ -187,6 +274,7 @@ filters:
       stable dose use of selective serotonin reuptake inhibitors or serotonin and norepinephrine reuptake
       inhibitors are allowed.
     default_date: 2018-10-01
+    default_value:
 ymca_sites:
   - key: ymca_administrative
     label: Administrative
