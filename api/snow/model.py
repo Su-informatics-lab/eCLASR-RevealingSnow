@@ -6,9 +6,12 @@ import yaml
 from snow import constants as C, exc
 from snow.util import make_json_response
 
-# TODO: Update tests!!
-
 DEFAULT_MODEL_FILE = path.join(path.dirname(__file__), 'data', 'model.yml')
+
+_CRITERION_VALUE_COMPARISON = {
+    '0': '!=',
+    '1': '=='
+}
 
 _CRITERION_DATE_CONJUNCTION = {
     '0': 'or',
@@ -53,17 +56,19 @@ class ToggleFilter(EmrFilter):
 
     def expand_filter_expression(self, key, value):
         if not isinstance(value, dict):
-            return '{} == {}'.format(key, value)
+            value_comp = _CRITERION_VALUE_COMPARISON[value]
+            return '{} {} 1'.format(key, value_comp)
 
         date_field = _date_field(key)
         field_value = value['value']
         date_value = value['date']
+        field_value_comp = _CRITERION_VALUE_COMPARISON[field_value]
         date_comp = _CRITERION_DATE_COMPARISON[field_value]
         conjunction = _CRITERION_DATE_CONJUNCTION[field_value]
 
-        return '({field} == {value} {conj} {date_field} {date_comp} "{date_value}")'.format(
+        return '({field} {field_value_comp} 1 {conj} {date_field} {date_comp} "{date_value}")'.format(
             field=key,
-            value=field_value,
+            field_value_comp=field_value_comp,
             conj=conjunction,
             date_field=date_field,
             date_comp=date_comp,
