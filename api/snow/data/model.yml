@@ -45,7 +45,7 @@ filters:
     type: toggle
     description: >
       Memory-Related Diagnoses
-    default_date:
+    default_date: 1900-01-01
     default_value: False
   - key: sub_abuse
     label: Substance Abuse
@@ -244,12 +244,12 @@ filters:
       Date of most recent encounter in the EMR database.
     default_date: 2010-01-01
     default_value: True
-  - key: age
+  - key: current_age
     label: Age
     long_name: Patient Age
     type: range
     description: >
-      Age of the patient as of 2018-04-01
+      Age of the patient as of 2019-04-01
     minimum_value: 5
     maximum_value: 120
   - key: drugs_ad
@@ -275,6 +275,13 @@ filters:
       inhibitors are allowed.
     default_date: 2019-01-01
     default_value:
+  - key: vital_status_num
+    label: Vital Status
+    long_name: Evidence of Death
+    type: toggle
+    description: Evidence of death.
+    default_date:
+    default_value: False
 ymca_sites:
   - key: ymca_administrative
     label: Administrative
@@ -355,4 +362,4 @@ legend:
     label: Filtered
   - key: unfiltered
     label: Unfiltered
-data_version: cd4a606ab0e39de069d9640b373b4f94c486cccd
+data_version: 1c29e896ed7efeba897f55be36910a7d462b1b99
