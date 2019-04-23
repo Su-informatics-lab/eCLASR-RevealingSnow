@@ -16,10 +16,10 @@ class FilterByEmrCriteriaTests(TestCase):
 
         data = {
             'patient_num': [1, 2, 3],
-            'cardio2': [0, 0, 1],
-            'cardio2_date': [None, None, '2018-05-01'],
-            'neuro2': [0, 1, 1],
-            'neuro2_date': [None, '2018-04-01', '2018-06-01']
+            'cardio': [0, 0, 1],
+            'cardio_date': [None, None, '2018-05-01'],
+            'neuro': [0, 1, 1],
+            'neuro_date': [None, '2018-04-01', '2018-06-01']
         }
         self.data = pd.DataFrame(data=data)
 
@@ -36,19 +36,19 @@ class FilterByEmrCriteriaTests(TestCase):
         ('1', {3}),
     ])
     def test_filter_value_subsets_dataset(self, cardio_value, expected_patient_nums):
-        actual_patient_nums = self._get_filtered_patient_nums({'cardio2': cardio_value})
+        actual_patient_nums = self._get_filtered_patient_nums({'cardio': cardio_value})
         self.assertEqual(actual_patient_nums, expected_patient_nums)
 
     def test_multiple_filters_treated_as_and(self):
-        patient_nums = self._get_filtered_patient_nums({'cardio2': '1', 'neuro2': '1'})
+        patient_nums = self._get_filtered_patient_nums({'cardio': '1', 'neuro': '1'})
         self.assertEqual(patient_nums, {3})
 
     def test_exclusion_with_date_excludes_patients_with_condition_after_cutoff(self):
-        patient_nums = self._get_filtered_patient_nums({'neuro2': {'value': '0', 'date': '2018-05-01'}})
+        patient_nums = self._get_filtered_patient_nums({'neuro': {'value': '0', 'date': '2018-05-01'}})
         self.assertEqual(patient_nums, {1, 2})
 
     def test_inclusion_with_date_includes_patients_with_condition_after_cutoff(self):
-        patient_nums = self._get_filtered_patient_nums({'neuro2': {'value': '1', 'date': '2018-05-01'}})
+        patient_nums = self._get_filtered_patient_nums({'neuro': {'value': '1', 'date': '2018-05-01'}})
         self.assertEqual(patient_nums, {3})
 
 
