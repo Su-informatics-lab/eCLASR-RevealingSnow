@@ -36,6 +36,10 @@
     .snow-range-filter-controls {
         padding-left: 1.5em;
     }
+
+    .snow-range-filter-controls > input {
+        min-width: 4em;
+    }
 </style>
 
 <script>
@@ -120,7 +124,7 @@
                     return null;
                 }
 
-                return _.toInteger(value);
+                return _.toNumber(value);
             },
             set(value) {
                 this.setEnabled(true);
