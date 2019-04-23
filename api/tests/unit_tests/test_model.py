@@ -151,9 +151,10 @@ class RangeFilterTests(TestCase):
         self.assertIn('invalid filter value', str(e.exception))
 
     @parameterized.expand([
-        ({'min': '1'}, 'foo >= 1'),
-        ({'max': '10'}, 'foo <= 10'),
-        ({'min': '1', 'max': '10'}, '(foo >= 1 and foo <= 10)'),
+        ({'min': '1'}, 'foo >= 1.0'),
+        ({'min': '2.5'}, 'foo >= 2.5'),
+        ({'max': '10'}, 'foo <= 10.0'),
+        ({'min': '1.25', 'max': '9.75'}, '(foo >= 1.25 and foo <= 9.75)'),
     ])
     def test_expand_filter_expression(self, value, expected):
         actual = self.filter.expand_filter_expression('foo', value)

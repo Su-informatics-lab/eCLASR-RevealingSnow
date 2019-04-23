@@ -6,6 +6,8 @@ import yaml
 from snow import constants as C, exc
 from snow.util import make_json_response
 
+# TODO: Update tests!!
+
 DEFAULT_MODEL_FILE = path.join(path.dirname(__file__), 'data', 'model.yml')
 
 _CRITERION_DATE_CONJUNCTION = {
@@ -113,7 +115,7 @@ class RangeFilter(EmrFilter):
             return None
 
         try:
-            return int(value[key])
+            return float(value[key])
         except ValueError:
             raise exc.RSError("invalid filter value: {} must be an integer: '{}'".format(key, value))
 
