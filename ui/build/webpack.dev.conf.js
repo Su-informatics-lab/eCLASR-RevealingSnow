@@ -47,7 +47,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     allowedHosts: [
       'localhost',
       'orthograph.medctr.ad.wfubmc.edu',
-      'phsr-h2pvsw1.medctr.ad.wfubmc.edu'
+      'phsr-h2pvsw1.medctr.ad.wfubmc.edu',
+      'phsr-292gd4.medctr.ad.wfubmc.edu'
     ]
   },
   plugins: [
