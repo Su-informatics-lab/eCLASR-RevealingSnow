@@ -3,8 +3,19 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path');
+const merge = require('webpack-merge');
 
-module.exports = {
+function loadLocalConfig() {
+   try {
+      return require('./.local');
+   } catch (e) {
+      return {};
+   }
+}
+
+const localConfig = loadLocalConfig();
+
+const config = {
   dev: {
 
     // Paths
@@ -22,12 +33,6 @@ module.exports = {
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
-    allowedHosts: [
-      'localhost',
-      'orthograph.medctr.ad.wfubmc.edu',
-      'phsr-h2pvsw1.medctr.ad.wfubmc.edu',
-      'phsr-292gd4.medctr.ad.wfubmc.edu'
-    ],
 
     // Use Eslint Loader?
     // If true, your code will be linted during bundling and
@@ -83,3 +88,5 @@ module.exports = {
     bundleAnalyzerReport: process.env.npm_config_report
   }
 };
+
+module.exports = merge(config, localConfig);
