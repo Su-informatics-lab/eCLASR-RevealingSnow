@@ -31,7 +31,7 @@ setup(
     long_description=long_description,
     author='Ryan Barnard',
     author_email='rybarnar@wakehealth.edu',
-    license='GPL',
+    license='TBD',
     packages=['snow'],
     package_data={
         'snow': ['data/*.yml', 'logging.yaml', '.config.env'] + package_files('snow/static')
