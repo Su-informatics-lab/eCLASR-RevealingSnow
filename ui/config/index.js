@@ -22,6 +22,12 @@ module.exports = {
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
+    allowedHosts: [
+      'localhost',
+      'orthograph.medctr.ad.wfubmc.edu',
+      'phsr-h2pvsw1.medctr.ad.wfubmc.edu',
+      'phsr-292gd4.medctr.ad.wfubmc.edu'
+    ],
 
     // Use Eslint Loader?
     // If true, your code will be linted during bundling and

@@ -44,12 +44,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     watchOptions: {
       poll: config.dev.poll,
     },
-    allowedHosts: [
-      'localhost',
-      'orthograph.medctr.ad.wfubmc.edu',
-      'phsr-h2pvsw1.medctr.ad.wfubmc.edu',
-      'phsr-292gd4.medctr.ad.wfubmc.edu'
-    ]
+    allowedHosts: config.dev.allowedHosts
   },
   plugins: [
     new webpack.DefinePlugin({
