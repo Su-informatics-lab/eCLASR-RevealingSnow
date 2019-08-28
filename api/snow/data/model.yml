@@ -303,6 +303,8 @@ ymca_sites:
     label: Jerry Long
   - key: ymca_kernersville
     label: Kernersville
+  - key: ymca_lexington
+    label: Lexington
   - key: ymca_robinhood
     label: Robinhood
   - key: ymca_statesville
@@ -362,4 +364,4 @@ legend:
     label: Filtered
   - key: unfiltered
     label: Unfiltered
-data_version: 0c8b573d1cae03788c1b22328663dbc99dae497a
+data_version: f5b379524af0907bc56dc5a99ac94164c0c5f68e
