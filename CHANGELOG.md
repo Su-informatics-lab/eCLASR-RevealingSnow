@@ -1,5 +1,22 @@
 # Revealing Snow Change Log
 
+## [2019.3.0] - 2019-08-28
+
+### Added
+
+* Added the Lexington J. Smith Young YMCA.
+
+## [2019.2.0] - 2019-06-06
+
+### Changed
+
+* Updated the model to use the v3 screening criteria.
+* Default dates are now relative to the 2019-04-01 reference date.
+* Range filters (e.g. age) now support non-integer values.
+* Exclusion filters now specifically exclude patients with condition = 1
+  rather than requiring condition = 0. This ensures empty/unknown condition
+  values are not excluded.
+
 ## [2019.1.0] - 2019-02-15
 
 ### Added
