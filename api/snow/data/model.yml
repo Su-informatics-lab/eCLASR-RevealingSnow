@@ -289,14 +289,16 @@ ymca_sites:
     label: Alexander
   - key: ymca_barium_springs
     label: Barium Springs
-  - key: ymca_hanes
-    label: Hanes
   - key: ymca_davie
     label: Davie
   - key: ymca_fulton
     label: Fulton
   - key: ymca_gateway
     label: Gateway
+  - key: ymca_hanes
+    label: Hanes
+  - key: ymca_hpmc
+    label: High Point Medical Center
   - key: ymca_innovation_quarter
     label: Innovation Quarter
   - key: ymca_jerry_long
