@@ -1,5 +1,11 @@
 # Revealing Snow Change Log
 
+## [2019.4.0] - 2019-09-26
+
+### Added
+
+* Added the High Point Medical Center fitness center.
+
 ## [2019.3.0] - 2019-08-28
 
 ### Added
