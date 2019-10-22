@@ -349,6 +349,16 @@
         mounted() {
             this.$store.dispatch('getCriteriaDataModel');
 
+            // Allow SVG images in the popover. It might be better for this to be in a
+            // global init location, but it does work here.
+            const SCOPED_SELECTOR = /^data-v-[0-9a-f]+$/i;
+            $.fn.popover.Constructor.Default.whiteList.svg = [
+                'data-prefix', 'data-icon', 'xmlns', 'viewbox', SCOPED_SELECTOR,
+            ];
+            $.fn.popover.Constructor.Default.whiteList.path = [
+                'fill', 'd', SCOPED_SELECTOR,
+            ];
+
             // Initialize the legend popover
             $(this.$refs['legend-link']).popover({
                 html: true,
