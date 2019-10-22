@@ -1,5 +1,11 @@
 # Revealing Snow Change Log
 
+## [Unreleased]
+
+### Fixed
+
+* Icons in the filter legend popover appear again.
+
 ## [2019.4.0] - 2019-09-26
 
 ### Added
