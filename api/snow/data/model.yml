@@ -363,7 +363,7 @@ legend:
       label: Unknown
   total:
   - key: filtered
-    label: Filtered
+    label: Eligible
   - key: unfiltered
-    label: Unfiltered
+    label: Overall
 data_version: f5b379524af0907bc56dc5a99ac94164c0c5f68e

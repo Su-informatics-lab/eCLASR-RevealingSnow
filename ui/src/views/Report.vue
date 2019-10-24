@@ -6,7 +6,7 @@
                       class="totals">
 
             <div class="patient-field">
-                <span class="label">Unfiltered:</span>
+                <span class="label">Overall:</span>
 
                 <span class="value">
                     {{ patientCountUnfiltered }}
@@ -14,7 +14,7 @@
             </div>
 
             <div class="patient-field">
-                <span class="label">Filtered:</span>
+                <span class="label">Eligible:</span>
 
                 <span class="value">
                     {{ patientCountFiltered }}
@@ -44,7 +44,7 @@
                        :width="900"
                        :height="200"
                        :chart-options="{legend: true}"
-                       :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"
+                       :group-legend="{filtered: 'Eligible', unfiltered: 'Overall'}"
                        x-axis-label="Patient Age"
                        y-axis-label="# of Patients"
             />

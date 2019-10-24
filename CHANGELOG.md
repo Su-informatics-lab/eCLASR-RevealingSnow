@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+* Relabeled "Unfiltered" and "Filtered" to "Overall" and "Eligible."
+
 ### Fixed
 
 * Icons in the filter legend popover appear again.

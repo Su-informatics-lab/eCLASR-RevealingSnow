@@ -4,7 +4,7 @@
                    :width="width"
                    :height="height"
                    :data-legend="legend"
-                   :group-legend="{filtered: 'Filtered', unfiltered: 'Unfiltered'}"
+                   :group-legend="{filtered: 'Eligible', unfiltered: 'Overall'}"
                    :options="barChartOptions"
                    :title="title"
                    y-axis-label="# of Patients"
