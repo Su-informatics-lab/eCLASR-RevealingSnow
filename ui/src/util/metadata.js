@@ -50,7 +50,7 @@ function validateFilter(criteria, filter, key) {
         throw new Error(`invalid filter key: ${key}`);
     }
 
-    if (criteria[key].type === 'toggle') {
+    if (criteria[key].type === 'toggle' || criteria[key].type === 'date_toggle') {
         return validateToggleFilter(criteria, filter, key);
     }
 

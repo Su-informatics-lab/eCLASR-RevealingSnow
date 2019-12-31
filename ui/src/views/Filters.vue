@@ -317,7 +317,7 @@
         computed: {
             ...mapGetters(['modelFilters', 'modelYmcaSites']),
             toggleFilters() {
-                return _.filter(this.modelFilters, o => o.type === 'toggle');
+                return _.filter(this.modelFilters, o => o.type === 'toggle' || o.type === 'date_toggle');
             },
             rangeFilters() {
                 return _.filter(this.modelFilters, o => o.type === 'range');
