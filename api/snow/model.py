@@ -42,7 +42,7 @@ class EmrFilter(metaclass=abc.ABCMeta):
         pass
 
 
-class ToggleFilter(EmrFilter):
+class ValueFilter(EmrFilter):
     _VALID_FILTER_VALUES = {'0', '1'}
 
     def validate_filter_value(self, value):
@@ -55,18 +55,40 @@ class ToggleFilter(EmrFilter):
             self._validate_filter_value(value['value'])
 
     def expand_filter_expression(self, key, value):
+        value_comp = _CRITERION_VALUE_COMPARISON[value]
+        expr = '{} {} 1'.format(key, value_comp)
+        print(expr)
+        return expr
+
+    def _validate_filter_value(self, value):
+        if value not in self._VALID_FILTER_VALUES:
+            raise exc.RSError("invalid filter value '{}'; must be one of [{}]".format(
+                value, ', '.join(self._VALID_FILTER_VALUES)
+            ))
+
+
+class DateValueFilter(ValueFilter):
+    """
+    A DateValueFilter is a kind of value filter where the value of the field will be None or
+    a date. This differs from a ValueFilter where the value to filter is matched exactly: if a date
+    value filter is not None, the records are included/excluded if they have a date that is on or
+    after a provided cutoff date.
+    """
+    def expand_filter_expression(self, key, value):
         if not isinstance(value, dict):
             value_comp = _CRITERION_VALUE_COMPARISON[value]
-            return '{} {} 1'.format(key, value_comp)
+            expr = '{} {} {}'.format(key, value_comp, key)
+            print(expr)
+            return expr
 
-        date_field = _date_field(key)
+        date_field = key
         field_value = value['value']
         date_value = value['date']
         field_value_comp = _CRITERION_VALUE_COMPARISON[field_value]
         date_comp = _CRITERION_DATE_COMPARISON[field_value]
         conjunction = _CRITERION_DATE_CONJUNCTION[field_value]
 
-        return '({field} {field_value_comp} 1 {conj} {date_field} {date_comp} "{date_value}")'.format(
+        expr = '({field} {field_value_comp} {field} {conj} {date_field} {date_comp} "{date_value}")'.format(
             field=key,
             field_value_comp=field_value_comp,
             conj=conjunction,
@@ -74,12 +96,8 @@ class ToggleFilter(EmrFilter):
             date_comp=date_comp,
             date_value=date_value
         )
-
-    def _validate_filter_value(self, value):
-        if value not in self._VALID_FILTER_VALUES:
-            raise exc.RSError("invalid filter value '{}'; must be one of [{}]".format(
-                value, ', '.join(self._VALID_FILTER_VALUES)
-            ))
+        print(expr)
+        return expr
 
 
 class RangeFilter(EmrFilter):
@@ -126,8 +144,9 @@ class RangeFilter(EmrFilter):
 
 
 _FILTER_TYPES = {
-    C.FLT_TOGGLE: ToggleFilter,
-    C.FLT_RANGE: RangeFilter
+    C.FLT_TOGGLE: ValueFilter,
+    C.FLT_RANGE: RangeFilter,
+    C.FLT_DATE_TOGGLE: DateValueFilter
 }
 
 

@@ -16,10 +16,8 @@ class FilterByEmrCriteriaTests(TestCase):
 
         data = {
             'patient_num': [1, 2, 3],
-            'cardio': [0, 0, 1],
-            'cardio_date': [None, None, '2018-05-01'],
-            'neuro': [0, 1, 1],
-            'neuro_date': [None, '2018-04-01', '2018-06-01']
+            'cardio': [None, None, '2018-05-01'],
+            'neuro': [None, '2018-04-01', '2018-06-01']
         }
         self.data = pd.DataFrame(data=data)
 

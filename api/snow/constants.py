@@ -29,6 +29,7 @@ FLK_TYPE = 'type'
 # Filter Types
 FLT_TOGGLE = 'toggle'
 FLT_RANGE = 'range'
+FLT_DATE_TOGGLE = 'date_toggle'
 
 # Special Query Argument Keys
 QK_SITE = 'site'

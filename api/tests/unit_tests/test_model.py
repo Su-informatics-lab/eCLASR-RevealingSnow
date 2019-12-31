@@ -60,8 +60,8 @@ class CriteriaDataModelTests(TestCase):
         self.assertEqual(model.data_version, '12345')
 
     @parameterized.expand([
-        ('clot', model.ToggleFilter),
-        ('neuro', model.ToggleFilter),
+        ('clot', model.ValueFilter),
+        ('neuro', model.ValueFilter),
     ])
     def test_filters_instantiated_correctly(self, key, expected_type):
         filter = self.model.get_filter(key)
@@ -80,37 +80,71 @@ class ModelHelperFunctionTests(TestCase):
             {
                 'key': 'clot',
                 'label': 'CVD',
-                'type': 'toggle'
+                'type': 'date_toggle'
             },
             {
                 'key': 'neuro',
                 'label': 'Neurology',
                 'type': 'toggle'
-            }
+            },
+            {
+                'key': 'current_age',
+                'label': 'Age',
+                'type': 'range'
+            },
         ]
 
         filters = model._construct_filters(filter_data)
 
         self.assertIn('clot', filters)
         self.assertIn('neuro', filters)
+        self.assertIn('current_age', filters)
 
-        self.assertIsInstance(filters['clot'], model.ToggleFilter)
-        self.assertIsInstance(filters['neuro'], model.ToggleFilter)
+        self.assertIsInstance(filters['clot'], model.DateValueFilter)
+        self.assertIsInstance(filters['neuro'], model.ValueFilter)
+        self.assertIsInstance(filters['current_age'], model.RangeFilter)
 
     @parameterized.expand([
-        ('toggle', model.ToggleFilter),
-        ('range', model.RangeFilter),
+        (C.FLT_TOGGLE, model.ValueFilter),
+        (C.FLT_RANGE, model.RangeFilter),
+        (C.FLT_DATE_TOGGLE, model.DateValueFilter),
     ])
     def test_construct_filter_creates_filter_of_correct_type(self, filter_type, expected_type):
         filter = model._construct_filter('key', filter_type, None)
         self.assertIsInstance(filter, expected_type)
 
 
-class ToggleFilterTests(TestCase):
+class DateValueFilterTests(TestCase):
     def setUp(self):
-        super(ToggleFilterTests, self).setUp()
+        super(DateValueFilterTests, self).setUp()
 
-        self.filter = model.ToggleFilter('foo', None)
+        self.filter = model.DateValueFilter('foo', None)
+
+    @parameterized.expand([
+        ('bar',),
+        ({'value': 'bar'}),
+    ])
+    def test_invalid_filter_value_raises_exception(self, value):
+        with self.assertRaises(RSError) as e:
+            self.filter.validate_filter_value(value)
+
+        self.assertIn('invalid filter value', str(e.exception))
+
+    @parameterized.expand([
+        ('1', 'foo == foo'),
+        ({'value': '1', 'date': '2016-07-12'}, '(foo == foo and foo >= "2016-07-12")'),
+        ({'value': '0', 'date': '2016-07-12'}, '(foo != foo or foo < "2016-07-12")'),
+    ])
+    def test_expand_filter_expression(self, value, expected):
+        actual = self.filter.expand_filter_expression('foo', value)
+        self.assertEqual(actual, expected)
+
+
+class ValueFilterTests(TestCase):
+    def setUp(self):
+        super(ValueFilterTests, self).setUp()
+
+        self.filter = model.ValueFilter('foo', None)
 
     @parameterized.expand([
         ('bar',),
@@ -124,8 +158,7 @@ class ToggleFilterTests(TestCase):
 
     @parameterized.expand([
         ('1', 'foo == 1'),
-        ({'value': '1', 'date': '2016-07-12'}, '(foo == 1 and foo_date >= "2016-07-12")'),
-        ({'value': '0', 'date': '2016-07-12'}, '(foo != 1 or foo_date < "2016-07-12")'),
+        ('0', 'foo != 1'),
     ])
     def test_expand_filter_expression(self, value, expected):
         actual = self.filter.expand_filter_expression('foo', value)
