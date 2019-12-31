@@ -1,10 +1,12 @@
 # Revealing Snow Change Log
 
-## [Unreleased]
+## [2019.5.0] - 2019-12-31
 
 ### Changed
 
 * Relabeled "Unfiltered" and "Filtered" to "Overall" and "Eligible."
+* Added support for data files without the redundant "_date" columns, such
+  as those produced by v4 of the phenotyping algorithm.
 
 ### Fixed
 
