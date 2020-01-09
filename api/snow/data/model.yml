@@ -5,8 +5,8 @@ filters:
     long_name: Cardiovascular Diseases
     type: date_toggle
     description: >
-      Myocardial infarction, major heart surgery (i.e., valve replacement or bypass surgery),
-      deep vein thrombosis or pulmonary embolus in the past 6 months.
+      Myocardial infarction, major heart surgery (i.e., valve replacement, bypass surgery, stent
+      placement, angioplasty), deep vein thrombosis, or pulmonary embolus in the past 6 months.
     default_date: 2018-10-01
   - key: neuro
     label: Neurology
@@ -14,17 +14,18 @@ filters:
     type: date_toggle
     description: >
       Any significant neurologic disease, including any form of dementia, mild cognitive impairment,
-      Parkinson’s disease, Huntington’s disease, normal pressure hydrocephalus, brain tumor, progressive
-      supranuclear palsy, seizure disorder, ubdural hematoma, multiple sclerosis, or history of significant
-      head trauma with persistent neurologic sequelae or known structural brain abnormalities.
+      Parkinson’s disease, Huntington’s disease, normal pressure hydrocephalus, brain tumor,
+      progressive supranuclear palsy, seizure disorder, subdural hematoma, multiple sclerosis, or
+      history of significant head trauma with persistent neurologic sequelae or known structural brain
+      abnormalities.
     default_date:
   - key: dep
     label: Depression
     long_name: Depression
     type: date_toggle
     description: >
-      History of major depression within the last 12 months
-    default_date: 2018-04-01
+      History of major depression within the last 6 months.
+    default_date: 2018-10-01
   - key: bpd
     label: Bipolar
     long_name: Bipolar Disorder
@@ -44,64 +45,64 @@ filters:
     long_name: Alcohol or Substance Abuse or Dependence
     type: date_toggle
     description: >
-      History of alcohol or substance abuse or dependence within the past 2 years, as per DSM V criteria
+      History of alcohol or substance abuse or dependence within the past 2 years, as per DSM V criteria.
     default_date: 2017-04-01
   - key: cardio
     label: Significant CVD
     long_name: Significant Cardiovascular Disease
     type: date_toggle
     description: >
-      Significant cardiovascular disease (including NYHA Class III or IV congestive heart failure, clinically
-      significant aortic stenosis, history of cardiac arrest, use of a cardiac defibrillator or uncontrolled angina).
+      Significant cardiovascular disease (including NYHA Class III or IV congestive heart failure,
+      clinically significant aortic stenosis, history of cardiac arrest, or uncontrolled angina).
     default_date:
   - key: heart
     label: Heart
     long_name: Heart Problems
     type: date_toggle
     description: >
-      Serious conduction disorder (e.g., 3rd degree heart block), uncontrolled arrhythmia, or new Q waves or
-      ST-segment depressions (>3 mm) on ECG (treated atrial fibrillation for more than 1 year or occasional
-      premature ventricular contractions on ECG are not exclusions).
-    default_date: 2018-04-01
+      Serious conduction disorder (e.g., 3rd degree heart block), uncontrolled arrhythmia, or new Q
+      waves or ST-segment depressions (>3 mm) on ECG (treated atrial fibrillation for more than 1 year
+      or occasional premature ventricular contractions on ECG are not exclusions)
+    default_date:
   - key: stroke_large
     label: "Stroke: Large"
     long_name: Large Vessel Stroke
     type: date_toggle
-    description: Large vessel stroke in the past 2 years
+    description: Large vessel stroke in the past 2 years.
     default_date: 2017-04-01
   - key: tia
     label: "Stroke: Small"
     long_name: Transient Ischemic Attack or Small Vessel Stroke
     type: date_toggle
     description: >
-      History of TIA or small vessel stroke in the last 6 months; TIA occurring longer than 6 months with
-      residual effects
+      History of TIA or small vessel stroke in the last 6 months; TIA occurring more than 6 months ago
+      with residual effects
     default_date: 2018-10-01
   - key: lung
     label: Lung Disease
     long_name: Lung Disease
     type: date_toggle
     description: >
-      Lung disease requiring either regular use of corticosteroids or the use of supplemental oxygen
-      (inhaled steroids for asthma is permissible)
+      Lung disease requiring either regular use of corticosteroids or the use of supplemental oxygen;
+      intermittent use of corticosteroids or supplemental oxygen to treat chronic obstructive pulmonary
+      disease exacerbation is allowed; use of inhaled steroids for asthma is allowed.
     default_date:
   - key: renal
     label: Renal Disease
-    long_name: Renal Disease Requiring Dialysis
+    long_name: Renal Disease
     type: date_toggle
-    description: >
-      Renal disease requiring dialysis
+    description: Renal disease.
     default_date:
   - key: cancer
     label: Cancer
     long_name: Primary or Recurrent Cancer
     type: date_toggle
     description: >
-      History within the last 5 years of a primary or recurrent malignant disease requiring treatment,
-      excluding non-melanoma skin cancers, resected cutaneous squamous cell carcinoma in situ, basal cell
-      carcinoma, cervical carcinoma in situ, or in situ prostate cancer with normal prostate-specific antigen
-      posttreatment
-    default_date: 2014-04-01
+      History within the last 2 years of treatment for primary or recurrent malignant disease,
+      excluding non-melanoma skin cancers, resected cutaneous squamous cell carcinoma in situ, basal
+      cell carcinoma, cervical carcinoma in situ, or in situ prostate cancer with normal
+      prostate-specific antigen post-treatment.
+    default_date: 2017-04-01
   - key: bone
     label: Bone Fracture or Joint Replacement
     long_name: Hip Fracture, Joint Replacement, or Spinal Surgery
@@ -130,15 +131,15 @@ filters:
     long_name: Malabsorptive Bariatric Procedure
     type: date_toggle
     description: >
-      History of a malabsorptive bariatric procedure (gastric bypass, biliopancreatic diversion); other bariatric
-      procedures involving restriction (i.e., sleeve, band) are not exclusionary
+      History of a malabsorptive bariatric procedure (gastric bypass, biliopancreatic diversion); other
+      bariatric procedures involving restriction (i.e., sleeve, band) are not exclusionary
     default_date:
   - key: nursing_home
     label: Nursing Home
     long_name: Resides in a Nursing Home
     type: date_toggle
     description: >
-      Resides in a nursing home
+      Resides in an assisted living facility or nursing home
     default_date: 2019-01-01
   - key: bmi_1yrs
     label: BMI (1 Year)
@@ -170,34 +171,34 @@ filters:
     default_value:
   - key: vit_1yrs
     label: Vital Signs (1 Year)
-    long_name: "SBP < 130mmHG, HbA1c < 6.0%, and LDL < 130 mg/dL"
+    long_name: "SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL"
     type: toggle
     description: >
-      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines for age during the past year
+      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past year
     default_date:
     default_value:
   - key: vit_2yrs
     label: Vital Signs (2 Year)
-    long_name: "SBP < 130mmHG, HbA1c < 6.0%, and LDL < 130 mg/dL"
+    long_name: "SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL"
     type: toggle
     description: >
-      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines for age during the past 2 years
+      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 2 years
     default_date:
     default_value: False
   - key: vit_5yrs
     label: Vital Signs (5 Year)
-    long_name: "SBP < 130mmHG, HbA1c < 6.0%, and LDL < 130 mg/dL"
+    long_name: "SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL"
     type: toggle
     description: >
-      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines for age during the past 5 years
+      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 5 years
     default_date:
     default_value:
   - key: vit_10yrs
     label: Vital Signs (10 Year)
-    long_name: "SBP < 130mmHG, HbA1c < 6.0%, and LDL < 130 mg/dL"
+    long_name: "SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL"
     type: toggle
     description: >
-      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines for age during the past 10 years
+      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 10 years
     default_date:
     default_value:
   - key: t2d_insulin
@@ -228,8 +229,8 @@ filters:
     long_name: Drugs for Alzheimer's-Related Diseases
     type: date_toggle
     description: >
-      Current or past use of medications for memory impairment or AD (e.g.
-      cholinesterase inhibitors, memantine = an NMDA receptor antagonist)
+      Current or past use of medications for memory impairment or AD (e.g., cholinesterase inhibitors,
+      memantine)
     default_date:
     default_value:
   - key: drugs_psychoactive
@@ -238,13 +239,13 @@ filters:
     type: date_toggle
     description: >
       Use of psychoactive medications within the last 3 months including tricyclic antidepressants,
-      antipsychotics, mood-stabilizing psychotropic agents (e.g. lithium salts), psychostimulants,
-      opiate analgesics, antiparkinsonian medications, convulsant medications
+      antipsychotics, mood-stabilizing psychotropic agents (e.g., lithium salts), psychostimulants,
+      opiate analgesics (e.g., Tramadol), antiparkinsonian medications, anticonvulsant medications
       (except gabapentin and pregabalin for non-seizure indications), systemic corticosteroids, or
-      medications with significant central anticholinergic activity; in the absence of major depression,
-      stable dose use of selective serotonin reuptake inhibitors or serotonin and norepinephrine reuptake
-      inhibitors are allowed.
-    default_date: 2019-01-01
+      medications with significant central anticholinergic activity are allowed as long as the
+      medication is not used to treat an exclusionary medical condition (e.g., permissible indications;
+      quetiapine for sleep, diazepam for muscle cramps).
+    default_date:
     default_value:
   - key: vital_status
     label: Vital Status
@@ -284,6 +285,8 @@ ymca_sites:
     label: Statesville
   - key: ymca_stokes
     label: Stokes
+  - key: ymca_thomasville
+    label: Thomasville
   - key: ymca_wells_fargo
     label: Wells Fargo
   - key: ymca_wilkes
@@ -337,4 +340,4 @@ legend:
     label: Eligible
   - key: unfiltered
     label: Overall
-data_version: f5b379524af0907bc56dc5a99ac94164c0c5f68e
+data_version: c3fa5361554a5f427c59f38aae3532078e1fa913
