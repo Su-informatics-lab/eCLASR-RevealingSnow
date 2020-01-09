@@ -1,5 +1,15 @@
 # Revealing Snow Change Log
 
+## [2019.5.1] - 2020-01-09
+
+### Added
+
+* Added the Thomasville site.
+
+### Changed
+
+* Updated descriptions in the data model to reflect POINTER Protocol v2.0.
+
 ## [2019.5.0] - 2019-12-31
 
 ### Changed
