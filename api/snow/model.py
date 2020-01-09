@@ -57,7 +57,6 @@ class ValueFilter(EmrFilter):
     def expand_filter_expression(self, key, value):
         value_comp = _CRITERION_VALUE_COMPARISON[value]
         expr = '{} {} 1'.format(key, value_comp)
-        print(expr)
         return expr
 
     def _validate_filter_value(self, value):
@@ -78,7 +77,6 @@ class DateValueFilter(ValueFilter):
         if not isinstance(value, dict):
             value_comp = _CRITERION_VALUE_COMPARISON[value]
             expr = '{} {} {}'.format(key, value_comp, key)
-            print(expr)
             return expr
 
         date_field = key
@@ -96,7 +94,6 @@ class DateValueFilter(ValueFilter):
             date_comp=date_comp,
             date_value=date_value
         )
-        print(expr)
         return expr
 
 
