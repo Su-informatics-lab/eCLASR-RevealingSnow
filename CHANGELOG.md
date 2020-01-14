@@ -1,5 +1,12 @@
 # Revealing Snow Change Log
 
+## [Unreleased]
+
+### Changed
+
+* Updated the data version in the model.
+
+
 ## [2019.5.1] - 2020-01-09
 
 ### Added
