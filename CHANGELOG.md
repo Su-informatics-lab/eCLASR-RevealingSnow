@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+* Added a filter indicating whether a patient was in a previous export batch.
+
 ### Changed
 
 * Updated the data version in the model.

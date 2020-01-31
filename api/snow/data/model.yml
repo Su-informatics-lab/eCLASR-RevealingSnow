@@ -254,6 +254,14 @@ filters:
     description: Evidence of death.
     default_date:
     default_value: False
+  - key: exported
+    label: Previously Exported
+    long_name: Patients Exported in Previous Batches
+    type: toggle
+    description: >
+      Patients that have been included in previously exported batches.
+    default_date:
+    default_value:
 ymca_sites:
   - key: ymca_administrative
     label: Administrative
