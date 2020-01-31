@@ -174,7 +174,7 @@ filters:
     long_name: "SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL"
     type: toggle
     description: >
-      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past year
+      Systolic BP, HbA1c, and lipids all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past year
     default_date:
     default_value:
   - key: vit_2yrs
@@ -182,7 +182,7 @@ filters:
     long_name: "SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL"
     type: toggle
     description: >
-      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 2 years
+      Systolic BP, HbA1c, and lipids all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 2 years
     default_date:
     default_value: False
   - key: vit_5yrs
@@ -190,7 +190,7 @@ filters:
     long_name: "SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL"
     type: toggle
     description: >
-      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 5 years
+      Systolic BP, HbA1c, and lipids all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 5 years
     default_date:
     default_value:
   - key: vit_10yrs
@@ -198,7 +198,7 @@ filters:
     long_name: "SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL"
     type: toggle
     description: >
-      Systolic BP, HbA1c, lipids, and BMI all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 10 years
+      Systolic BP, HbA1c, and lipids all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 10 years
     default_date:
     default_value:
   - key: t2d_insulin
