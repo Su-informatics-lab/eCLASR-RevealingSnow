@@ -11,6 +11,10 @@
 * Updated the data version in the model.
 * Corrected the vitals item description to remove BMI.
 
+### Fixed
+
+* Renamed the current_age column to match the screening table.
+
 
 ## [2019.5.1] - 2020-01-09
 
