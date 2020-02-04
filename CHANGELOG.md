@@ -1,6 +1,6 @@
 # Revealing Snow Change Log
 
-## [Unreleased]
+## [2019.5.2] - 2020-02-04
 
 ### Added
 
