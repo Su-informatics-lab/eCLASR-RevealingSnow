@@ -307,6 +307,10 @@ ymca_sites:
     label: Winston
   - key: ymca_yadkin
     label: Yadkin
+  - key: ymca_bryan
+    label: Bryan (GSO)
+  - key: ymca_alex_spears
+    label: Spears (GSO)
 legend:
   sex:
     - key: M
