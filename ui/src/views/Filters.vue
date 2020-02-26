@@ -83,6 +83,9 @@
                           :description="filter.description"
                           :min-value="filter.minimum_value"
                           :max-value="filter.maximum_value"
+                          :default_value="getFilterValue(filter)"
+                          :default_min="filter.default_min"
+                          :default_max="filter.default_max"
             />
 
             <limit-filter ref="limit-filter"

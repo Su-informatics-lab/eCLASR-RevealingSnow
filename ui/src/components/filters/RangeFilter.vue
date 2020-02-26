@@ -65,6 +65,18 @@
                 type: Number,
                 default: 100,
             },
+            default_value: {
+                type: Boolean,
+                default: false,
+            },
+            default_min: {
+                type: Number,
+                default: null,
+            },
+            default_max: {
+                type: Number,
+                default: null,
+            },
         },
         data() {
             return {
@@ -93,6 +105,9 @@
                 return this.getNullOrInt(this.selectedMaximum);
             },
         },
+        mounted() {
+            this.resetToDefault();
+        },
         watch: {
             enabled() {
                 this.$emit('updated');
@@ -115,11 +130,15 @@
                 this.selectedMaximum = value;
             },
             resetToDefault() {
-                this.enabled = false;
-                this.selectedMinimum = null;
-                this.selectedMaximum = null;
+                this.enabled = this.default_value;
+                this.selectedMinimum = this.default_min;
+                this.selectedMaximum = this.default_max;
             },
             getNullOrInt(value) {
+                if (_.isNumber(value)) {
+                    return value;
+                }
+
                 if (_.isEmpty(value)) {
                     return null;
                 }
