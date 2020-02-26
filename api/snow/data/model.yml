@@ -8,6 +8,7 @@ filters:
       Myocardial infarction, major heart surgery (i.e., valve replacement, bypass surgery, stent
       placement, angioplasty), deep vein thrombosis, or pulmonary embolus in the past 6 months.
     default_date: 2018-10-01
+    default_value:
   - key: neuro
     label: Neurology
     long_name: Significant Neurological Diseases
@@ -26,6 +27,7 @@ filters:
     description: >
       History of major depression within the last 6 months.
     default_date: 2018-10-01
+    default_value:
   - key: bpd
     label: Bipolar
     long_name: Bipolar Disorder
@@ -40,13 +42,14 @@ filters:
     description: >
       History of schizophrenia as per DSM V criteria
     default_date:
+    default_value:
   - key: sub_abuse
     label: Substance Abuse
     long_name: Alcohol or Substance Abuse or Dependence
     type: date_toggle
     description: >
       History of alcohol or substance abuse or dependence within the past 2 years, as per DSM V criteria.
-    default_date: 2017-04-01
+    default_date: 2018-03-01
   - key: cardio
     label: Significant CVD
     long_name: Significant Cardiovascular Disease
@@ -55,6 +58,7 @@ filters:
       Significant cardiovascular disease (including NYHA Class III or IV congestive heart failure,
       clinically significant aortic stenosis, history of cardiac arrest, or uncontrolled angina).
     default_date:
+    default_value:
   - key: heart
     label: Heart
     long_name: Heart Problems
@@ -64,12 +68,14 @@ filters:
       waves or ST-segment depressions (>3 mm) on ECG (treated atrial fibrillation for more than 1 year
       or occasional premature ventricular contractions on ECG are not exclusions)
     default_date:
+    default_value:
   - key: stroke_large
     label: "Stroke: Large"
     long_name: Large Vessel Stroke
     type: date_toggle
     description: Large vessel stroke in the past 2 years.
     default_date: 2017-04-01
+    default_value:
   - key: tia
     label: "Stroke: Small"
     long_name: Transient Ischemic Attack or Small Vessel Stroke
@@ -78,6 +84,7 @@ filters:
       History of TIA or small vessel stroke in the last 6 months; TIA occurring more than 6 months ago
       with residual effects
     default_date: 2018-10-01
+    default_value:
   - key: lung
     label: Lung Disease
     long_name: Lung Disease
@@ -87,12 +94,14 @@ filters:
       intermittent use of corticosteroids or supplemental oxygen to treat chronic obstructive pulmonary
       disease exacerbation is allowed; use of inhaled steroids for asthma is allowed.
     default_date:
+    default_value:
   - key: renal
     label: Renal Disease
     long_name: Renal Disease
     type: date_toggle
     description: Renal disease.
     default_date:
+    default_value:
   - key: cancer
     label: Cancer
     long_name: Primary or Recurrent Cancer
@@ -103,6 +112,7 @@ filters:
       cell carcinoma, cervical carcinoma in situ, or in situ prostate cancer with normal
       prostate-specific antigen post-treatment.
     default_date: 2017-04-01
+    default_value:
   - key: bone
     label: Bone Fracture or Joint Replacement
     long_name: Hip Fracture, Joint Replacement, or Spinal Surgery
@@ -110,6 +120,7 @@ filters:
     description: >
       History of hip fracture, joint replacement, or spinal surgery in the last 6 months
     default_date: 2018-10-01
+    default_value:
   - key: phys_disability
     label: Physical Disabilities
     long_name: Physical Disabilities
@@ -117,7 +128,7 @@ filters:
     description: >
       Physical Disabilities
     default_date:
-    default_value: False
+    default_value:
   - key: frailty_status
     label: "eFI: Healthy"
     long_name: "e-Frailty Index: Healthy"
@@ -134,6 +145,7 @@ filters:
       History of a malabsorptive bariatric procedure (gastric bypass, biliopancreatic diversion); other
       bariatric procedures involving restriction (i.e., sleeve, band) are not exclusionary
     default_date:
+    default_value:
   - key: nursing_home
     label: Nursing Home
     long_name: Resides in a Nursing Home
@@ -141,6 +153,7 @@ filters:
     description: >
       Resides in an assisted living facility or nursing home
     default_date: 2019-01-01
+    default_value:
   - key: bmi_1yrs
     label: BMI (1 Year)
     long_name: BMI >= 40
@@ -161,7 +174,7 @@ filters:
     type: toggle
     description: BMI >= 40 during the previous 5 years
     default_date:
-    default_value: False
+    default_value:
   - key: bmi_10yrs
     label: BMI (10 Years)
     long_name: BMI >= 40
@@ -184,7 +197,7 @@ filters:
     description: >
       Systolic BP, HbA1c, and lipids all conform to current health guidelines (SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL) for age during the past 2 years
     default_date:
-    default_value: False
+    default_value:
   - key: vit_5yrs
     label: Vital Signs (5 Year)
     long_name: "SBP < 125mmHG, HbA1c < 6.0%, and LDL < 115 mg/dL"
@@ -208,13 +221,14 @@ filters:
     description: >
       Past or current use of insulin to treat type 2 diabetes
     default_date:
+    default_value:
   - key: last_encounter_date
     label: Last Visit
     long_name: Date of Last Encounter
     type: date_toggle
     description: >
       Date of most recent encounter in the EMR database.
-    default_date: 2010-01-01
+    default_date: 2010-03-01
     default_value: True
   - key: age
     label: Age
@@ -222,6 +236,9 @@ filters:
     type: range
     description: >
       Age of the patient as of 2019-04-01
+    default_value: True
+    default_min: 58
+    default_max: 80
     minimum_value: 5
     maximum_value: 120
   - key: drugs_ad
@@ -253,7 +270,7 @@ filters:
     type: toggle
     description: Evidence of death.
     default_date:
-    default_value: False
+    default_value:
   - key: exported
     label: Previously Exported
     long_name: Patients Exported in Previous Batches
