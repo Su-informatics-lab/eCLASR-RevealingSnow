@@ -7,10 +7,17 @@ from setuptools import setup
 
 with io.open('./snow/__init__.py', encoding='utf8') as version_file:
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file.read(), re.M)
+    appname_match = re.search(r"^__application_name__ = ['\"]([^'\"]*)['\"]", version_file.read(), re.M)
+
     if version_match:
         version = version_match.group(1)
     else:
         raise RuntimeError("Unable to find version string.")
+
+    if appname_match:
+        appname = appname_match.group(1)
+    else:
+        raise RuntimeError("Unable to find application name string.")
 
 
 def package_files(directory):
@@ -53,7 +60,7 @@ setup(
     ],
     options={
         'app': {
-            'formal_name': 'Revealing Snow',
+            'formal_name': appname,
             'bundle': 'edu.wakehealth',
             'guid': 'c72bfaa6-d639-4895-9d1a-21e621267d0a'
         },
