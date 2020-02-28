@@ -7,7 +7,7 @@
 
 <style scoped>
     #snow-footer {
-        border-top: 1px solid lightgrey;
+        border-top: 1px solid #999;
         margin: 0 0 0.25em 0;
         padding: 0.5em;
         font-size: smaller;
@@ -23,6 +23,7 @@
 </style>
 
 <script>
+    import _ from 'lodash';
     import { mapGetters } from 'vuex';
 
 
@@ -31,10 +32,10 @@
         computed: {
             ...mapGetters(['applicationVersion']),
             applicationName() {
-                return this.applicationVersion.label;
+                return _.get(this.applicationVersion, 'label', '');
             },
             versionNumber() {
-                return this.applicationVersion.version;
+                return _.get(this.applicationVersion, 'version', '');
             },
         },
     };
