@@ -6,6 +6,10 @@ function countPatients(data) {
     return _.sumBy(data.sex, 'value');
 }
 
+function getVersionDetails(data, key) {
+    return _.find(data, { key });
+}
+
 const colors = d3.schemeCategory10;
 
 export default {
@@ -34,4 +38,5 @@ export default {
         return _.zipObject(_.map(legend, 'key'), colors);
     },
     getFeature: state => key => _.get(state.featureFlags, key, false),
+    getApplicationVersion: state => getVersionDetails(state.model.version_details, 'app'),
 };
