@@ -21,6 +21,7 @@ EXPORT_LABEL = 'label'
 EXPORT_DESCRIPTION = 'description'
 EXPORT_USER = 'userid'
 DATA_VERSION = 'data_version'
+VERSION_DETAILS = 'version_details'
 
 # Filter Keys
 FLK_KEY = 'key'
@@ -43,6 +44,13 @@ QK_EXPORT_LIMIT = 'limit'
 QK_EXPORT_ORDER_BY = 'order_by'
 QK_EXPORT_ORDER_ASC = 'order_asc'
 QK_EXPORT_ORDER_VALUES = [QK_LIMIT_LAST_VISIT_DATE, QK_LIMIT_CLOSEST_YMCA]
+
+# Version-Related Keys
+APP_VERSION_KEY = 'app'
+VERSION_KEY = 'key'
+VERSION_LABEL_KEY = 'label'
+VERSION_DATE_KEY = 'date'
+VERSION_VERSION_KEY = 'version'
 
 # Export
 EXPORT_FILENAME = 'patients.zip'

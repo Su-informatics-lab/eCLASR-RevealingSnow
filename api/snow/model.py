@@ -186,10 +186,25 @@ class CriteriaDataModel(object):
         if C.CRITERIA_DATA_MODEL_FILE in app.config:
             self._model_filename = app.config[C.CRITERIA_DATA_MODEL_FILE]
 
+    def _inject_app_version(self, model):
+        from snow import __version__, __application_name__
+
+        version_details = model.get(C.VERSION_DETAILS, [])
+        version_details.append(
+            {
+                C.VERSION_KEY: C.APP_VERSION_KEY,
+                C.VERSION_LABEL_KEY: __application_name__,
+                C.VERSION_VERSION_KEY: __version__
+            }
+        )
+
+        model[C.VERSION_DETAILS] = version_details
+
     @property
     def model(self):
         if self._model is None:
             self._model = _load_model(self._model_filename)
+            self._inject_app_version(self._model)
 
         return self._model
 

@@ -67,6 +67,20 @@ class CriteriaDataModelTests(TestCase):
         filter = self.model.get_filter(key)
         self.assertIsInstance(filter, expected_type)
 
+    def test_app_version_injected_in_version_details(self):
+        from snow import __version__
+
+        # Version details are only injected when loading from disk, so create a
+        # new CDM instance and let it load the default model.
+        m = model.CriteriaDataModel().model
+        self.assertIn(C.VERSION_DETAILS, m)
+
+        vd = m[C.VERSION_DETAILS]
+        app_version = list(filter(lambda x: x['key'] == C.APP_VERSION_KEY, vd))
+
+        self.assertEqual(len(app_version), 1)
+        self.assertEqual(app_version[0]['version'], __version__)
+
 
 class ModelHelperFunctionTests(TestCase):
     def test_invalid_filter_type_raises_exception(self):
