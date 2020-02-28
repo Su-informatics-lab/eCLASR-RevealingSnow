@@ -279,6 +279,9 @@ filters:
       Patients that have been included in previously exported batches.
     default_date:
     default_value:
+
+# Short, human-readable labels for the YMCA sites. Currently, all sites are
+# classified as "ymca_sites" regardless of whether they're affiliated with the YMCA.
 ymca_sites:
   - key: ymca_administrative
     label: Administrative
@@ -328,6 +331,8 @@ ymca_sites:
     label: Bryan (GSO)
   - key: ymca_alex_spears
     label: Spears (GSO)
+
+# Human-readable labels for the categorical keys in the data file
 legend:
   sex:
     - key: M
@@ -369,6 +374,13 @@ legend:
     label: Eligible
   - key: unfiltered
     label: Overall
+
+# The data_version field is the Git commit hash of the commit, in the POINTER
+# data repository, from which the screening data derived. The data table itself
+# must be supplied separately from the software. At some point in the future, the
+# intention is to move towards supplying the model and data file together--though
+# still separately from the data--in order to reduce the coupling between software
+# releases and data updates.
 data_version: 34efa4cdd40999c35370d1a183d2e8517f02dc60
 
 # The version_details field provides the human-readable content for the version
