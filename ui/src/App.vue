@@ -3,6 +3,7 @@
          class="container-fluid">
         <masthead/>
         <dashboard/>
+        <app-footer/>
     </div>
 </template>
 
@@ -23,6 +24,7 @@
 <script>
     import Dashboard from './views/Dashboard';
     import Masthead from './components/Masthead';
+    import AppFooter from './components/AppFooter';
 
 
     export default {
@@ -30,6 +32,7 @@
         components: {
             Dashboard,
             Masthead,
+            AppFooter,
         },
         mounted() {
             this.$store.dispatch('getFeatureFlags');

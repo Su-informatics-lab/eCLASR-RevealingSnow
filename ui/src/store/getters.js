@@ -38,5 +38,5 @@ export default {
         return _.zipObject(_.map(legend, 'key'), colors);
     },
     getFeature: state => key => _.get(state.featureFlags, key, false),
-    getApplicationVersion: state => getVersionDetails(state.model.version_details, 'app'),
+    applicationVersion: state => getVersionDetails(state.model.version_details, 'app'),
 };
