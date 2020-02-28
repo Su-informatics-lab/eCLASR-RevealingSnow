@@ -37,7 +37,7 @@ QK_SITE = 'site'
 QK_SITE_MAXDIST = 'maxdist'
 QK_SITE_MINDIST = 'mindist'
 
-QK_LIMIT_LAST_VISIT_DATE = 'last_visit_date'
+QK_LIMIT_LAST_VISIT_DATE = 'last_encounter_date'
 QK_LIMIT_CLOSEST_YMCA = 'closest_ymca'
 
 QK_EXPORT_LIMIT = 'limit'

@@ -58,7 +58,7 @@
 
             <select v-model="orderColumn"
                     :disabled="!isSubsetSelected">
-                <option value="last_visit_date">Visit Date</option>
+                <option value="last_encounter_date">Visit Date</option>
                 <option value="closest_ymca">Closest YMCA Site</option>
             </select>
 
@@ -102,7 +102,7 @@
             return {
                 exportMode: 'all',
                 exportCount: 1000,
-                orderColumn: 'last_visit_date',
+                orderColumn: 'last_encounter_date',
                 orderAscending: false,
                 exportUsername: '',
                 exportLabel: '',
