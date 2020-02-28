@@ -6,6 +6,11 @@
 
 * Added the Bryan and Spears Greensboro YMCA sites.
 
+### Changed
+
+* Reduced the set of default filter criteria to a minimal starting set of conditions.
+  
+
 
 ## [2019.5.2] - 2020-02-04
 
