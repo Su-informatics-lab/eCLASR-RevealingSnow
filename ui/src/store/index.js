@@ -19,6 +19,7 @@ const state = {
         criteria: [],
         ymcaSites: [],
         legend: null,
+        version_details: null,
     },
     filters: {
         criteria: [],
