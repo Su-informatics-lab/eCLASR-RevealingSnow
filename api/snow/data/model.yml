@@ -370,3 +370,14 @@ legend:
   - key: unfiltered
     label: Overall
 data_version: 34efa4cdd40999c35370d1a183d2e8517f02dc60
+
+# The version_details field provides the human-readable content for the version
+# information reported in the UI.
+version_details:
+  - key: emr_pull
+    label: "EMR Data Extraction"
+    date: "2019-04-15"
+    version: "v2.1.0"
+  - key: exported_column
+    label: "Patient Exported Data"
+    date: "2020-01-31"
