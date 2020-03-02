@@ -17,6 +17,8 @@
         text-align: center;
         color: #2c3e50;
 
+        min-width: 900px;
+
         padding: 0;
     }
 </style>
