@@ -5,6 +5,7 @@
 ### Added
 
 * Added the Bryan and Spears Greensboro YMCA sites.
+* Added last-updated dates for the EMR Data Pull and the "Previously Exported" column.
 
 ### Changed
 
