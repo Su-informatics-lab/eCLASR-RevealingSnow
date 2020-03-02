@@ -10,6 +10,11 @@ function getVersionDetails(data, key) {
     return _.find(data, { key });
 }
 
+function getVersionKeys(data, keys) {
+    const keyedData = _.keyBy(data, 'key');
+    return _.pick(keyedData, keys);
+}
+
 const colors = d3.schemeCategory10;
 
 export default {
@@ -39,4 +44,5 @@ export default {
     },
     getFeature: state => key => _.get(state.featureFlags, key, false),
     applicationVersion: state => getVersionDetails(state.model.version_details, 'app'),
+    getVersionKeys: state => keys => getVersionKeys(state.model.version_details, keys),
 };

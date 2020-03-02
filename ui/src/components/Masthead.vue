@@ -2,6 +2,7 @@
     <div id="snow-masthead">
         <img id="us-pointer-logo"
              src="../assets/logo.png">
+        <version-header />
     </div>
 </template>
 
@@ -16,7 +17,12 @@
 </style>
 
 <script>
+    import VersionHeader from './VersionHeader';
+
     export default {
         name: 'Masthead',
+        components: {
+            VersionHeader,
+        },
     };
 </script>
