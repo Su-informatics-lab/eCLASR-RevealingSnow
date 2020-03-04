@@ -10,7 +10,8 @@
 ### Changed
 
 * Reduced the set of default filter criteria to a minimal starting set of conditions.
-  
+* The charts in the Patient Totals section now use the same category colors and ordering
+  as the site-specific charts.
 
 
 ## [2019.5.2] - 2020-02-04
