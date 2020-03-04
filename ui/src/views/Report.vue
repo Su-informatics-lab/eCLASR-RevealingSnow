@@ -39,15 +39,11 @@
                        :width="300"
                        :height="200"/>
 
-            <histogram :data="ageData"
+            <dem-chart stats-key="age"
                        title="Age"
                        :width="900"
                        :height="200"
-                       :chart-options="{legend: true}"
-                       :group-legend="{filtered: 'Eligible', unfiltered: 'Overall'}"
-                       x-axis-label="Patient Age"
-                       y-axis-label="# of Patients"
-            />
+                       x-axis-label="Patient Age"/>
         </report-panel>
 
         <report-panel label="Conditions"
@@ -91,7 +87,6 @@
 
     import ReportPanel from '../components/ReportPanel';
     import DemChart from '../components/charts/GlobalDemographicChart';
-    import Histogram from '../components/charts/Histogram';
     import YmcaSite from '../components/charts/YmcaSite';
     import ExportDialog from '../components/ExportDialog';
 
@@ -101,18 +96,11 @@
         components: {
             ReportPanel,
             DemChart,
-            Histogram,
             YmcaSite,
             ExportDialog,
         },
         computed: {
             ...mapGetters(['enabledYmcaSites', 'patientCountUnfiltered', 'patientCountFiltered']),
-            ageData() {
-                return {
-                    unfiltered: this.$store.state.stats.unfiltered.age || [],
-                    filtered: this.$store.state.stats.filtered.age || [],
-                };
-            },
             exportUrl() {
                 return this.$api.getDownloadUrl(this.$store.state.filters);
             },

@@ -4,9 +4,11 @@
                    :width="width"
                    :height="height"
                    :data-legend="legend"
-                   :group-legend="{filtered: 'Eligible', unfiltered: 'Overall'}"
+                   :group-legend="demographicLegend"
+                   :group-colors="demographicColors"
                    :options="barChartOptions"
                    :title="title"
+                   :x-axis-label="xAxisLabel"
                    y-axis-label="# of Patients"
         />
     </div>
@@ -30,6 +32,10 @@
             width: { type: Number, required: true },
             height: { type: Number, required: true },
             title: { type: String, default: '' },
+            xAxisLabel: {
+                type: String,
+                default: '',
+            },
             chartOptions: {
                 type: Object,
                 default() {
@@ -46,12 +52,19 @@
             },
             data() {
                 return {
-                    unfiltered: this.unfiltered,
                     filtered: this.filtered,
+                    unfiltered: this.unfiltered,
                 };
             },
             legend() {
                 return this.$store.getters.getLegendObject(this.statsKey);
+            },
+            demographicLegend() {
+                const legend = this.$store.getters.getLegendObject('total');
+                return _.mapValues(legend, 'label');
+            },
+            demographicColors() {
+                return this.$store.getters.getLegendColor('total');
             },
             barChartOptions() {
                 return _.defaultsDeep(this.chartOptions, {
