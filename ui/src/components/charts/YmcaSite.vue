@@ -16,7 +16,7 @@
                 <div class="ymca-site-chart"
                      v-for="key in demographicKeys"
                      :key="key">
-                    <demographic-histogram :data="demographics"
+                    <demographic-histogram :data="demographicsData"
                                            :demographic="key"
                                            :width="width"
                                            :height="height"
@@ -107,7 +107,6 @@
             return {
                 unfiltered: [],
                 filtered: [],
-                demographics: {},
                 expanded: true,
                 isotopeOptions: {
                     layoutMode: 'fitRows',
@@ -131,12 +130,30 @@
                 return this.$store.getters.ymcaSiteByKey(this.id).label;
             },
             demographicKeys() {
-                if (!_.isEmpty(this.demographics)) {
+                if (!_.isEmpty(this.demographicsData)) {
                     // The 'total' key always comes first
-                    return _.concat(['total'], _.without(_.keys(this.demographics), 'total'));
+                    return _.concat(['total'], _.without(_.keys(this.demographicsData), 'total'));
                 }
 
                 return [];
+            },
+            demographicsData() {
+                // Only recompute the demographics data after both the filtered and unfiltered stats
+                // have loaded
+                if (_.isEmpty(this.filtered) || _.isEmpty(this.unfiltered)) {
+                    return {};
+                }
+
+                const demographics = _.mapValues(
+                    _.omit(this.filtered, 'total'),
+                    x => _.mapValues(x, objectToArray),
+                );
+                demographics.total = {
+                    filtered: objectToArray(_.pick(this.filtered, 'total').total),
+                    unfiltered: objectToArray(_.pick(this.unfiltered, 'total').total),
+                };
+
+                return demographics;
             },
             expansionIcon() {
                 return this.expanded ? faChevronDown : faChevronRight;
@@ -169,24 +186,16 @@
             },
             loadUnfiltered() {
                 this.$api.getYmcaStats(this.id, this.maxdist, this.mindist).then((result) => {
-                    this.unfiltered = _.pick(result[this.id], 'total').total;
+                    this.unfiltered = _.clone(result[this.id]);
                 });
             },
             loadFiltered() {
                 const { id, mindist, maxdist, filters } = this;
                 this.$api.getYmcaStats(id, maxdist, mindist, filters).then((result) => {
-                    this.filtered = _.pick(result[this.id], 'total').total;
-
-                    this.demographics = _.mapValues(
-                        _.omit(result[this.id], 'total'),
-                        x => _.mapValues(x, objectToArray),
-                    );
-                    this.demographics.total = {
-                        filtered: objectToArray(this.filtered),
-                        unfiltered: objectToArray(this.unfiltered),
-                    };
+                    this.filtered = _.clone(result[this.id]);
                 });
             },
+
             orderfn(data) {
                 return _.sortBy(data, d => _.round(d.name));
             },
