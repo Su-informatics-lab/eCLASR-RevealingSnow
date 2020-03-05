@@ -8,7 +8,7 @@ import * as types from './mutation-types';
 export default {
     setActiveFilters({ commit, dispatch }, { criteria, sites }) {
         commit(types.SET_ACTIVE_FILTERS, { criteria, sites });
-        dispatch('getFilteredStats', { criteria, sites });
+        dispatch('getFilteredStats', { criteria, ymcaSites: sites });
     },
     setActiveSites({ commit, dispatch }, { sites }) {
         commit(types.SET_ACTIVE_YMCA_SITES, { sites });
