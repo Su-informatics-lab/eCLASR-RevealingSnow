@@ -12,12 +12,6 @@ function flattenToDotNotation(filters) {
     }));
 }
 
-function buildQuery(criteria, limits) {
-    const query = _.merge({}, criteria, limits);
-
-    return flattenToDotNotation(query);
-}
-
 function buildMultipleYmcaSiteQuery(ymcaSites) {
     const sitesAndMaxdists = _.values(ymcaSites);
     const site = _.join(_.map(sitesAndMaxdists, 'site'), ',');
@@ -25,6 +19,13 @@ function buildMultipleYmcaSiteQuery(ymcaSites) {
     const mindist = _.join(_.map(sitesAndMaxdists, 'mindist'), ',');
 
     return { site, maxdist, mindist };
+}
+
+function buildQuery(criteria, limits, ymcaSites = null) {
+    const ymcaSiteQuery = !_.isEmpty(ymcaSites) ? buildMultipleYmcaSiteQuery(ymcaSites) : {};
+    const query = _.merge({}, criteria, limits, ymcaSiteQuery);
+
+    return flattenToDotNotation(query);
 }
 
 function buildDownloadAndExportRequest(r, filters, exportOptions) {
@@ -72,8 +73,8 @@ class Api {
         this.limits = limits;
     }
 
-    getPatientStats(criteria) {
-        const query = buildQuery(criteria, this.limits);
+    getPatientStats(criteria, sites) {
+        const query = buildQuery(criteria, this.limits, sites);
         return this.get('/stats', query);
     }
 
