@@ -12,6 +12,8 @@
 * Reduced the set of default filter criteria to a minimal starting set of conditions.
 * The charts in the Patient Totals section now use the same category colors and ordering
   as the site-specific charts.
+* When one or more YMCA sites is selected, the "Patient Totals" now reflect the union
+  of the patients in all selected sites.
 
 
 ## [2019.5.2] - 2020-02-04
