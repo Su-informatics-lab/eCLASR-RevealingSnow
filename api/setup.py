@@ -6,8 +6,9 @@ import re
 from setuptools import setup
 
 with io.open('./snow/__init__.py', encoding='utf8') as version_file:
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file.read(), re.M)
-    appname_match = re.search(r"^__application_name__ = ['\"]([^'\"]*)['\"]", version_file.read(), re.M)
+    version_file_content = version_file.read()
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file_content, re.M)
+    appname_match = re.search(r"^__application_name__ = ['\"]([^'\"]*)['\"]", version_file_content, re.M)
 
     if version_match:
         version = version_match.group(1)
