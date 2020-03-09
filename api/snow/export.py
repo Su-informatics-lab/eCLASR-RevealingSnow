@@ -99,7 +99,7 @@ class ExportData(object):
         patient_ids = self.patients[C.COL_PTNUM]
 
         files = {
-            C.EXPORT_FILE_PATIENTS: patient_ids.to_csv(index=False),
+            C.EXPORT_FILE_PATIENTS: patient_ids.to_csv(index=False, header=False),
             C.EXPORT_FILE_METADATA: to_yaml(self.options.create_metadata())
         }
 
