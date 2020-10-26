@@ -206,3 +206,41 @@ class RangeFilterTests(TestCase):
     def test_expand_filter_expression(self, value, expected):
         actual = self.filter.expand_filter_expression('foo', value)
         self.assertEqual(actual, expected)
+
+
+class ChoiceFilterTests(TestCase):
+    def setUp(self) -> None:
+        super(ChoiceFilterTests, self).setUp()
+
+        # Create a choice filter that allows values A, 2, and bar. We want to validate
+        # that none of the logic depends on the data type.
+        self.filter = model.ChoiceFilter('foo', {'A', 2, 'bar'})
+
+    @parameterized.expand([
+        (2,),
+        ('foo',),
+        ('notavar',),
+        ('0',),
+        ('B',),
+        ('A;3',),
+        ('2;B',),
+        ('A;2;bar;;',),
+        ('A;2;bar;baz',),
+    ])
+    def test_invalid_filter_value_raises_exception(self, value):
+        with self.assertRaises(RSError) as e:
+            self.filter.validate_filter_value(value)
+
+        self.assertIn('invalid filter value', str(e.exception))
+
+    @parameterized.expand([
+        ('A', 'foo == "A"'),
+        ('2', 'foo == "2"'),
+        ('bar', 'foo == "bar"'),
+        ('A;2', 'foo in ("A", "2")'),
+        ('A;2;bar', 'foo in ("A", "2", "bar")'),
+        ('2;bar', 'foo in ("2", "bar")'),
+    ])
+    def test_expand_filter_expression(self, value, expected):
+        actual = self.filter.expand_filter_expression('foo', value)
+        self.assertEqual(actual, expected)

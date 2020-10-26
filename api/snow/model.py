@@ -6,6 +6,8 @@ import yaml
 from snow import constants as C, exc
 from snow.util import make_json_response
 
+CHOICE_SEPARATOR = ';'
+
 DEFAULT_MODEL_FILE = path.join(path.dirname(__file__), 'data', 'model.yml')
 
 _CRITERION_VALUE_COMPARISON = {
@@ -140,10 +142,41 @@ class RangeFilter(EmrFilter):
             raise exc.RSError("invalid filter value: {} must be an integer: '{}'".format(key, value))
 
 
+class ChoiceFilter(EmrFilter):
+    def __init__(self, key, allowed_values):
+        super(ChoiceFilter, self).__init__(
+            key,
+            [str(value) for value in allowed_values]
+        )
+
+    def validate_filter_value(self, value):
+        if not isinstance(value, str):
+            raise exc.RSError("invalid filter value: filter value must be a string")
+
+        subvalues = value.split(CHOICE_SEPARATOR)
+        for subvalue in subvalues:
+            self._validate_filter_value(subvalue)
+
+    def expand_filter_expression(self, key, value):
+        subvalues = value.split(CHOICE_SEPARATOR)
+        if len(subvalues) == 1:
+            return '{} == "{}"'.format(key, subvalues[0])
+
+        subvalues = ', '.join(['"{}"'.format(value) for value in subvalues])
+        return '{} in ({})'.format(key, subvalues)
+
+    def _validate_filter_value(self, value):
+        if value not in self.attributes:
+            raise exc.RSError("invalid filter value '{}'; must be one of [{}]".format(
+                value, ', '.join(self.attributes)
+            ))
+
+
 _FILTER_TYPES = {
     C.FLT_TOGGLE: ValueFilter,
     C.FLT_RANGE: RangeFilter,
-    C.FLT_DATE_TOGGLE: DateValueFilter
+    C.FLT_DATE_TOGGLE: DateValueFilter,
+    C.FLT_CHOICE: ChoiceFilter
 }
 
 

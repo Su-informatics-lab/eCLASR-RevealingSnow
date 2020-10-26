@@ -31,6 +31,7 @@ FLK_TYPE = 'type'
 FLT_TOGGLE = 'toggle'
 FLT_RANGE = 'range'
 FLT_DATE_TOGGLE = 'date_toggle'
+FLT_CHOICE = 'choice'
 
 # Special Query Argument Keys
 QK_SITE = 'site'
