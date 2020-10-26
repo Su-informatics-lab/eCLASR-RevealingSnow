@@ -29,6 +29,12 @@ class CriteriaDataModelTests(TestCase):
                     'key': 'neuro',
                     'label': 'Neurology',
                     'type': 'toggle'
+                },
+                {
+                    'key': 'sex',
+                    'label': 'Sex',
+                    'type': 'choice',
+                    'allowed_values': ['M', 'F', '0', '?']
                 }
             ],
             C.YMCA_SITES: [
@@ -44,7 +50,7 @@ class CriteriaDataModelTests(TestCase):
         })
 
     def test_filter_keys_returns_keys_for_all_filters(self):
-        self.assertEqual(self.model.filter_keys, {'clot', 'neuro'})
+        self.assertEqual(self.model.filter_keys, {'sex', 'clot', 'neuro'})
 
     def test_site_keys_returns_keys_for_all_sites(self):
         self.assertEqual(self.model.ymca_site_keys, {'ymca_fulton', 'ymca_gateway'})
@@ -62,9 +68,11 @@ class CriteriaDataModelTests(TestCase):
     @parameterized.expand([
         ('clot', model.ValueFilter),
         ('neuro', model.ValueFilter),
+        ('sex', model.ChoiceFilter),
     ])
     def test_filters_instantiated_correctly(self, key, expected_type):
         filter = self.model.get_filter(key)
+
         self.assertIsInstance(filter, expected_type)
 
     def test_app_version_injected_in_version_details(self):
@@ -214,7 +222,7 @@ class ChoiceFilterTests(TestCase):
 
         # Create a choice filter that allows values A, 2, and bar. We want to validate
         # that none of the logic depends on the data type.
-        self.filter = model.ChoiceFilter('foo', {'A', 2, 'bar'})
+        self.filter = model.ChoiceFilter('foo', {'allowed_values': {'A', 2, 'bar'}})
 
     @parameterized.expand([
         (2,),

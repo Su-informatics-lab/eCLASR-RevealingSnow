@@ -143,11 +143,9 @@ class RangeFilter(EmrFilter):
 
 
 class ChoiceFilter(EmrFilter):
-    def __init__(self, key, allowed_values):
-        super(ChoiceFilter, self).__init__(
-            key,
-            [str(value) for value in allowed_values]
-        )
+    def __init__(self, key, attributes):
+        super(ChoiceFilter, self).__init__(key, attributes)
+        self.allowed_values = [str(value) for value in attributes['allowed_values']]
 
     def validate_filter_value(self, value):
         if not isinstance(value, str):
@@ -166,9 +164,9 @@ class ChoiceFilter(EmrFilter):
         return '{} in ({})'.format(key, subvalues)
 
     def _validate_filter_value(self, value):
-        if value not in self.attributes:
+        if value not in self.allowed_values:
             raise exc.RSError("invalid filter value '{}'; must be one of [{}]".format(
-                value, ', '.join(self.attributes)
+                value, ', '.join(self.allowed_values)
             ))
 
 
