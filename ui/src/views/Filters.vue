@@ -74,6 +74,17 @@
                            label="Recruitment Status"
                            :enabled="false"/>
 
+            <choice-filter ref="choice-filters"
+                           @updated="updateFilters"
+                           v-for="filter in choiceFilters"
+                           :key="filter.key"
+                           :id="filter.key"
+                           :label="filter.label"
+                           :description="filter.description"
+                           :allowed-values="filter.allowed_values"
+            />
+
+
             <range-filter ref="range-filters"
                           @updated="updateFilters"
                           v-for="filter in rangeFilters"
@@ -119,267 +130,276 @@
 </template>
 
 <style scoped>
-    .snow-filter-panel {
-        /*padding-right: 1em;*/
-        /*margin-right: 1em;*/
-        padding-bottom: 1em;
+.snow-filter-panel {
+    /*padding-right: 1em;*/
+    /*margin-right: 1em;*/
+    padding-bottom: 1em;
 
-        border-right: 1px solid #999;
-        background: #EEEBE0;
-    }
+    border-right: 1px solid #999;
+    background: #EEEBE0;
+}
 
-    .snow-filter-section {
-        margin-top: 0.5em;
-        padding-top: 0.5em;
-    }
+.snow-filter-section {
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+}
 
-    .snow-filter-header > h5 {
-        display: inline-block;
-    }
+.snow-filter-header > h5 {
+    display: inline-block;
+}
 
-    .snow-condition-filter-bulk-controls {
-        display: inline-block;
-        list-style: none;
+.snow-condition-filter-bulk-controls {
+    display: inline-block;
+    list-style: none;
 
-        font-size: smaller;
-    }
+    font-size: smaller;
+}
 
-    .snow-condition-filter-bulk-controls a {
-        cursor: pointer;
-    }
+.snow-condition-filter-bulk-controls a {
+    cursor: pointer;
+}
 
-    .snow-distance-filters {
-        padding-left: 0.5em;
-    }
+.snow-distance-filters {
+    padding-left: 0.5em;
+}
 
-    .bulk-control {
-        display: inline-block;
-    }
+.bulk-control {
+    display: inline-block;
+}
 
-    .bulk-control + .bulk-control {
-        padding-left: 0.25em;
-    }
+.bulk-control + .bulk-control {
+    padding-left: 0.25em;
+}
 
-    .bulk-control + .bulk-control::before {
-        display: inline-block;
-        content: "|";
-        padding-right: 0.5em;
-    }
+.bulk-control + .bulk-control::before {
+    display: inline-block;
+    content: "|";
+    padding-right: 0.5em;
+}
 
-    .snow-filter-legend {
-        font-size: xx-small;
-        font-weight: bold;
-        cursor: pointer;
-    }
+.snow-filter-legend {
+    font-size: xx-small;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-    .legend-list {
-        margin: 0;
-        padding: 0;
+.legend-list {
+    margin: 0;
+    padding: 0;
 
-        list-style-type: none;
-    }
+    list-style-type: none;
+}
 
-    .hidden {
-        display: none;
-    }
+.hidden {
+    display: none;
+}
 
-    svg[data-icon="times-circle"] {
-        color: red;
-    }
+svg[data-icon="times-circle"] {
+    color: red;
+}
 
-    svg[data-icon="plus-circle"] {
-        color: green;
-    }
+svg[data-icon="plus-circle"] {
+    color: green;
+}
 </style>
 
 <script>
-    import $ from 'jquery';
+import $ from 'jquery';
 
-    import _ from 'lodash';
-    import Vue from 'vue';
+import _ from 'lodash';
+import Vue from 'vue';
 
-    import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
 
-    import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 
-    import ToggleFilter from '../components/filters/ToggleFilter';
-    import DistanceFilter from '../components/filters/DistanceFilter';
-    import SelectFilter from '../components/filters/SelectFilter';
-    import LimitFilter from '../components/filters/LimitFilter';
-    import RangeFilter from '../components/filters/RangeFilter';
-    import MetadataUploader from '../components/MetadataUploader';
+import ToggleFilter from '../components/filters/ToggleFilter';
+import DistanceFilter from '../components/filters/DistanceFilter';
+import ChoiceFilter from '../components/filters/ChoiceFilter';
+import SelectFilter from '../components/filters/SelectFilter';
+import LimitFilter from '../components/filters/LimitFilter';
+import RangeFilter from '../components/filters/RangeFilter';
+import MetadataUploader from '../components/MetadataUploader';
 
 
-    const DEBOUNCE_DELAY = 500;
+const DEBOUNCE_DELAY = 500;
 
-    export default {
-        name: 'FilterPanel',
-        components: {
-            ToggleFilter,
-            DistanceFilter,
-            FontAwesomeIcon,
-            SelectFilter,
-            LimitFilter,
-            RangeFilter,
-            MetadataUploader,
+export default {
+    name: 'FilterPanel',
+    components: {
+        ToggleFilter,
+        DistanceFilter,
+        FontAwesomeIcon,
+        ChoiceFilter,
+        SelectFilter,
+        LimitFilter,
+        RangeFilter,
+        MetadataUploader,
+    },
+    data() {
+        return {
+            description: true,
+            ready: false,
+        };
+    },
+    methods: {
+        // eslint-disable-next-line func-names
+        updateFilters: _.debounce(function () {
+            this.$store.dispatch('setActiveFilters', { criteria: this.filterValues, sites: this.ymcaSites });
+        }, DEBOUNCE_DELAY),
+
+        // eslint-disable-next-line func-names
+        updateSites: _.debounce(function () {
+            this.$store.dispatch('setActiveSites', { sites: this.ymcaSites });
+        }, DEBOUNCE_DELAY),
+
+        updateLimits: _.debounce(function () {
+            this.$store.dispatch('setResultLimits', { limits: this.resultLimits });
+        }, DEBOUNCE_DELAY),
+
+        selectAll() {
+            _.each(this.$refs['toggle-filters'], f => f.setSelected(false));
         },
-        data() {
-            return {
-                description: true,
-                ready: false,
-            };
+        deselectAll() {
+            _.each(this.$refs['toggle-filters'], f => f.setSelected(null));
         },
-        methods: {
-            // eslint-disable-next-line func-names
-            updateFilters: _.debounce(function () {
-                this.$store.dispatch('setActiveFilters', { criteria: this.filterValues, sites: this.ymcaSites });
-            }, DEBOUNCE_DELAY),
-
-            // eslint-disable-next-line func-names
-            updateSites: _.debounce(function () {
-                this.$store.dispatch('setActiveSites', { sites: this.ymcaSites });
-            }, DEBOUNCE_DELAY),
-
-            updateLimits: _.debounce(function () {
-                this.$store.dispatch('setResultLimits', { limits: this.resultLimits });
-            }, DEBOUNCE_DELAY),
-
-            selectAll() {
-                _.each(this.$refs['toggle-filters'], f => f.setSelected(false));
-            },
-            deselectAll() {
-                _.each(this.$refs['toggle-filters'], f => f.setSelected(null));
-            },
-            resetAll() {
-                _.each(this.$refs['toggle-filters'], f => f.resetToDefault());
-                _.each(this.$refs['range-filters'], f => f.resetToDefault());
-            },
-            clearYmcaSites() {
-                _.each(this.$refs['ymca-sites'], f => f.setSelected(false));
-            },
-            uploadMetadata() {
-                this.$refs.uploader.showDialog();
-            },
-            updateControlsFromMetadata(filters) {
-                this.updateFiltersFromMetadata(filters.criteria);
-                this.updateSitesFromMetadata(filters.sites);
-                this.updateLimitsFromMetadata(filters.limits);
-            },
-            updateFiltersFromMetadata(criteria) {
-                this.updateToggleFiltersFromMetadata(criteria);
-                this.updateRangeFiltersFromMetadata(criteria);
-            },
-            updateToggleFiltersFromMetadata(criteria) {
-                _.each(this.$refs['toggle-filters'], (f) => {
-                    if (_.has(criteria, f.id)) {
-                        f.set(criteria[f.id]);
-                    } else {
-                        // If the criterion is missing, then it's excluded
-                        f.setSelected(null);
-                    }
-                });
-            },
-            updateRangeFiltersFromMetadata(criteria) {
-                _.each(this.$refs['range-filters'], (f) => {
-                    if (_.has(criteria, f.id)) {
-                        f.set(criteria[f.id]);
-                    } else {
-                        // If the criterion is missing, then it's excluded
-                        f.setEnabled(false);
-                    }
-                });
-            },
-            updateSitesFromMetadata(sites) {
-                _.each(this.$refs['ymca-sites'], (f) => {
-                    if (_.has(sites, f.id)) {
-                        f.setSelected(true);
-                        f.setMaxdist(sites[f.id].maxdist);
-                        f.setMindist(sites[f.id].mindist);
-                    } else {
-                        // If the criterion is missing, then it's excluded
-                        f.setSelected(false);
-                    }
-                });
-            },
-            updateLimitsFromMetadata(limits) {
-                const filter = this.$refs['limit-filter'];
-
-                if (limits) {
-                    filter.setEnabled(true);
-                    filter.setLimit(limits.limit);
-                    filter.setOrderColumn(limits.order_by);
-                    filter.setOrderAscending(limits.order_asc);
+        resetAll() {
+            _.each(this.$refs['toggle-filters'], f => f.resetToDefault());
+            _.each(this.$refs['range-filters'], f => f.resetToDefault());
+        },
+        clearYmcaSites() {
+            _.each(this.$refs['ymca-sites'], f => f.setSelected(false));
+        },
+        uploadMetadata() {
+            this.$refs.uploader.showDialog();
+        },
+        updateControlsFromMetadata(filters) {
+            this.updateFiltersFromMetadata(filters.criteria);
+            this.updateSitesFromMetadata(filters.sites);
+            this.updateLimitsFromMetadata(filters.limits);
+        },
+        updateFiltersFromMetadata(criteria) {
+            this.updateToggleFiltersFromMetadata(criteria);
+            this.updateRangeFiltersFromMetadata(criteria);
+        },
+        updateToggleFiltersFromMetadata(criteria) {
+            _.each(this.$refs['toggle-filters'], (f) => {
+                if (_.has(criteria, f.id)) {
+                    f.set(criteria[f.id]);
                 } else {
-                    filter.setEnabled(false);
+                    // If the criterion is missing, then it's excluded
+                    f.setSelected(null);
                 }
-            },
-            getFilterValue(filter) {
-                return _.get(filter, 'default_value', false);
-            },
-        },
-        computed: {
-            ...mapGetters(['modelFilters', 'modelYmcaSites']),
-            toggleFilters() {
-                return _.filter(this.modelFilters, o => o.type === 'toggle' || o.type === 'date_toggle');
-            },
-            rangeFilters() {
-                return _.filter(this.modelFilters, o => o.type === 'range');
-            },
-            filterValues() {
-                return _.merge({}, this.rangeFilterValues, this.toggleFilterValues);
-            },
-            rangeFilterValues() {
-                const activeFilters = _.keyBy(_.filter(this.$refs['range-filters'], f => f.enabled), 'id');
-                return _.mapValues(activeFilters, f => f.value);
-            },
-            toggleFilterValues() {
-                const activeFilters = _.keyBy(_.filter(this.$refs['toggle-filters'], f => f.checked), 'id');
-                return _.mapValues(activeFilters, f => f.value);
-            },
-            ymcaSites() {
-                const activeSites = _.keyBy(_.filter(this.$refs['ymca-sites'], f => f.enabled), 'id');
-                return _.mapValues(activeSites, f => f.value);
-            },
-            resultLimits() {
-                const limitFilter = this.$refs['limit-filter'];
-                if (!limitFilter.enabled) {
-                    return null;
-                }
-
-                return limitFilter.value;
-            },
-        },
-        mounted() {
-            this.$store.dispatch('getCriteriaDataModel');
-
-            // Allow SVG images in the popover. It might be better for this to be in a
-            // global init location, but it does work here.
-            const SCOPED_SELECTOR = /^data-v-[0-9a-f]+$/i;
-            $.fn.popover.Constructor.Default.whiteList.svg = [
-                'data-prefix', 'data-icon', 'xmlns', 'viewbox', SCOPED_SELECTOR,
-            ];
-            $.fn.popover.Constructor.Default.whiteList.path = [
-                'fill', 'd', SCOPED_SELECTOR,
-            ];
-
-            // Initialize the legend popover
-            $(this.$refs['legend-link']).popover({
-                html: true,
-                content() {
-                    const content = $(this).attr('data-popover-content');
-                    return $(content).html();
-                },
             });
         },
-        watch: {
-            toggleFilters() {
-                // Wait until all of the toggle controls have been built before
-                // initial update.
-                Vue.nextTick(() => {
-                    this.ready = true;
-                    this.updateFilters();
-                });
-            },
+        updateRangeFiltersFromMetadata(criteria) {
+            _.each(this.$refs['range-filters'], (f) => {
+                if (_.has(criteria, f.id)) {
+                    f.set(criteria[f.id]);
+                } else {
+                    // If the criterion is missing, then it's excluded
+                    f.setEnabled(false);
+                }
+            });
         },
-    };
+        updateSitesFromMetadata(sites) {
+            _.each(this.$refs['ymca-sites'], (f) => {
+                if (_.has(sites, f.id)) {
+                    f.setSelected(true);
+                    f.setMaxdist(sites[f.id].maxdist);
+                    f.setMindist(sites[f.id].mindist);
+                } else {
+                    // If the criterion is missing, then it's excluded
+                    f.setSelected(false);
+                }
+            });
+        },
+        updateLimitsFromMetadata(limits) {
+            const filter = this.$refs['limit-filter'];
+
+            if (limits) {
+                filter.setEnabled(true);
+                filter.setLimit(limits.limit);
+                filter.setOrderColumn(limits.order_by);
+                filter.setOrderAscending(limits.order_asc);
+            } else {
+                filter.setEnabled(false);
+            }
+        },
+        getFilterValue(filter) {
+            return _.get(filter, 'default_value', false);
+        },
+    },
+    computed: {
+        ...mapGetters(['modelFilters', 'modelYmcaSites']),
+        toggleFilters() {
+            return _.filter(this.modelFilters, o => o.type === 'toggle' || o.type === 'date_toggle');
+        },
+        rangeFilters() {
+            return _.filter(this.modelFilters, o => o.type === 'range');
+        },
+        choiceFilters() {
+            return _.filter(this.modelFilters, o => o.type === 'choice');
+        },
+        filterValues() {
+            return _.merge({}, this.choiceFilterValues, this.rangeFilterValues, this.toggleFilterValues);
+        },
+        choiceFilterValues() {
+            const activeFilters = _.keyBy(_.filter(this.$refs['choice-filters'], f => f.enabled), 'id');
+            return _.mapValues(activeFilters, f => f.value);
+        },
+        rangeFilterValues() {
+            const activeFilters = _.keyBy(_.filter(this.$refs['range-filters'], f => f.enabled), 'id');
+            return _.mapValues(activeFilters, f => f.value);
+        },
+        toggleFilterValues() {
+            const activeFilters = _.keyBy(_.filter(this.$refs['toggle-filters'], f => f.checked), 'id');
+            return _.mapValues(activeFilters, f => f.value);
+        },
+        ymcaSites() {
+            const activeSites = _.keyBy(_.filter(this.$refs['ymca-sites'], f => f.enabled), 'id');
+            return _.mapValues(activeSites, f => f.value);
+        },
+        resultLimits() {
+            const limitFilter = this.$refs['limit-filter'];
+            if (!limitFilter.enabled) {
+                return null;
+            }
+
+            return limitFilter.value;
+        },
+    },
+    mounted() {
+        this.$store.dispatch('getCriteriaDataModel');
+
+        // Allow SVG images in the popover. It might be better for this to be in a
+        // global init location, but it does work here.
+        const SCOPED_SELECTOR = /^data-v-[0-9a-f]+$/i;
+        $.fn.popover.Constructor.Default.whiteList.svg = [
+            'data-prefix', 'data-icon', 'xmlns', 'viewbox', SCOPED_SELECTOR,
+        ];
+        $.fn.popover.Constructor.Default.whiteList.path = [
+            'fill', 'd', SCOPED_SELECTOR,
+        ];
+
+        // Initialize the legend popover
+        $(this.$refs['legend-link']).popover({
+            html: true,
+            content() {
+                const content = $(this).attr('data-popover-content');
+                return $(content).html();
+            },
+        });
+    },
+    watch: {
+        toggleFilters() {
+            // Wait until all of the toggle controls have been built before
+            // initial update.
+            Vue.nextTick(() => {
+                this.ready = true;
+                this.updateFilters();
+            });
+        },
+    },
+};
 </script>
