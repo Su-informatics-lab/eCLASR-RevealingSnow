@@ -145,7 +145,8 @@ class RangeFilter(EmrFilter):
 class ChoiceFilter(EmrFilter):
     def __init__(self, key, attributes):
         super(ChoiceFilter, self).__init__(key, attributes)
-        self.allowed_values = [str(value) for value in attributes['allowed_values']]
+
+        self.allowed_values = {str(value.get(C.FLK_KEY)) for value in attributes['allowed_values']}
 
     def validate_filter_value(self, value):
         if not isinstance(value, str):

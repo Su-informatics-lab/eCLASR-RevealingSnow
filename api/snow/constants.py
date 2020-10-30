@@ -26,6 +26,7 @@ VERSION_DETAILS = 'version_details'
 # Filter Keys
 FLK_KEY = 'key'
 FLK_TYPE = 'type'
+FLK_ALLOWED_VALUES = 'allowed_values'
 
 # Filter Types
 FLT_TOGGLE = 'toggle'

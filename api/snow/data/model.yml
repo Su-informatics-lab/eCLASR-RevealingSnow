@@ -1,4 +1,47 @@
 ---
+# Human-readable labels for the categorical keys in the data file
+legend:
+  sex: &sex_values
+    - key: M
+      label: Male
+    - key: F
+      label: Female
+    - key: "?"
+      label: Unspecified
+  race: &race_values
+    - key: I
+      label: American Indian or Alaska Native
+    - key: O
+      label: Asian
+    - key: B
+      label: Black or African American
+    - key: S
+      label: Latin American or Hispanic
+    - key: P
+      label: Native Hawaiian or Other Pacific Islander
+    - key: X
+      label: Other
+    - key: R
+      label: Patient Refused
+    - key: U
+      label: Unknown
+    - key: W
+      label: White or Caucasian
+  ethnicity: &ethnicity_values
+    - key: H
+      label: Hispanic
+    - key: N
+      label: Not Hispanic
+    - key: P
+      label: Patient Refused to Identify
+    - key: U
+      label: Unknown
+  total:
+    - key: filtered
+      label: Eligible
+    - key: unfiltered
+      label: Overall
+
 filters:
   - key: clot
     label: CVD
@@ -241,6 +284,27 @@ filters:
     default_max: 80
     minimum_value: 5
     maximum_value: 120
+  - key: sex
+    label: Sex
+    long_name: Patient Sex
+    type: choice
+    description: >
+      Sex of the patient as recorded in the EMR.
+    allowed_values: *sex_values
+  - key: race
+    label: Race
+    long_name: Patient Race
+    type: choice
+    description: >
+      Race of the patient as recorded in the EMR.
+    allowed_values: *race_values
+  - key: ethnicity
+    label: Ethnicity
+    long_name: Patient Ethnicity
+    type: choice
+    description: >
+      Ethnicity of the patient as recorded in the EMR.
+    allowed_values: *ethnicity_values
   - key: drugs_ad
     label: "Drugs: AD"
     long_name: Drugs for Alzheimer's-Related Diseases
@@ -332,48 +396,6 @@ ymca_sites:
   - key: ymca_alex_spears
     label: Spears (GSO)
 
-# Human-readable labels for the categorical keys in the data file
-legend:
-  sex:
-    - key: M
-      label: Male
-    - key: F
-      label: Female
-    - key: "?"
-      label: Unspecified
-  race:
-    - key: I
-      label: American Indian or Alaska Native
-    - key: O
-      label: Asian
-    - key: B
-      label: Black or African American
-    - key: S
-      label: Latin American or Hispanic
-    - key: P
-      label: Native Hawaiian or Other Pacific Islander
-    - key: X
-      label: Other
-    - key: R
-      label: Patient Refused
-    - key: U
-      label: Unknown
-    - key: W
-      label: White or Caucasian
-  ethnicity:
-    - key: H
-      label: Hispanic
-    - key: N
-      label: Not Hispanic
-    - key: P
-      label: Patient Refused to Identify
-    - key: U
-      label: Unknown
-  total:
-  - key: filtered
-    label: Eligible
-  - key: unfiltered
-    label: Overall
 
 # The data_version field is the Git commit hash of the commit, in the POINTER
 # data repository, from which the screening data derived. The data table itself
