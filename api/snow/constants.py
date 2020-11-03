@@ -28,6 +28,8 @@ FLK_KEY = 'key'
 FLK_TYPE = 'type'
 FLK_ALLOWED_VALUES = 'allowed_values'
 
+FLT_LIST_VALUE_DELIMITER = ','
+
 # Filter Types
 FLT_TOGGLE = 'toggle'
 FLT_RANGE = 'range'

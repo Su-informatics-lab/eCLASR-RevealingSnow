@@ -6,8 +6,6 @@ import yaml
 from snow import constants as C, exc
 from snow.util import make_json_response
 
-CHOICE_SEPARATOR = ';'
-
 DEFAULT_MODEL_FILE = path.join(path.dirname(__file__), 'data', 'model.yml')
 
 _CRITERION_VALUE_COMPARISON = {
@@ -148,16 +146,19 @@ class ChoiceFilter(EmrFilter):
 
         self.allowed_values = {str(value.get(C.FLK_KEY)) for value in attributes['allowed_values']}
 
-    def validate_filter_value(self, value):
-        if not isinstance(value, str):
-            raise exc.RSError("invalid filter value: filter value must be a string")
+    def _ensure_list(self, value):
+        return value if isinstance(value, list) else [value]
 
-        subvalues = value.split(CHOICE_SEPARATOR)
+    def validate_filter_value(self, value):
+        if not (isinstance(value, str) or isinstance(value, list)):
+            raise exc.RSError("invalid filter value: filter value must be a string or a list of strings")
+
+        subvalues = self._ensure_list(value)
         for subvalue in subvalues:
             self._validate_filter_value(subvalue)
 
     def expand_filter_expression(self, key, value):
-        subvalues = value.split(CHOICE_SEPARATOR)
+        subvalues = self._ensure_list(value)
         if len(subvalues) == 1:
             return '{} == "{}"'.format(key, subvalues[0])
 
@@ -165,6 +166,9 @@ class ChoiceFilter(EmrFilter):
         return '{} in ({})'.format(key, subvalues)
 
     def _validate_filter_value(self, value):
+        if not isinstance(value, str):
+            raise exc.RSError("invalid filter value: filter value must be a string")
+
         if value not in self.allowed_values:
             raise exc.RSError("invalid filter value '{}'; must be one of [{}]".format(
                 value, ', '.join(self.allowed_values)

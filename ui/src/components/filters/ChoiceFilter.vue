@@ -84,7 +84,7 @@ export default {
                 return null;
             }
 
-            return _.join(this.selections, ';');
+            return _.join(this.selections, ',');
         },
     },
     mounted() {

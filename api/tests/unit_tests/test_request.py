@@ -43,6 +43,10 @@ class SimplifyQueryArgTests(TestCase):
             str(e.exception)
         )
 
+    def test_comma_separated_list_converted_to_list(self):
+        result = request.simplify_query_args({'foo.bar': 'baz,qux'})
+        self.assertEqual(result, {'foo': {'bar': ['baz', 'qux']}})
+
 
 class YmcaQueryArgParserTests(TestCase):
     def _parse_ymca_args(self, args, site_required=False):

@@ -105,12 +105,19 @@ def _get_nested_key_groups(nested_keys):
     return itertools.groupby(keys, keyfunc)
 
 
+def _expand_list_values(value: str):
+    if C.FLT_LIST_VALUE_DELIMITER in value:
+        return value.split(C.FLT_LIST_VALUE_DELIMITER)
+
+    return value
+
+
 def _build_nested_args(args, nested_keys):
     _validate_nested_keys(nested_keys)
     grouped_keys = _get_nested_key_groups(nested_keys)
     nested_args = {
         prefix: {
-            key.split('.')[1]: args[key]
+            key.split('.')[1]: _expand_list_values(args[key])
             for key in group
         }
         for prefix, group in grouped_keys
@@ -137,7 +144,7 @@ def simplify_query_args(args: dict) -> dict:
             )
         )
 
-    args = {key: args[key] for key in simple_keys}
+    args = {key: _expand_list_values(args[key]) for key in simple_keys}
     args.update(nested_args)
 
     return args

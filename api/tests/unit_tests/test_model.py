@@ -238,10 +238,10 @@ class ChoiceFilterTests(TestCase):
         ('notavar',),
         ('0',),
         ('B',),
-        ('A;3',),
-        ('2;B',),
-        ('A;2;bar;;',),
-        ('A;2;bar;baz',),
+        (['A', '3'],),
+        (['2', 'B'],),
+        (['A', '2', 'bar', '', ''],),
+        (['A', '2', 'bar', 'baz'],),
     ])
     def test_invalid_filter_value_raises_exception(self, value):
         with self.assertRaises(RSError) as e:
@@ -253,9 +253,9 @@ class ChoiceFilterTests(TestCase):
         ('A', 'foo == "A"'),
         ('2', 'foo == "2"'),
         ('bar', 'foo == "bar"'),
-        ('A;2', 'foo in ("A", "2")'),
-        ('A;2;bar', 'foo in ("A", "2", "bar")'),
-        ('2;bar', 'foo in ("2", "bar")'),
+        (['A', '2'], 'foo in ("A", "2")'),
+        (['A', '2', 'bar'], 'foo in ("A", "2", "bar")'),
+        (['2', 'bar'], 'foo in ("2", "bar")'),
     ])
     def test_expand_filter_expression(self, value, expected):
         self.filter.validate_filter_value(value)
