@@ -8,6 +8,17 @@
                        v-model="enabled">
                 {{ label }}
             </label>
+
+            <a ref="description-link"
+               tabindex="0"
+               role="button"
+               class="snow-filter-help"
+               data-trigger="focus"
+               data-toggle="popover"
+               v-if="description"
+               :data-content="description">
+                <sup>?</sup>
+            </a>
         </div>
 
         <div class="snow-choice-value"
@@ -42,10 +53,17 @@
 .snow-choice-value > select {
     font-size: inherit;
 }
+
+.snow-filter-help {
+    font-size: xx-small;
+    font-weight: bold;
+    cursor: pointer;
+}
 </style>
 
 <script>
 import _ from 'lodash';
+import $ from 'jquery';
 
 
 export default {
@@ -66,6 +84,10 @@ export default {
         allowedValues: {
             type: Array,
             default: null,
+        },
+        description: {
+            type: String,
+            default: '',
         },
     },
     data() {
@@ -89,6 +111,11 @@ export default {
     },
     mounted() {
         this.resetToDefault();
+
+        // Initialize the description popover
+        if (this.description) {
+            $(this.$refs['description-link']).popover();
+        }
     },
     watch: {
         enabled() {
