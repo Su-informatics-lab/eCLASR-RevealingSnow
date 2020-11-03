@@ -1,5 +1,13 @@
 # Revealing Snow Change Log
 
+## [2020.2.0] - 2020-11-04
+
+### Added
+
+* It's now possible to filter subjects by demographic fields (sex, race, and ethnicity).
+  Multiple values can be selected, and only the selected values will be included in
+  the "eligible" population.
+
 ## [2020.1.0] - 2020-03-09
 
 ### Added
