@@ -105,6 +105,10 @@ export default {
         resetToDefault() {
             this.enabled = this.default_value;
         },
+        set(value) {
+            this.setEnabled(true);
+            this.selections = value;
+        },
     },
 };
 </script>

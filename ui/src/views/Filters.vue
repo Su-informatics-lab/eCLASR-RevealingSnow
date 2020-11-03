@@ -266,6 +266,7 @@ export default {
         resetAll() {
             _.each(this.$refs['toggle-filters'], f => f.resetToDefault());
             _.each(this.$refs['range-filters'], f => f.resetToDefault());
+            _.each(this.$refs['choice-filters'], f => f.resetToDefault());
         },
         clearYmcaSites() {
             _.each(this.$refs['ymca-sites'], f => f.setSelected(false));
@@ -281,6 +282,7 @@ export default {
         updateFiltersFromMetadata(criteria) {
             this.updateToggleFiltersFromMetadata(criteria);
             this.updateRangeFiltersFromMetadata(criteria);
+            this.updateChoiceFiltersFromMetadata(criteria);
         },
         updateToggleFiltersFromMetadata(criteria) {
             _.each(this.$refs['toggle-filters'], (f) => {
@@ -294,6 +296,16 @@ export default {
         },
         updateRangeFiltersFromMetadata(criteria) {
             _.each(this.$refs['range-filters'], (f) => {
+                if (_.has(criteria, f.id)) {
+                    f.set(criteria[f.id]);
+                } else {
+                    // If the criterion is missing, then it's excluded
+                    f.setEnabled(false);
+                }
+            });
+        },
+        updateChoiceFiltersFromMetadata(criteria) {
+            _.each(this.$refs['choice-filters'], (f) => {
                 if (_.has(criteria, f.id)) {
                     f.set(criteria[f.id]);
                 } else {
